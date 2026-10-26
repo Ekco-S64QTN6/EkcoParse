@@ -1,6 +1,6 @@
 # Ekco Parse Roadmap
 
-_Last reviewed: 2026-10-26. Status below reflects the repository's `main` branch at review time; proposed changes are called out separately._
+_Last reviewed: 2026-10-26. Status below reflects the repository's `main` branch at review time. Items remain open until the user-facing behavior is tested, not merely committed._
 
 ## Product goal
 
@@ -37,7 +37,7 @@ These are product goals, not a claim that every feature of GINA or GamParse is a
 - User-configurable regex triggers with custom timer duration, alert text, category, color, optional wear-off pattern, and sound flag.
 - A live alert ticker that displays recent timer alerts or the latest log line.
 
-**Gaps:** default trigger configuration is empty, so raid alerts depend on user configuration; a maintained, ready-to-use preset pack and broad spell/trigger coverage still need verification. Player-death and other parsed event types are not all routed through the main dashboard's event handler.
+**Gaps:** the built-in fallback configuration has no trigger presets; the example configuration includes starter Enrage and Dragon Roar triggers. A fuller, maintained preset pack and broader spell/trigger coverage still need verification. Player-death, coin-loot, and other parsed event types are not all routed through the main dashboard's event handler.
 
 ### Combat and DPS — Implemented / partial
 
@@ -52,7 +52,7 @@ These are product goals, not a claim that every feature of GINA or GamParse is a
 - Vector map geometry and zone aliases, a player marker, breadcrumb trail, landmarks, manual zoom controls (1×–4×), zone cycling, breadcrumb clearing, and manual location input for testing.
 - The map engine centers the view on the player while zoomed in.
 
-**Gaps:** on `main`, the map opens at 1× and does not automatically change zoom when a location event arrives. [PR #1](https://github.com/Ekco-S64QTN6/EkcoParse/pull/1) proposes auto-zooming to 4× on the first valid `/loc` location, preserving later manual zoom choices, and resetting stale coordinates on zone switches. More real-log testing is needed across zones and map-file variants.
+**Gaps:** automatic first-fix zooming, manual zoom preservation, and clearing stale coordinates on zone changes are implemented. These behaviors still need broader real-log validation across zones and map-file variants.
 
 ### Kill, experience, loot and respawns — Partial / not wired
 
@@ -67,13 +67,13 @@ These are product goals, not a claim that every feature of GINA or GamParse is a
 - The dashboard currently mounts the header, DoT list, DPS panel, alert ticker, and buff list.
 - Textual CSS requests transparent backgrounds for the dashboard screen and panels.
 
-**Gaps:** actual alpha transparency depends on the terminal emulator/compositor. The main app previously sent an OSC command that forced the terminal background to black; [PR #1](https://github.com/Ekco-S64QTN6/EkcoParse/pull/1) removes that override and documents the terminal-side requirement. The mitigation, ledger, and respawn widgets still need to be laid out and mounted without making the overlay unwieldy.
+**Gaps:** actual alpha transparency depends on the terminal emulator/compositor. The main app no longer forces the terminal background to black, and the README documents the terminal-side opacity settings. The mitigation, ledger, and respawn widgets still need to be laid out and mounted without making the overlay unwieldy.
 
 ## Prioritized roadmap
 
 ### P0 — Make the current feature set dependable
 
-- [ ] Merge and validate [PR #1](https://github.com/Ekco-S64QTN6/EkcoParse/pull/1): respect terminal transparency; auto-zoom on first `/loc`; keep manual zoom changes; reset player coordinates on zone changes.
+- [ ] Run the test suite and validate the merged transparency and auto-zoom behavior on a real P99 session, including startup with an existing log and a zone change.
 - [ ] Add captured, anonymized real P99 log fixtures for location, zoning, spell fades, player death, coin loot, group combat, mob death, and item loot.
 - [ ] Test the full startup sequence when the log file is missing, empty, already contains old data, or rotates while the app is running.
 - [ ] Verify map coordinate orientation, zone aliases, and player centering against known in-game locations.
