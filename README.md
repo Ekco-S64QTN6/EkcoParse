@@ -5,6 +5,7 @@
 <p>
   <a href="https://github.com/Ekco-S64QTN6/EkcoParse/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/Ekco-S64QTN6/EkcoParse?style=flat"></a>
   <a href="https://github.com/Ekco-S64QTN6/EkcoParse/issues"><img alt="Open issues" src="https://img.shields.io/github/issues/Ekco-S64QTN6/EkcoParse?style=flat"></a>
+  <a href="https://github.com/Ekco-S64QTN6/EkcoParse/actions/workflows/tests.yml"><img alt="Test suite" src="https://github.com/Ekco-S64QTN6/EkcoParse/actions/workflows/tests.yml/badge.svg"></a>
   <img alt="Python 3.10+" src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white">
   <img alt="Platform Linux" src="https://img.shields.io/badge/platform-Linux-lightgrey?logo=linux&logoColor=white">
   <img alt="Target game Project 1999" src="https://img.shields.io/badge/game-EverQuest%20P99-blue">
