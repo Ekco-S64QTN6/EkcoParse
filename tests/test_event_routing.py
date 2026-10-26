@@ -36,7 +36,7 @@ class TestMainAppEventRouting(unittest.TestCase):
             "Cobalt Scar": 20 * 60,
             "Plane of Fear": 8 * 60 * 60,
             "Plane of Growth": 12 * 60 * 60,
-            "Temple of Veeshan": 72 * 60 * 60,
+            "Temple of Veeshan": 72 * 60,
             "Plane of Mischief": 70 * 60 + 10,
         }
 
