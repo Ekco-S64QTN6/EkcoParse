@@ -5,14 +5,14 @@ character:
   class: "Shadowknight"
 
 log_tailer:
-  log_dir: "/home/ekco/Games/Project1999/Logs"
+  log_dir: "~/Games/Project1999/Logs"
   filename_pattern: "eqlog_{character}_{server}.txt"
   poll_interval_sec: 0.1
   start_at_end: true
   fallback_simulator: false
 
 display:
-  theme: "antfarm_dark"
+  theme: "ekco_dark"
   borderless_mode: true
   fps: 20
   tick_interval_sec: 0.25
@@ -24,6 +24,7 @@ combat:
 
 map:
   default_zone: "East Commonlands"
+  maps_dir: "~/Games/Project1999/maps"
   auto_switch_zone: true
   max_breadcrumbs: 60
   grid_width: 58
