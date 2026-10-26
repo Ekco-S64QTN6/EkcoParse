@@ -181,7 +181,7 @@ class EkcoMapApp(App):
         self.config = config or load_config()
         initial_zone = zone or self.config.default_zone
         self.map_engine = MapEngine(
-            maps_dir=Path("/home/ekco/Games/Project1999/maps"),
+            maps_dir=self.config.maps_dir,
             default_zone=initial_zone,
             max_breadcrumbs=self.config.max_breadcrumbs,
         )
