@@ -11,6 +11,10 @@ class TestTextualUI(unittest.IsolatedAsyncioTestCase):
     async def test_main_app_mounts(self):
         config = load_config()
         app = EkcoParseApp(config=config)
+        self.assertTrue(
+            app.ansi_color,
+            "Dashboard must preserve ANSI default backgrounds for terminal transparency",
+        )
         async with app.run_test() as pilot:
             # Check widgets exist
             header = app.query_one("#header-bar")
