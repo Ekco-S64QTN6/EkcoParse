@@ -68,15 +68,11 @@ Follows the aesthetic specifications of `/github/dwarffortress-antfarm/`:
 
 ### Transparent dashboard background
 
-The main dashboard's Textual screen and panels use transparent backgrounds. The application deliberately does not override the terminal background color, so your terminal's own opacity/transparency settings can show the game behind it. Actual alpha transparency is provided by the terminal emulator and compositor, not by Textual CSS alone.
+The main dashboard's Textual screen and panels use transparent backgrounds. The application deliberately does not override the terminal background color, because doing so can interfere with Kitty applying its configured background opacity.
 
-For Kitty, configure a suitable value in `kitty.conf`, for example:
+The default `./run.sh` launcher opens the dashboard in Kitty with `background_opacity=0.55`. To make the game more visible through the overlay, lower the value in `KITTY_OVERLAY_OPTS` in `run.sh` (for example, `-o background_opacity=0.25`). When launching the Python module directly in Kitty instead of using the launcher, set `background_opacity 0.55` or another preferred value in `kitty.conf`.
 
-```conf
-background_opacity 0.20
-```
-
-The appropriate value depends on your setup. Terminals without background-alpha support need their own compositor/profile configuration; otherwise their default terminal background may still appear opaque.
+Alpha transparency depends on the terminal emulator and the OS/compositor. The non-Kitty fallback runs in the current terminal and needs that terminal's own transparency settings.
 
 ---
 
