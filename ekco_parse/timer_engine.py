@@ -333,7 +333,15 @@ class TimerEngine:
                 elapsed = (timestamp - self.pending_cast_time).total_seconds()
                 if elapsed >= (sdef.cast_time_sec - 0.5):
                     matched_spell = sdef
-                    target_name = "Self" if sdef.category == "buff" else self.current_target
+                    if sdef.category in ("buff", "cooldown", "util"):
+                        target_name = "Self"
+                    elif sdef.category == "pet_buff":
+                        # The landing text normally identifies the pet. If no
+                        # landing line is available, don't assign its timer to
+                        # the currently selected combat target.
+                        target_name = "Pet"
+                    else:
+                        target_name = self.current_target
                     self.pending_cast_spell = None
                     self.pending_cast_time = None
 
@@ -501,8 +509,13 @@ class TimerEngine:
         """
         buffs = [
             t for t in self.active_timers.values()
-            if t.category in ("buff", "cooldown", "util")
-            and (t.target or "Self").strip().casefold() == "self"
+            if (
+                t.category == "pet_buff"
+                or (
+                    t.category in ("buff", "cooldown", "util")
+                    and (t.target or "Self").strip().casefold() == "self"
+                )
+            )
         ]
         return sorted(buffs, key=lambda t: t.remaining_seconds)
 
