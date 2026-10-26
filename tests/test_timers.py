@@ -1,11 +1,13 @@
 """Unit tests for GINA-style timers, Necromancer DoT running clock, and Buffs list."""
 
+import tempfile
 import unittest
 from datetime import datetime, timedelta
+from pathlib import Path
 from unittest.mock import patch
 
 from ekco_parse.models import Timer
-from ekco_parse.spells import SPELL_DB, SpellDef
+from ekco_parse.spells import SPELL_DB, SpellDatabase, SpellDef
 from ekco_parse.timer_engine import TimerEngine
 
 
@@ -54,6 +56,68 @@ class TestTimerEngine(unittest.TestCase):
         self.assertEqual([timer.name for timer in created], ["Bond of Death"])
         self.assertEqual([timer.name for timer in self.engine.get_sorted_dots()], ["Bond of Death"])
         self.assertEqual(self.engine.get_sorted_dots()[0].target, "a hill giant")
+
+    def test_pet_targeted_spell_is_classified_as_pet_buff(self):
+        # Legacy spells_us.txt stores target type at field 98; field 9 is range.
+        fields = [""] * 99
+        fields[0] = "99999"
+        fields[1] = "Companion Ward"
+        fields[4] = "You begin casting Companion Ward."
+        fields[5] = "Someone begins casting Companion Ward."
+        fields[7] = " is surrounded by companion energy."
+        fields[8] = "The companion energy fades."
+        fields[9] = "100"  # Range must not be mistaken for target type.
+        fields[13] = "5000"
+        fields[16] = "0"
+        fields[17] = "10"
+        fields[83] = "1"  # Beneficial spell.
+        fields[98] = "14"  # Pet target type.
+
+        with tempfile.TemporaryDirectory() as spell_dir:
+            Path(spell_dir, "spells_us.txt").write_text(
+                "^".join(fields) + "\\n",
+                encoding="latin-1",
+            )
+            database = SpellDatabase(eq_dir=spell_dir)
+
+        spell = database.lookup_by_name("Companion Ward")
+        self.assertIsNotNone(spell)
+        self.assertEqual(spell.category, "pet_buff")
+        self.assertEqual(spell.duration_seconds, 60.0)
+
+    def test_pet_buff_landing_appears_in_buffs_window(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        pet_buff = SpellDef(
+            name="Augmentation of Death",
+            duration_ticks=20,
+            duration_seconds=120.0,
+            category="pet_buff",
+            dot_type=None,
+            cast_time_sec=5.0,
+            cast_on_other=" is protected by a tiny ward.",
+        )
+
+        with patch.dict(
+            SPELL_DB.spells_by_name,
+            {"augmentation of death": pet_buff},
+        ), patch.dict(
+            SPELL_DB.spells_by_on_other,
+            {pet_buff.cast_on_other.lower(): pet_buff},
+        ):
+            engine = TimerEngine()
+            engine.current_target = "a hill giant"
+            engine.handle_spell_cast_start("You", "Augmentation of Death", t0)
+            created = engine.process_line(
+                "Fluffy is protected by a tiny ward.",
+                t0 + timedelta(seconds=5),
+            )
+
+        self.assertEqual([timer.name for timer in created], ["Augmentation of Death"])
+        buffs = engine.get_sorted_buffs()
+        self.assertEqual([timer.name for timer in buffs], ["Augmentation of Death"])
+        self.assertEqual(buffs[0].target, "Fluffy")
+        self.assertEqual(buffs[0].category, "pet_buff")
+        self.assertEqual(engine.get_sorted_dots(), [])
 
     def test_buffs_separate_list(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
