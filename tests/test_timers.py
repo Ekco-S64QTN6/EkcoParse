@@ -331,6 +331,43 @@ class TestTimerEngine(unittest.TestCase):
                 self.assertIsNotNone(spell, f"{spell_name} should be in the case-insensitive spell catalog")
                 self.assertEqual(spell.duration_seconds, expected)
 
+    def test_generic_wear_off_messages_remove_early_broken_spells(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        fear = SpellDef(
+            name="Fear",
+            duration_ticks=25,
+            duration_seconds=150.0,
+            category="mez",
+            dot_type=None,
+            cast_time_sec=3.0,
+        )
+        roots = SpellDef(
+            name="Paralyzing Roots",
+            duration_ticks=30,
+            duration_seconds=180.0,
+            category="root",
+            dot_type=None,
+            cast_time_sec=2.5,
+        )
+        self.engine._add_spell_timer(fear, "a spectre", t0)
+        self.engine._add_spell_timer(roots, "Ualkic Fe'Dhar", t0)
+
+        # These messages should remove timers immediately, even without a final
+        # period, because fear/root effects can break before their full duration.
+        self.engine.process_line(
+            "your fear spell has worn off",
+            t0 + timedelta(seconds=10),
+        )
+        self.assertNotIn("spell:fear::a spectre", self.engine.active_timers)
+        self.assertIn("spell:paralyzing roots::ualkic fe'dhar", self.engine.active_timers)
+
+        self.engine.process_line(
+            "Your Paralyzing Roots spell has worn off..",
+            t0 + timedelta(seconds=12),
+        )
+        self.assertEqual(self.engine.get_sorted_dots(), [])
+        self.assertEqual(self.engine.active_timers, {})
+
     def test_wear_off_cancels_timer(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
         self.engine.process_line("a hill giant is enveloped in a funeral pyre.", t0)
