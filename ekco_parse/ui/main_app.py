@@ -168,8 +168,6 @@ class EkcoParseApp(App):
         self.is_tailing: bool = False
         self._last_tick_time = time.time()
         self._last_log_timestamp: Optional[datetime] = None  # Last EQ log timestamp seen
-        self._last_log_received: float = 0.0  # Wall-clock time of last log line received
-        self._LOG_IDLE_THRESHOLD: float = 30.0  # Seconds of no log = game offline, freeze timers
 
     def compose(self) -> ComposeResult:
         with Container(id="main-container"):
@@ -249,15 +247,6 @@ class EkcoParseApp(App):
                 t.remaining_seconds = t.total_seconds - elapsed
                 if t.remaining_seconds <= 0:
                     del self.timer_engine.active_timers[tid]
-
-            # catchup_from_log rebuilds timers but previously left _last_log_received
-            # at zero. The idle gate then froze every timer until a brand-new log
-            # line arrived (for example, casting another buff). If the last logged
-            # line is recent, treat startup as an active log session immediately.
-            if self._last_log_timestamp:
-                log_age = max(0.0, (datetime.now() - self._last_log_timestamp).total_seconds())
-                if log_age < self._LOG_IDLE_THRESHOLD:
-                    self._last_log_received = time.time() - log_age
         except Exception:
             pass
 
@@ -278,7 +267,6 @@ class EkcoParseApp(App):
             lines = self.tailer.read_available_lines()
             for line in lines:
                 self.last_log_line = line
-                self._last_log_received = now
                 self._process_log_line(line, update_recent=True)
 
         self._update_ui()
