@@ -47,6 +47,26 @@ class TestMainAppEventRouting(unittest.TestCase):
             self.assertGreater(self.app._last_log_received, 0.0)
             self.assertLess(time.time() - self.app._last_log_received, 5.0)
 
+    def test_spell_and_respawn_countdowns_advance_when_log_is_idle(self):
+        from ekco_parse.models import Timer
+
+        now = time.time()
+        self.app._last_tick_time = now - 5.0
+        self.app._last_log_received = now - 120.0
+        t0 = datetime.now()
+        spell = SPELL_DB.lookup_by_name("Demi Lich")
+        self.assertIsNotNone(spell)
+        spell_timer = self.app.timer_engine._add_spell_timer(spell, "Self", t0)
+        self.app.timer_engine.add_respawn_timer("a sentry", "Skyshrine", created_at=t0)
+        respawn_timer = self.app.timer_engine.active_timers["respawn_a sentry"]
+        spell_before = spell_timer.remaining_seconds
+        respawn_before = respawn_timer.remaining_seconds
+
+        self.app._tick()
+
+        self.assertAlmostEqual(spell_timer.remaining_seconds, spell_before - 5.0, delta=0.2)
+        self.assertAlmostEqual(respawn_timer.remaining_seconds, respawn_before - 5.0, delta=0.2)
+
     def test_zone_respawn_defaults_match_p99_reference_times(self):
         expected_seconds = {
             "Skyshrine": 30 * 60,
