@@ -22,9 +22,9 @@ The map uses the coordinates printed by `/loc` and compatible zone-map files. Ek
 | Area | Available now |
 | --- | --- |
 | **Spell and buff timers** | Separate DoT/CC and buff lists, countdowns, progress bars, fade/recast states, and configurable log triggers. Spell coverage and ready-to-use trigger presets are still evolving. |
-| **Combat DPS** | Live encounter damage and DPS with per-combatant contributions. Additional combat and tank-mitigation calculations exist but are not all exposed in the main dashboard yet. |
+| **Combat and defense** | Live encounter damage/DPS with per-combatant contributions. The Defense tab exposes incoming damage, max hit taken, heals received, and avoidance statistics. More detailed combat reporting and broader multi-target validation remain in progress. |
 | **Standalone map and GPS** | Log-driven `/loc` coordinates, zone geometry, a player marker, breadcrumb trail, heading and speed display, nearby points of interest, distances, and bearings. The first valid location centers the map and opens a 4× view; zoom can then be adjusted manually. |
-| **Kills, experience, loot, and respawns** | Tracking engines and widgets are present, but the kill/loot and respawn panels still need to be fully connected to the main dashboard. See the roadmap for remaining work. |
+| **Kills, experience, loot, and respawns** | The Ledger tab exposes the kill/XP summary, recent item drops, and respawn countdowns. Coin tracking, zone-specific respawn validation, and richer ledger workflows remain in progress. |
 | **Alerts** | A compact ticker shows recent trigger alerts and recent log activity. Custom triggers can define patterns, timers, messages, colors, and sound behavior. |
 
 The project favors a dense, readable terminal interface with high-contrast colors and bordered panels. It is designed to sit beside your game rather than replace the client.
@@ -91,6 +91,9 @@ The main dashboard also provides these keyboard shortcuts:
 | `c` | Clear active timers |
 | `s` | Toggle the terminal bell for alerts |
 | `t` | Run the simulated Necromancer DoT sequence |
+| `1` | Show the Live tab |
+| `2` | Show the Defense tab |
+| `3` | Show the Ledger tab |
 
 In the map window:
 

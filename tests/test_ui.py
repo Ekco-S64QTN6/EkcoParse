@@ -1,6 +1,8 @@
 """Headless UI tests verifying Textual app composition and widget mounting."""
 
 import unittest
+from textual.widgets import TabbedContent
+
 from ekco_parse.config import load_config
 from ekco_parse.ui.main_app import EkcoParseApp
 from ekco_parse.ui.map_app import EkcoMapApp
@@ -28,9 +30,28 @@ class TestTextualUI(unittest.IsolatedAsyncioTestCase):
             ticker = app.query_one("#ticker-panel")
             self.assertIsNotNone(ticker)
 
+            # Panels that were previously implemented but not part of the main UI
+            # should now be mounted and wired to the shared engines.
+            mitigation = app.query_one("#mitigation-panel")
+            self.assertIsNotNone(mitigation)
+
+            loot = app.query_one("#loot-panel")
+            self.assertIsNotNone(loot)
+
+            respawns = app.query_one("#respawn-panel")
+            self.assertIsNotNone(respawns)
+
             # Trigger a tick update
             app._update_ui()
             await pilot.pause()
+
+            # Numeric shortcuts make all three views usable without a mouse.
+            await pilot.press("2")
+            self.assertEqual(app.query_one("#dashboard-tabs", TabbedContent).active, "tab-defense")
+            await pilot.press("3")
+            self.assertEqual(app.query_one("#dashboard-tabs", TabbedContent).active, "tab-ledger")
+            await pilot.press("1")
+            self.assertEqual(app.query_one("#dashboard-tabs", TabbedContent).active, "tab-live")
 
     async def test_map_app_mounts(self):
         config = load_config()
