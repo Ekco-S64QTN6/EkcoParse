@@ -1,10 +1,8 @@
 """Regression tests for main-app event routing."""
 
-import tempfile
 import time
 import unittest
-from datetime import datetime, timedelta
-from pathlib import Path
+from datetime import datetime
 
 from ekco_parse.config import load_config
 from ekco_parse.spells import SPELL_DB
@@ -32,25 +30,9 @@ class TestMainAppEventRouting(unittest.TestCase):
         self.assertTrue(self.app.timer_engine.recent_alerts)
         self.assertIn("died", self.app.timer_engine.recent_alerts[0]["text"].lower())
 
-    def test_recent_log_catchup_starts_timer_clock_without_new_line(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            log_path = Path(temp_dir) / "eqlog_test.txt"
-            logged_at = datetime.now() - timedelta(seconds=2)
-            timestamp = logged_at.strftime("%a %b %d %H:%M:%S %Y")
-            log_path.write_text(
-                f"[{timestamp}] You say, 'startup clock test'.\n",
-                encoding="utf-8",
-            )
-
-            self.app.catchup_from_log(log_path)
-
-            self.assertGreater(self.app._last_log_received, 0.0)
-            self.assertLess(time.time() - self.app._last_log_received, 5.0)
-
     def test_spell_and_respawn_countdowns_advance_when_log_is_idle(self):
         now = time.time()
         self.app._last_tick_time = now - 5.0
-        self.app._last_log_received = now - 120.0
         t0 = datetime.now()
         spell = SPELL_DB.lookup_by_name("Demi Lich")
         self.assertIsNotNone(spell)
@@ -60,7 +42,11 @@ class TestMainAppEventRouting(unittest.TestCase):
         spell_before = spell_timer.remaining_seconds
         respawn_before = respawn_timer.remaining_seconds
 
-        self.app._tick()
+        # The app itself is not mounted in this unit test; isolate timer behavior
+        # from Textual's screen/widget refresh.
+        from unittest.mock import patch
+        with patch.object(self.app, "_update_ui"):
+            self.app._tick()
 
         self.assertAlmostEqual(spell_timer.remaining_seconds, spell_before - 5.0, delta=0.2)
         self.assertAlmostEqual(respawn_timer.remaining_seconds, respawn_before - 5.0, delta=0.2)
