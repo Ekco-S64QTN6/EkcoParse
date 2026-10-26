@@ -33,7 +33,6 @@ from ekco_parse.ui.theme import (
 from ekco_parse.ui.widgets.buff_panel import BuffClockWidget
 from ekco_parse.ui.widgets.dot_panel import DotClockWidget
 from ekco_parse.ui.widgets.dps_panel import DpsWidget
-from ekco_parse.ui.widgets.header import HeaderWidget
 from ekco_parse.ui.widgets.ticker import TickerWidget
 from ekco_parse.ui.widgets.mitigation_panel import MitigationWidget
 from ekco_parse.ui.widgets.loot_panel import LootWidget
@@ -56,15 +55,6 @@ class EkcoParseApp(App):
         layout: vertical;
         height: 100%;
         padding: 0 1;
-    }}
-
-    #header-bar {{
-        height: 1;
-        background: ansi_default;
-        color: white;
-        padding: 0;
-        margin-top: 0;
-        margin-bottom: 0;
     }}
 
     .panel {{
@@ -108,6 +98,11 @@ class EkcoParseApp(App):
 
     #dashboard-tabs {{
         height: 1fr;
+    }}
+
+    /* Keep keyboard tab switching, but remove the visible tab strip. */
+    #dashboard-tabs > ContentTabs {{
+        display: none;
     }}
 
     #tab-live, #tab-defense, #tab-ledger {{
@@ -177,7 +172,8 @@ class EkcoParseApp(App):
 
     def compose(self) -> ComposeResult:
         with Container(id="main-container"):
-            yield HeaderWidget(id="header-bar")
+            # Start directly with the red DoTs panel; the header and tab strip
+            # are hidden to keep the game overlay compact.
             with TabbedContent(initial="tab-live", id="dashboard-tabs"):
                 with TabPane("Live", id="tab-live"):
                     yield DotClockWidget(id="dot-panel", classes="panel")
@@ -341,20 +337,6 @@ class EkcoParseApp(App):
         fight_dur = enc.duration_seconds if enc else 0.0
         enc_dps = enc.total_dps if enc else 0.0
         tot_dmg = enc.total_damage if enc else 0
-
-        # Update 1-line Header
-        self.query_one("#header-bar", HeaderWidget).update_header(
-            character=self.config.character_name,
-            server=self.config.server,
-            zone=self.active_zone,
-            log_file=str(self.tailer.filepath) if self.tailer else "None",
-            is_tailing=bool(self.tailer and self.tailer._is_active),
-            active_target=target_name,
-            fight_duration=fight_dur,
-            encounter_dps=enc_dps,
-            total_damage=tot_dmg,
-            audio_on=self.timer_engine.audio_enabled,
-        )
 
         # Update Buffs Panel (all buffs, single lines)
         sorted_buffs = self.timer_engine.get_sorted_buffs()
