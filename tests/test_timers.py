@@ -4,6 +4,7 @@ import unittest
 from datetime import datetime, timedelta
 from unittest.mock import patch
 
+from ekco_parse.models import Timer
 from ekco_parse.spells import SPELL_DB, SpellDef
 from ekco_parse.timer_engine import TimerEngine
 
@@ -221,16 +222,48 @@ class TestTimerEngine(unittest.TestCase):
         self.engine.process_line("The funeral pyre ends.", t0)
         self.assertEqual(len(self.engine.get_sorted_dots()), 0)
 
-    def test_mob_slain_clears_dots_on_target(self):
+    def test_mob_slain_clears_all_timers_for_that_mob(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
         self.engine.current_target = "a hill giant"
-        self.engine.process_line("a hill giant is enveloped in a funeral pyre.", t0)
-        self.engine.process_line("a hill giant's body begins to splurt.", t0)
-        self.assertEqual(len(self.engine.get_sorted_dots()), 2)
+        self.engine.handle_spell_cast_start("You", "Scourge", t0)
 
-        # Target slain
-        self.engine.on_mob_slain("a hill giant")
-        self.assertEqual(len(self.engine.get_sorted_dots()), 0)
+        # Timers can belong to the same target across different categories.
+        for category in ("dot", "debuff", "snare", "root", "mez", "raid", "buff", "cooldown", "util"):
+            timer_id = f"{category}_hill_giant"
+            self.engine.active_timers[timer_id] = Timer(
+                id=timer_id,
+                name=f"Test {category}",
+                alert_text=f"Test {category}",
+                total_seconds=120.0,
+                remaining_seconds=80.0,
+                category=category,
+                target="the hill giant",  # Articles/case can differ from the kill line.
+                created_at=t0,
+            )
+
+        # A similar but different mob must keep its timers.
+        self.engine.active_timers["other_mob_dot"] = Timer(
+            id="other_mob_dot",
+            name="Scourge",
+            alert_text="Scourge on a hill giantess",
+            total_seconds=120.0,
+            remaining_seconds=80.0,
+            category="dot",
+            target="a hill giantess",
+            created_at=t0,
+        )
+
+        self.engine.on_mob_slain("A HILL GIANT")
+
+        remaining = list(self.engine.active_timers.values())
+        self.assertEqual(
+            [timer.id for timer in remaining if timer.category != "respawn"],
+            ["other_mob_dot"],
+        )
+        self.assertTrue(any(timer.category == "respawn" and timer.name == "A HILL GIANT" for timer in remaining))
+        self.assertEqual(self.engine.current_target, "Unknown Target")
+        self.assertIsNone(self.engine.pending_cast_spell)
+        self.assertIsNone(self.engine.pending_cast_time)
 
 
 if __name__ == "__main__":
