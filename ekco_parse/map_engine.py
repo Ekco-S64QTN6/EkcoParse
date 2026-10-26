@@ -265,7 +265,7 @@ class MapEngine:
         if maps_dir:
             self.search_dirs.append(Path(maps_dir))
         self.search_dirs.append(base_dir / "maps")
-        self.search_dirs.append(Path("/home/ekco/Games/Project1999/maps"))
+        self.search_dirs.append(Path.home() / "Games" / "Project1999" / "maps")
 
         self.max_breadcrumbs = max_breadcrumbs
         self.active_zone_name: str = default_zone
