@@ -170,9 +170,9 @@ class TimerEngine:
         # Clear failed casts before the elapsed-cast fallback can mistake the resist
         # message for a successful landing. This is important when replaying logs too.
         if (
-            re.match(r"^Your spell is interrupted\\.$", message, re.IGNORECASE)
+            re.match(r"^Your spell is interrupted\.$", message, re.IGNORECASE)
             or re.search(
-                r"\\bresisted\\s+(?:your|the)\\s+.+?\\s+spell\\.$",
+                r"\bresisted\s+(?:your|the)\s+.+?\s+spell\.$",
                 message,
                 re.IGNORECASE,
             )
