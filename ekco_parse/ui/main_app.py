@@ -125,11 +125,12 @@ class EkcoParseApp(App):
         overflow-y: auto;
     }}
 
-    #respawn-panel {{
+    #respawn-panel, #respawn-live-panel {{
         height: auto;
-        max-height: 8;
+        max-height: 6;
         border: round {COLOR_AMBER};
         background: ansi_default;
+        overflow-y: auto;
     }}
     """
 
@@ -180,6 +181,8 @@ class EkcoParseApp(App):
                     yield DpsWidget(id="dps-panel", classes="panel")
                     yield TickerWidget(id="ticker-panel", classes="panel")
                     yield BuffClockWidget(id="buff-panel", classes="panel")
+                    # Keep the monster countdown visible on the main overlay.
+                    yield RespawnWidget(id="respawn-live-panel", classes="panel")
                 with TabPane("Defense", id="tab-defense"):
                     yield MitigationWidget(id="mitigation-panel", classes="panel")
                 with TabPane("Ledger", id="tab-ledger"):
@@ -364,11 +367,11 @@ class EkcoParseApp(App):
             player_stats=player_stats,
         )
 
-        # Kill/loot and respawn views are updated even while their tab is inactive.
+        # Keep both respawn views in sync: the compact live overlay and Ledger.
         self.query_one("#loot-panel", LootWidget).update_loot(self.loot_engine)
-        self.query_one("#respawn-panel", RespawnWidget).update_respawns(
-            self.timer_engine.get_sorted_respawns()
-        )
+        sorted_respawns = self.timer_engine.get_sorted_respawns()
+        self.query_one("#respawn-panel", RespawnWidget).update_respawns(sorted_respawns)
+        self.query_one("#respawn-live-panel", RespawnWidget).update_respawns(sorted_respawns)
 
     def action_show_live(self) -> None:
         self.query_one("#dashboard-tabs", TabbedContent).active = "tab-live"
