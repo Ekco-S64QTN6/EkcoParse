@@ -2,6 +2,7 @@
 
 import unittest
 from datetime import datetime, timedelta
+
 from ekco_parse.dps_engine import DpsEngine
 from ekco_parse.models import CombatAction
 
@@ -39,6 +40,35 @@ class TestDpsEngine(unittest.TestCase):
         self.assertEqual(archived.target, "a hill giant")
         self.assertEqual(archived.total_damage, 150)
 
+    def test_combatant_summary_metrics(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        self.engine.process_combat_action(
+            CombatAction(
+                actor="You",
+                target="a hill giant",
+                verb="slash",
+                damage=100,
+                is_crit=True,
+                timestamp=t0,
+            )
+        )
+        self.engine.process_combat_action(
+            CombatAction(
+                actor="You",
+                target="a hill giant",
+                verb="slash",
+                damage=0,
+                is_miss=True,
+                timestamp=t0 + timedelta(seconds=1),
+            )
+        )
+
+        player = self.engine.active_encounter.get_combatant("You")
+        self.assertEqual(player.accuracy, 50.0)
+        self.assertEqual(player.crit_rate, 100.0)
+        self.assertEqual(player.max_hit, 100)
+        self.assertEqual(self.engine.active_encounter.total_damage, 100)
+
     def test_incoming_damage_does_not_inflate_outgoing_dps(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
         incoming = CombatAction(
@@ -60,15 +90,35 @@ class TestDpsEngine(unittest.TestCase):
     def test_enemy_misses_contribute_to_avoidance(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
         self.engine.process_combat_action(
-            CombatAction(actor="a hill giant", target="YOU", verb="slashes", damage=50, timestamp=t0)
+            CombatAction(
+                actor="a hill giant",
+                target="YOU",
+                verb="slashes",
+                damage=50,
+                timestamp=t0,
+            )
         )
         self.engine.process_combat_action(
-            CombatAction(actor="a hill giant", target="YOU", verb="punches", damage=0,
-                         is_miss=True, miss_type="dodge", timestamp=t0)
+            CombatAction(
+                actor="a hill giant",
+                target="YOU",
+                verb="punches",
+                damage=0,
+                is_miss=True,
+                miss_type="dodge",
+                timestamp=t0,
+            )
         )
         self.engine.process_combat_action(
-            CombatAction(actor="a hill giant", target="YOU", verb="bashes", damage=0,
-                         is_miss=True, miss_type="miss", timestamp=t0)
+            CombatAction(
+                actor="a hill giant",
+                target="YOU",
+                verb="bashes",
+                damage=0,
+                is_miss=True,
+                miss_type="miss",
+                timestamp=t0,
+            )
         )
 
         player = self.engine.active_encounter.get_combatant("You")
@@ -82,7 +132,15 @@ class TestDpsEngine(unittest.TestCase):
         self.engine.process_combat_action(a1)
 
         # Mob tries to hit YOU, but YOU dodge
-        a2 = CombatAction(actor="a hill giant", target="YOU", verb="punches", damage=0, is_miss=True, miss_type="dodge", timestamp=t0)
+        a2 = CombatAction(
+            actor="a hill giant",
+            target="YOU",
+            verb="punches",
+            damage=0,
+            is_miss=True,
+            miss_type="dodge",
+            timestamp=t0,
+        )
         self.engine.process_combat_action(a2)
 
         player = self.engine.active_encounter.get_combatant("You")
