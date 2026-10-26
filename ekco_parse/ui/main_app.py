@@ -266,16 +266,11 @@ class EkcoParseApp(App):
         dt = max(0.01, now - self._last_tick_time)
         self._last_tick_time = now
 
-        # Only tick down buff/dot timers if the game is actively logging
-        # When the player logs out, EQ stops writing to the log — buffs freeze in-game
-        game_is_active = (now - self._last_log_received) < self._LOG_IDLE_THRESHOLD
-        if game_is_active:
-            self.timer_engine.tick(dt)
-        else:
-            # NPC respawns progress in the world even when this character's log
-            # stops changing, so don't freeze those countdowns behind the log-idle
-            # heuristic used to pause buffs and combat effects while logged out.
-            self.timer_engine.tick(dt, categories=("respawn",))
+        # Spell durations are real-time. Log silence (for example, no combat/chat
+        # for a while) must not pause buffs or DoT/CC timers, otherwise long buffs
+        # drift by minutes and expired effects remain on screen. Respawn timers are
+        # wall-clock countdowns too, so advance every active timer on every tick.
+        self.timer_engine.tick(dt)
 
         self.dps_engine.check_inactivity()
 
