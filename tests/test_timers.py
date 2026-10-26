@@ -85,6 +85,39 @@ class TestTimerEngine(unittest.TestCase):
         self.assertEqual(spell.category, "pet_buff")
         self.assertEqual(spell.duration_seconds, 60.0)
 
+    def test_pet_buff_landing_from_another_player_is_ignored(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        savage_spirit = SpellDef(
+            name="Savage Spirit",
+            duration_ticks=20,
+            duration_seconds=120.0,
+            category="pet_buff",
+            dot_type=None,
+            cast_time_sec=5.0,
+            cast_on_other=" is empowered by savage spirit.",
+        )
+
+        # Startup replay may include another player's pet buff landing. Since
+        # this character did not begin the cast, it must not create a timer.
+        with patch.dict(
+            SPELL_DB.spells_by_name,
+            {"savage spirit": savage_spirit},
+        ), patch.dict(
+            SPELL_DB.spells_by_on_other,
+            {savage_spirit.cast_on_other.lower(): savage_spirit},
+        ):
+            engine = TimerEngine()
+            engine.handle_spell_cast_start("AnotherPlayer", "Savage Spirit", t0)
+            created = engine.process_line(
+                "another player's pet is empowered by savage spirit.",
+                t0 + timedelta(seconds=5),
+            )
+
+        self.assertEqual(created, [])
+        self.assertEqual(engine.get_sorted_buffs(), [])
+        self.assertEqual(engine.active_timers, {})
+        self.assertIsNone(engine.pending_cast_spell)
+
     def test_pet_buff_landing_appears_in_buffs_window(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
         pet_buff = SpellDef(
