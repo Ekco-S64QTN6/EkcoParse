@@ -39,6 +39,23 @@ class TestDpsEngine(unittest.TestCase):
         self.assertEqual(archived.target, "a hill giant")
         self.assertEqual(archived.total_damage, 150)
 
+    def test_combatant_summary_metrics(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        self.engine.process_combat_action(
+            CombatAction(actor="You", target="a hill giant", verb="slash", damage=100,
+                         is_crit=True, timestamp=t0)
+        )
+        self.engine.process_combat_action(
+            CombatAction(actor="You", target="a hill giant", verb="slash", damage=0,
+                         is_miss=True, timestamp=t0 + timedelta(seconds=1))
+        )
+
+        player = self.engine.active_encounter.get_combatant("You")
+        self.assertEqual(player.accuracy, 50.0)
+        self.assertEqual(player.crit_rate, 100.0)
+        self.assertEqual(player.max_hit, 100)
+        self.assertEqual(self.engine.active_encounter.total_damage, 100)
+
     def test_mitigation_and_avoidance(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
         # Mob hits YOU for 50
