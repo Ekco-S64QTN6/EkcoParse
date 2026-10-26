@@ -226,6 +226,9 @@ class TestTimerEngine(unittest.TestCase):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
         self.engine.current_target = "a hill giant"
         self.engine.handle_spell_cast_start("You", "Scourge", t0)
+        # A differently-cased previous respawn countdown should be refreshed,
+        # not left beside the new one.
+        self.engine.add_respawn_timer("a hill giant", "Old Zone")
 
         # Timers can belong to the same target across different categories.
         for category in ("dot", "debuff", "snare", "root", "mez", "raid", "buff", "cooldown", "util"):
@@ -260,7 +263,12 @@ class TestTimerEngine(unittest.TestCase):
             [timer.id for timer in remaining if timer.category != "respawn"],
             ["other_mob_dot"],
         )
-        self.assertTrue(any(timer.category == "respawn" and timer.name == "A HILL GIANT" for timer in remaining))
+        respawn_timers = [
+            timer for timer in remaining
+            if timer.category == "respawn" and self.engine._normalize_mob_name(timer.name) == "hill giant"
+        ]
+        self.assertEqual(len(respawn_timers), 1)
+        self.assertEqual(respawn_timers[0].name, "A HILL GIANT")
         self.assertEqual(self.engine.current_target, "Unknown Target")
         self.assertIsNone(self.engine.pending_cast_spell)
         self.assertIsNone(self.engine.pending_cast_time)
