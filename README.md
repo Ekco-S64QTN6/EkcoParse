@@ -66,6 +66,18 @@ Follows the aesthetic specifications of `/github/dwarffortress-antfarm/`:
 - **Alert Red / Danger**: `#FF4040`
 - High-contrast block progress bars (`████░░░░`) and unicode sparklines (` ▂▃▄▅▆▇█`).
 
+### Transparent dashboard background
+
+The main dashboard's Textual screen and panels use transparent backgrounds. The application deliberately does not override the terminal background color, so your terminal's own opacity/transparency settings can show the game behind it. Actual alpha transparency is provided by the terminal emulator and compositor, not by Textual CSS alone.
+
+For Kitty, configure a suitable value in `kitty.conf`, for example:
+
+```conf
+background_opacity 0.20
+```
+
+The appropriate value depends on your setup. Terminals without background-alpha support need their own compositor/profile configuration; otherwise their default terminal background may still appear opaque.
+
 ---
 
 ## Installation & Quick Start
