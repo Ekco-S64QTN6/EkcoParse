@@ -6,6 +6,8 @@ Ekco Parse is a lightweight, zero-latency Linux terminal companion application d
 
 Designed following the visual aesthetics, dark color palette, and high-density dashboard layouts of `dwarffortress-antfarm`, Ekco Parse is engineered to run in borderless terminal windows (e.g. Kitty, XTerm) pinned "Always on Top" next to your P99 client or captured cleanly as a streaming overlay.
 
+See [ROADMAP.md](ROADMAP.md) for a code-reviewed breakdown of what is implemented, what is partially wired into the UI, and what remains to reach the GINA / GamParse / map / kill-and-loot goals.
+
 ---
 
 ## Key Features
