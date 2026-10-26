@@ -18,9 +18,12 @@ class TestTextualUI(unittest.IsolatedAsyncioTestCase):
             "Dashboard must preserve ANSI default backgrounds for terminal transparency",
         )
         async with app.run_test() as pilot:
-            # Check widgets exist
-            header = app.query_one("#header-bar")
-            self.assertIsNotNone(header)
+            # The compact overlay starts directly with the DoT panel:
+            # the status header is gone and the tab strip is hidden.
+            self.assertEqual(len(app.query("#header-bar")), 0)
+            tabs = app.query_one("#dashboard-tabs", TabbedContent)
+            content_tabs = app.query_one("#dashboard-tabs > ContentTabs")
+            self.assertEqual(content_tabs.styles.display, "none")
 
             dps = app.query_one("#dps-panel")
             self.assertIsNotNone(dps)
