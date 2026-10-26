@@ -102,20 +102,28 @@ class TimerEngine:
         self.pending_cast_time = None
 
     def on_mob_slain(self, mob_name: str, zone: str = "") -> None:
-        """When a mob dies, purge DoTs on that mob and start a respawn timer."""
-        clean_mob = mob_name.strip().lower()
+        """Clear every timer attached to a slain mob and start its respawn timer."""
+        def normalize_mob_name(value: Optional[str]) -> str:
+            normalized = " ".join((value or "").split()).casefold()
+            # EQ kill messages and spell landing messages can differ only by an
+            # article ("a hill giant" vs "the hill giant").
+            return re.sub(r"^(?:a|an|the)\s+", "", normalized)
+
+        clean_mob = normalize_mob_name(mob_name)
         to_delete = []
         for timer_id, timer in self.active_timers.items():
-            if timer.category in ("dot", "debuff", "snare", "root", "mez"):
-                if timer.target and timer.target.strip().lower() in clean_mob:
-                    to_delete.append(timer_id)
-                elif clean_mob in (timer.target or "").strip().lower():
-                    to_delete.append(timer_id)
+            if clean_mob and normalize_mob_name(timer.target) == clean_mob:
+                to_delete.append(timer_id)
 
         for t_id in to_delete:
             self.active_timers.pop(t_id, None)
 
-        # Add respawn timer based on zone
+        # Do not let a pending cast land on the target after it has died.
+        if clean_mob and normalize_mob_name(self.current_target) == clean_mob:
+            self.current_target = "Unknown Target"
+            self.handle_spell_interrupt()
+
+        # Add/refresh the respawn timer based on zone.
         if mob_name.strip():
             self.add_respawn_timer(mob_name.strip(), zone)
 
