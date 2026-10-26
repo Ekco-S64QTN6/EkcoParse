@@ -108,9 +108,9 @@ In the map window:
 
 ## Overlay transparency
 
-The default launcher starts the dashboard in Kitty with `background_opacity=0.55`. To make the game more visible through the overlay, change the `background_opacity` value in `KITTY_OVERLAY_OPTS` near the top of `run.sh`; lower values are more transparent. The dashboard itself uses transparent Textual backgrounds and no longer forces the terminal background color.
+The default launcher starts the dashboard in Kitty with `background_opacity=0.0` (fully transparent). The dashboard runs Textual in ANSI-color mode and uses the terminal's **default background** for the screen and every panel. This is important because Kitty only applies `background_opacity` to cells that use the terminal's default background; ordinary RGB/theme background colors can still paint opaque rectangles.
 
-Transparency depends on terminal and compositor support. If you launch in a terminal other than Kitty, use that terminal's own transparency settings. The standalone map window intentionally uses a dark panel background for map readability.
+To make the overlay less transparent, raise the `background_opacity` value in `KITTY_OVERLAY_OPTS` near the top of `run.sh` (for example, `0.25` or `0.50`). Transparency requires terminal and compositor support. When launching outside Kitty, configure that terminal's opacity and make sure it respects ANSI default-background colors. The standalone map window intentionally keeps dark panels for map readability.
 
 ## Tests and roadmap
 
