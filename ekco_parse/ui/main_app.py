@@ -275,6 +275,9 @@ class EkcoParseApp(App):
             elif etype == "experience":
                 if update_recent:
                     self.loot_engine.record_exp(ts)
+            elif etype == "coin_loot":
+                if update_recent:
+                    self.loot_engine.record_coin_loot(event.get("money", ""), ts)
             elif etype == "zone_change":
                 self.active_zone = event.get("zone", self.active_zone)
 
