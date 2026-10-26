@@ -135,6 +135,9 @@ The projects and resources below are useful references for the problem space, im
 - **[GINA](https://eq.gimasoft.com/gina/Default.aspx)** — a reference for log-triggered alerts, timers, and player-configurable triggers.
 - **[GamParse](https://gambosoft.eqresource.com/downloads.php)** — a reference for combat-log analysis, DPS reporting, and tanking/defense statistics.
 - **[nParse](https://github.com/nomns/nparse)** — an open-source Project 1999 companion that reads player logs for location and spell tracking; a useful point of comparison for log-driven map behavior.
+- **[PigParse / EqTool](https://github.com/smasherprog/EqTool)** — a community P99 tool reference covering combat reporting, maps, and spell timers.
+- **[EQ Travel Map](https://github.com/ajbtech/EQ-Travel-Map)** — an open-source log analyzer that reconstructs zone-to-zone travel and play summaries from EverQuest logs.
+- **[EQLogParser](https://github.com/kauffman12/EQLogParser)** — an open-source EverQuest log viewer/parser with trigger and overlay functionality; useful for comparing log-driven event handling.
 
 ### Project 1999, emulation, and map resources
 
