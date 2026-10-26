@@ -1,7 +1,10 @@
 """Regression tests for main-app event routing."""
 
+import tempfile
+import time
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
+from pathlib import Path
 
 from ekco_parse.config import load_config
 from ekco_parse.spells import SPELL_DB
@@ -28,6 +31,21 @@ class TestMainAppEventRouting(unittest.TestCase):
         self.assertEqual(self.app.timer_engine.get_sorted_buffs(), [])
         self.assertTrue(self.app.timer_engine.recent_alerts)
         self.assertIn("died", self.app.timer_engine.recent_alerts[0]["text"].lower())
+
+    def test_recent_log_catchup_starts_timer_clock_without_new_line(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            log_path = Path(temp_dir) / "eqlog_test.txt"
+            logged_at = datetime.now() - timedelta(seconds=2)
+            timestamp = logged_at.strftime("%a %b %d %H:%M:%S %Y")
+            log_path.write_text(
+                f"[{timestamp}] You say, 'startup clock test'.\n",
+                encoding="utf-8",
+            )
+
+            self.app.catchup_from_log(log_path)
+
+            self.assertGreater(self.app._last_log_received, 0.0)
+            self.assertLess(time.time() - self.app._last_log_received, 5.0)
 
     def test_zone_respawn_defaults_match_p99_reference_times(self):
         expected_seconds = {
@@ -65,7 +83,9 @@ class TestMainAppEventRouting(unittest.TestCase):
         for spell_name in ("Scourge", "Screaming Terror", "Root", "Dooming Darkness"):
             spell = SPELL_DB.lookup_by_name(spell_name)
             self.assertIsNotNone(spell)
-            self.app.timer_engine._add_spell_timer(spell, mob, death_time)
+            # Landing text occasionally leaves punctuation on an extracted target.
+            target_name = f"{mob}." if spell_name == "Dooming Darkness" else mob
+            self.app.timer_engine._add_spell_timer(spell, target_name, death_time)
 
         # Another mob's active DoT should not be cleared by this named kill.
         other_spell = SPELL_DB.lookup_by_name("Scourge")
