@@ -37,7 +37,7 @@ These are product goals, not a claim that every feature of GINA or GamParse is a
 - User-configurable regex triggers with custom timer duration, alert text, category, color, optional wear-off pattern, and sound flag.
 - A live alert ticker that displays recent timer alerts or the latest log line.
 
-**Gaps:** default trigger configuration is empty, so raid alerts depend on user configuration; a maintained, ready-to-use preset pack and broad spell/trigger coverage still need verification. Player-death and other parsed event types are not all routed through the main dashboard's event handler.
+**Gaps:** the built-in fallback configuration has no trigger presets; the example configuration includes starter Enrage and Dragon Roar triggers. A fuller, maintained preset pack and broader spell/trigger coverage still need verification. Player-death, coin-loot, and other parsed event types are not all routed through the main dashboard's event handler.
 
 ### Combat and DPS — Implemented / partial
 
