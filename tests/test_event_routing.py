@@ -62,7 +62,7 @@ class TestMainAppEventRouting(unittest.TestCase):
         death_time = datetime(2026, 10, 26, 12, 0, 1)
         self.app.timer_engine.current_target = mob
 
-        for spell_name in ("Scourge", "Screaming Terror", "Root"):
+        for spell_name in ("Scourge", "Screaming Terror", "Root", "Dooming Darkness"):
             spell = SPELL_DB.lookup_by_name(spell_name)
             self.assertIsNotNone(spell)
             self.app.timer_engine._add_spell_timer(spell, mob, death_time)
