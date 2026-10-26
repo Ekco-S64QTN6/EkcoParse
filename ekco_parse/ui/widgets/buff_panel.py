@@ -39,35 +39,47 @@ class BuffClockWidget(Static):
         self.border_title = f"BUFFS ({count}/15)"
 
         if not sorted_buffs:
-            self.border_title = f"BUFFS"
+            self.border_title = "BUFFS"
             self.update("")
             return
 
+        content_width = max(1, self.content_size.width or (self.size.width - 4) or 80)
+        status_width = 8  # "EXPIRED!"
         lines = []
         for timer in sorted_buffs:
             rem = max(0.0, timer.remaining_seconds)
             time_str = self.format_buff_time(rem)
+            time_width = max(7, len(time_str))
             total = timer.total_seconds
-            p_bar = render_progress_bar(rem, total, width=8, color=timer.color)
 
+            # Keep full spell names; the old 18-character cap cut off valid names.
             name = timer.name
-            if len(name) > 18:
-                name = name[:16] + ".."
-            name_padded = f"{name:<18}"
 
             if timer.remaining_seconds <= 0:
-                status_tag = f"[bold {COLOR_RED}]EXPIRED![/]"
-                time_styled = f"[bold {COLOR_RED}]{time_str:>7}[/]"
+                status_text, status_color = "EXPIRED!", COLOR_RED
+                time_styled = f"[bold {COLOR_RED}]{time_str:>{time_width}}[/]"
             elif rem <= 60.0:
-                status_tag = f"[bold {COLOR_RED}]RECAST![/]"
-                time_styled = f"[bold {COLOR_RED}]{time_str:>7}[/]"
+                status_text, status_color = "RECAST!", COLOR_RED
+                time_styled = f"[bold {COLOR_RED}]{time_str:>{time_width}}[/]"
             elif rem <= 180.0:
-                status_tag = f"[bold {COLOR_AMBER}]FADING[/]"
-                time_styled = f"[bold {COLOR_AMBER}]{time_str:>7}[/]"
+                status_text, status_color = "FADING", COLOR_AMBER
+                time_styled = f"[bold {COLOR_AMBER}]{time_str:>{time_width}}[/]"
             else:
-                status_tag = f"[bold {COLOR_GREEN}]ACTIVE[/]"
-                time_styled = f"[bold white]{time_str:>7}[/]"
+                status_text, status_color = "ACTIVE", COLOR_GREEN
+                time_styled = f"[bold white]{time_str:>{time_width}}[/]"
 
-            lines.append(f"[bold white]{name_padded}[/] {time_styled} {p_bar} {status_tag}")
+            bar_width = max(
+                0,
+                min(8, content_width - len(name) - 1 - time_width - 1 - 1 - status_width),
+            )
+            p_bar = render_progress_bar(rem, total, width=bar_width, color=timer.color) if bar_width else ""
+            gap_width = max(
+                1,
+                content_width - (len(name) + 1 + time_width + 1 + bar_width + status_width),
+            )
+            status_tag = f"[bold {status_color}]{status_text:>{status_width}}[/]"
+            lines.append(
+                f"[bold white]{escape(name)}[/] {time_styled} {p_bar}{' ' * gap_width}{status_tag}"
+            )
 
         self.update("\n".join(lines))
