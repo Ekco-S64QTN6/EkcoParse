@@ -249,6 +249,15 @@ class EkcoParseApp(App):
                 t.remaining_seconds = t.total_seconds - elapsed
                 if t.remaining_seconds <= 0:
                     del self.timer_engine.active_timers[tid]
+
+            # catchup_from_log rebuilds timers but previously left _last_log_received
+            # at zero. The idle gate then froze every timer until a brand-new log
+            # line arrived (for example, casting another buff). If the last logged
+            # line is recent, treat startup as an active log session immediately.
+            if self._last_log_timestamp:
+                log_age = max(0.0, (datetime.now() - self._last_log_timestamp).total_seconds())
+                if log_age < self._LOG_IDLE_THRESHOLD:
+                    self._last_log_received = time.time() - log_age
         except Exception:
             pass
 
@@ -257,11 +266,11 @@ class EkcoParseApp(App):
         dt = max(0.01, now - self._last_tick_time)
         self._last_tick_time = now
 
-        # Only tick down buff/dot timers if the game is actively logging
-        # When the player logs out, EQ stops writing to the log — buffs freeze in-game
-        game_is_active = (now - self._last_log_received) < self._LOG_IDLE_THRESHOLD
-        if game_is_active:
-            self.timer_engine.tick(dt)
+        # Spell durations are real-time. Log silence (for example, no combat/chat
+        # for a while) must not pause buffs or DoT/CC timers, otherwise long buffs
+        # drift by minutes and expired effects remain on screen. Respawn timers are
+        # wall-clock countdowns too, so advance every active timer on every tick.
+        self.timer_engine.tick(dt)
 
         self.dps_engine.check_inactivity()
 

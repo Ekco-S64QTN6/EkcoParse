@@ -104,9 +104,11 @@ class TimerEngine:
     @staticmethod
     def _normalize_mob_name(value: Optional[str]) -> str:
         normalized = " ".join((value or "").split()).casefold()
-        # EQ kill messages and spell landing messages can differ only by an
-        # article ("a hill giant" vs "the hill giant").
-        return re.sub(r"^(?:a|an|the)\s+", "", normalized)
+        normalized = normalized.replace("’", "'").replace("‘", "'")
+        # Some spell landing text and kill lines vary by article, quote style,
+        # or punctuation left on the extracted target name.
+        normalized = re.sub(r"^(?:a|an|the)\s+", "", normalized)
+        return normalized.strip(" \t\r\n.,!?;:")
 
     def on_mob_slain(
         self,
@@ -117,8 +119,15 @@ class TimerEngine:
         """Clear timers for a slain mob and start its respawn timer at the log time."""
         clean_mob = self._normalize_mob_name(mob_name)
         to_delete = []
+        hostile_categories = {"dot", "snare", "root", "mez", "debuff", "raid"}
+        invalid_targets = {"", "unknown target", "target", "you", "self"}
         for timer_id, timer in self.active_timers.items():
-            if clean_mob and self._normalize_mob_name(timer.target) == clean_mob:
+            normalized_target = self._normalize_mob_name(timer.target)
+            if clean_mob and normalized_target == clean_mob:
+                to_delete.append(timer_id)
+            elif timer.category in hostile_categories and normalized_target in invalid_targets:
+                # A stale/legacy timer without a resolvable mob cannot be allowed
+                # to survive a death event as an orphaned DoT/CC countdown.
                 to_delete.append(timer_id)
 
         for t_id in to_delete:
@@ -530,12 +539,22 @@ class TimerEngine:
 
         return timer
 
-    def tick(self, elapsed_seconds: float) -> List[Timer]:
-        """Decrement all active timers and reap after expiration grace period."""
+    def tick(
+        self,
+        elapsed_seconds: float,
+        categories: Optional[Tuple[str, ...]] = None,
+    ) -> List[Timer]:
+        """Decrement selected active timers and reap after expiration grace period.
+
+        When categories is omitted, all timers tick as before. Respawn timers can
+        continue independently while the EQ log is quiet or the player is offline.
+        """
         expired = []
         to_delete = []
 
         for timer_id, timer in list(self.active_timers.items()):
+            if categories is not None and timer.category not in categories:
+                continue
             timer.remaining_seconds -= elapsed_seconds
             if timer.remaining_seconds <= 0:
                 expired.append(timer)

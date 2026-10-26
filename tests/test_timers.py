@@ -471,6 +471,22 @@ class TestTimerEngine(unittest.TestCase):
         self.assertEqual(self.engine.get_sorted_dots(), [])
         self.assertEqual(self.engine.active_timers, {})
 
+    def test_tick_can_advance_respawns_while_other_timers_are_paused(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        scourge = SPELL_DB.lookup_by_name("Scourge")
+        self.assertIsNotNone(scourge)
+        dot_timer = self.engine._add_spell_timer(scourge, "a hill giant", t0)
+        self.assertIsNotNone(dot_timer)
+        self.engine.add_respawn_timer("a hill giant", "Lower Guk", created_at=t0)
+        respawn_timer = self.engine.active_timers["respawn_a hill giant"]
+        dot_before = dot_timer.remaining_seconds
+        respawn_before = respawn_timer.remaining_seconds
+
+        self.engine.tick(5.0, categories=("respawn",))
+
+        self.assertEqual(dot_timer.remaining_seconds, dot_before)
+        self.assertEqual(respawn_timer.remaining_seconds, respawn_before - 5.0)
+
     def test_wear_off_cancels_timer(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
         self.engine.process_line("a hill giant is enveloped in a funeral pyre.", t0)

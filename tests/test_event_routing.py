@@ -1,7 +1,10 @@
 """Regression tests for main-app event routing."""
 
+import tempfile
+import time
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
+from pathlib import Path
 
 from ekco_parse.config import load_config
 from ekco_parse.spells import SPELL_DB
@@ -28,6 +31,39 @@ class TestMainAppEventRouting(unittest.TestCase):
         self.assertEqual(self.app.timer_engine.get_sorted_buffs(), [])
         self.assertTrue(self.app.timer_engine.recent_alerts)
         self.assertIn("died", self.app.timer_engine.recent_alerts[0]["text"].lower())
+
+    def test_recent_log_catchup_starts_timer_clock_without_new_line(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            log_path = Path(temp_dir) / "eqlog_test.txt"
+            logged_at = datetime.now() - timedelta(seconds=2)
+            timestamp = logged_at.strftime("%a %b %d %H:%M:%S %Y")
+            log_path.write_text(
+                f"[{timestamp}] You say, 'startup clock test'.\n",
+                encoding="utf-8",
+            )
+
+            self.app.catchup_from_log(log_path)
+
+            self.assertGreater(self.app._last_log_received, 0.0)
+            self.assertLess(time.time() - self.app._last_log_received, 5.0)
+
+    def test_spell_and_respawn_countdowns_advance_when_log_is_idle(self):
+        now = time.time()
+        self.app._last_tick_time = now - 5.0
+        self.app._last_log_received = now - 120.0
+        t0 = datetime.now()
+        spell = SPELL_DB.lookup_by_name("Demi Lich")
+        self.assertIsNotNone(spell)
+        spell_timer = self.app.timer_engine._add_spell_timer(spell, "Self", t0)
+        self.app.timer_engine.add_respawn_timer("a sentry", "Skyshrine", created_at=t0)
+        respawn_timer = self.app.timer_engine.active_timers["respawn_a sentry"]
+        spell_before = spell_timer.remaining_seconds
+        respawn_before = respawn_timer.remaining_seconds
+
+        self.app._tick()
+
+        self.assertAlmostEqual(spell_timer.remaining_seconds, spell_before - 5.0, delta=0.2)
+        self.assertAlmostEqual(respawn_timer.remaining_seconds, respawn_before - 5.0, delta=0.2)
 
     def test_zone_respawn_defaults_match_p99_reference_times(self):
         expected_seconds = {
@@ -62,10 +98,12 @@ class TestMainAppEventRouting(unittest.TestCase):
         death_time = datetime(2026, 10, 26, 12, 0, 1)
         self.app.timer_engine.current_target = mob
 
-        for spell_name in ("Scourge", "Screaming Terror", "Root"):
+        for spell_name in ("Scourge", "Screaming Terror", "Root", "Dooming Darkness"):
             spell = SPELL_DB.lookup_by_name(spell_name)
             self.assertIsNotNone(spell)
-            self.app.timer_engine._add_spell_timer(spell, mob, death_time)
+            # Landing text occasionally leaves punctuation on an extracted target.
+            target_name = f"{mob}." if spell_name == "Dooming Darkness" else mob
+            self.app.timer_engine._add_spell_timer(spell, target_name, death_time)
 
         # Another mob's active DoT should not be cleared by this named kill.
         other_spell = SPELL_DB.lookup_by_name("Scourge")
