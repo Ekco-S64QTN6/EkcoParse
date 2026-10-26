@@ -1,29 +1,31 @@
-"""Test parsing real user log lines from /home/ekco/Games/Project1999/Logs/eqlog_Ekco_project1999.txt."""
+"""Integration smoke test against the configured local EQ log, when available."""
 
 import unittest
-from pathlib import Path
+
+from ekco_parse.config import load_config
 from ekco_parse.dps_engine import DpsEngine
 from ekco_parse.loot_engine import LootEngine
-from ekco_parse.models import CombatAction, Location, LootRecord
+from ekco_parse.models import CombatAction, LootRecord
 from ekco_parse.parser import LogParser
 from ekco_parse.timer_engine import TimerEngine
 
 
 class TestRealLogFile(unittest.TestCase):
 
-    def test_parse_real_ekco_log_lines(self):
-        log_path = Path("/home/ekco/Games/Project1999/Logs/eqlog_Ekco_project1999.txt")
-        if not log_path.exists():
-            self.skipTest("Real log file not present")
+    def test_parse_configured_real_log_lines(self):
+        config = load_config()
+        log_path = config.resolve_log_path()
+        if not log_path.is_file():
+            self.skipTest("Configured EQ log file not present")
 
-        parser = LogParser(character_name="Ekco")
-        dps = DpsEngine(character_name="Ekco")
+        parser = LogParser(character_name=config.character_name)
+        dps = DpsEngine(character_name=config.character_name)
         timers = TimerEngine()
         loot = LootEngine()
 
         parsed_events_count = 0
 
-        # Read last 300 lines of user's real log
+        # Read the most recent 300 lines of the configured log.
         with open(log_path, "r", encoding="utf-8", errors="replace") as f:
             lines = f.readlines()[-300:]
 
@@ -44,7 +46,7 @@ class TestRealLogFile(unittest.TestCase):
                     loot.record_kill(event.get("mob", ""), event.get("slayer", ""))
 
         self.assertGreater(parsed_events_count, 0)
-        print(f"[RealLogTest] Successfully parsed {parsed_events_count} live events from user log!")
+        print(f"[RealLogTest] Successfully parsed {parsed_events_count} events from configured log.")
 
 
 if __name__ == "__main__":
