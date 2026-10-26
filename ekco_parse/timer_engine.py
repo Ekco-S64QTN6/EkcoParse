@@ -284,6 +284,7 @@ class TimerEngine:
             else None
         )
         message_lower = message.casefold()
+        offensive_categories = ("dot", "snare", "root", "mez", "debuff")
 
         # Prefer the spell actually being cast when its landing text matches. Some P99
         # spells share the same message (notably Arch Lich and Demi Lich).
@@ -331,18 +332,22 @@ class TimerEngine:
                 # related spells. When a target landing occurs during our pending
                 # cast and belongs to the same effect family, trust the explicit cast
                 # name instead of adding the generic spell matched from the text.
-                offensive_categories = ("dot", "snare", "root", "mez", "debuff")
                 use_pending_cast = False
-                if (
-                    pending_sdef
-                    and self.pending_cast_time
-                    and pending_sdef.category in offensive_categories
-                    and landed_sdef.category == pending_sdef.category
-                ):
+                if pending_sdef and self.pending_cast_time:
                     elapsed = (timestamp - self.pending_cast_time).total_seconds()
                     min_elapsed = max(0.0, pending_sdef.cast_time_sec - 1.5)
                     max_elapsed = pending_sdef.cast_time_sec + 3.0
-                    use_pending_cast = min_elapsed <= elapsed <= max_elapsed
+                    if elapsed > max_elapsed:
+                        # An old cast must not override a later spell landing.
+                        self.handle_spell_interrupt()
+                        pending_sdef = None
+                    elif (
+                        pending_sdef.category in offensive_categories
+                        and landed_sdef.category == pending_sdef.category
+                    ):
+                        # When multiple hostile spells share landing text, use the
+                        # spell actually cast, but only near its expected landing time.
+                        use_pending_cast = min_elapsed <= elapsed <= max_elapsed
 
                 if use_pending_cast:
                     matched_spell = pending_sdef
@@ -360,18 +365,35 @@ class TimerEngine:
             if sdef and self.pending_cast_time:
                 elapsed = (timestamp - self.pending_cast_time).total_seconds()
                 if elapsed >= (sdef.cast_time_sec - 0.5):
-                    matched_spell = sdef
-                    if sdef.category in ("buff", "cooldown", "util"):
-                        target_name = "Self"
-                    elif sdef.category == "pet_buff":
-                        # The landing text normally identifies the pet. If no
-                        # landing line is available, don't assign its timer to
-                        # the currently selected combat target.
-                        target_name = "Pet"
+                    target_is_unknown = self._normalize_mob_name(self.current_target) in (
+                        "", "unknown target", "you", "self"
+                    )
+                    # For hostile spells, an unrelated log line is not proof that
+                    # the spell landed. Guessing here can consume the pending cast
+                    # before its real landing line, producing both a phantom timer
+                    # (often on Unknown Target) and a second, misidentified timer.
+                    wait_for_hostile_landing = (
+                        sdef.category in offensive_categories
+                        and (bool(sdef.cast_on_other) or target_is_unknown)
+                    )
+                    if wait_for_hostile_landing:
+                        # Keep the cast available for a real landing message, but
+                        # discard it once its normal landing window has passed.
+                        if elapsed > (sdef.cast_time_sec + 3.0):
+                            self.handle_spell_interrupt()
                     else:
-                        target_name = self.current_target
-                    self.pending_cast_spell = None
-                    self.pending_cast_time = None
+                        matched_spell = sdef
+                        if sdef.category in ("buff", "cooldown", "util"):
+                            target_name = "Self"
+                        elif sdef.category == "pet_buff":
+                            # The landing text normally identifies the pet. If no
+                            # landing line is available, don't assign its timer to
+                            # the currently selected combat target.
+                            target_name = "Pet"
+                        else:
+                            target_name = self.current_target
+                        self.pending_cast_spell = None
+                        self.pending_cast_time = None
 
         if matched_spell:
             timer = self._add_spell_timer(matched_spell, target_name, timestamp)
@@ -433,6 +455,13 @@ class TimerEngine:
 
         target = " ".join((target or "Self").split())
         target_key = target.casefold()
+        if (
+            sdef.category in ("dot", "snare", "root", "mez", "debuff")
+            and self._normalize_mob_name(target) in ("", "unknown target", "you", "self")
+        ):
+            # A hostile-effect timer without a specific mob is misleading and can
+            # duplicate the correctly targeted timer when the landing is parsed.
+            return None
 
         # This is the player's personal Buffs window, not a group buff tracker.
         # During startup catch-up, logs can contain a cleric (or another player)
