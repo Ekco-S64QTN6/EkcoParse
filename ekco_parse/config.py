@@ -13,14 +13,14 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "class": "Shadowknight",
     },
     "log_tailer": {
-        "log_dir": "/home/ekco/Games/Project1999/Logs",
+        "log_dir": str(Path.home() / "Games" / "Project1999" / "Logs"),
         "filename_pattern": "eqlog_{character}_{server}.txt",
         "poll_interval_sec": 0.1,
         "start_at_end": True,
         "fallback_simulator": False,
     },
     "display": {
-        "theme": "antfarm_dark",
+        "theme": "ekco_dark",
         "borderless_mode": True,
         "fps": 20,
         "tick_interval_sec": 0.25,
@@ -32,6 +32,7 @@ DEFAULT_CONFIG: Dict[str, Any] = {
     },
     "map": {
         "default_zone": "East Commonlands",
+        "maps_dir": "~/Games/Project1999/maps",
         "auto_switch_zone": True,
         "max_breadcrumbs": 60,
         "grid_width": 58,
@@ -56,7 +57,7 @@ class Config:
 
         # Log Tailer
         tailer = config_dict.get("log_tailer", {})
-        self.log_dir: Path = Path(tailer.get("log_dir", "/home/ekco/Games/Project1999/Logs")).expanduser()
+        self.log_dir: Path = Path(tailer.get("log_dir", str(Path.home() / "Games" / "Project1999" / "Logs"))).expanduser()
         self.filename_pattern: str = tailer.get("filename_pattern", "eqlog_{character}_{server}.txt")
         self.poll_interval_sec: float = float(tailer.get("poll_interval_sec", 0.1))
         self.start_at_end: bool = bool(tailer.get("start_at_end", True))
@@ -64,7 +65,7 @@ class Config:
 
         # Display
         display = config_dict.get("display", {})
-        self.theme: str = display.get("theme", "antfarm_dark")
+        self.theme: str = display.get("theme", "ekco_dark")
         self.borderless_mode: bool = bool(display.get("borderless_mode", True))
         self.fps: int = int(display.get("fps", 20))
         self.tick_interval_sec: float = float(display.get("tick_interval_sec", 0.25))
@@ -78,6 +79,9 @@ class Config:
         # Map
         map_cfg = config_dict.get("map", {})
         self.default_zone: str = map_cfg.get("default_zone", "East Commonlands")
+        self.maps_dir: Path = Path(
+            map_cfg.get("maps_dir", "~/Games/Project1999/maps")
+        ).expanduser()
         self.auto_switch_zone: bool = bool(map_cfg.get("auto_switch_zone", True))
         self.max_breadcrumbs: int = int(map_cfg.get("max_breadcrumbs", 60))
         self.grid_width: int = int(map_cfg.get("grid_width", 58))
