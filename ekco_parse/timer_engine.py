@@ -101,25 +101,26 @@ class TimerEngine:
         self.pending_cast_spell = None
         self.pending_cast_time = None
 
+    @staticmethod
+    def _normalize_mob_name(value: Optional[str]) -> str:
+        normalized = " ".join((value or "").split()).casefold()
+        # EQ kill messages and spell landing messages can differ only by an
+        # article ("a hill giant" vs "the hill giant").
+        return re.sub(r"^(?:a|an|the)\s+", "", normalized)
+
     def on_mob_slain(self, mob_name: str, zone: str = "") -> None:
         """Clear every timer attached to a slain mob and start its respawn timer."""
-        def normalize_mob_name(value: Optional[str]) -> str:
-            normalized = " ".join((value or "").split()).casefold()
-            # EQ kill messages and spell landing messages can differ only by an
-            # article ("a hill giant" vs "the hill giant").
-            return re.sub(r"^(?:a|an|the)\s+", "", normalized)
-
-        clean_mob = normalize_mob_name(mob_name)
+        clean_mob = self._normalize_mob_name(mob_name)
         to_delete = []
         for timer_id, timer in self.active_timers.items():
-            if clean_mob and normalize_mob_name(timer.target) == clean_mob:
+            if clean_mob and self._normalize_mob_name(timer.target) == clean_mob:
                 to_delete.append(timer_id)
 
         for t_id in to_delete:
             self.active_timers.pop(t_id, None)
 
         # Do not let a pending cast land on the target after it has died.
-        if clean_mob and normalize_mob_name(self.current_target) == clean_mob:
+        if clean_mob and self._normalize_mob_name(self.current_target) == clean_mob:
             self.current_target = "Unknown Target"
             self.handle_spell_interrupt()
 
@@ -154,10 +155,18 @@ class TimerEngine:
     def add_respawn_timer(self, mob_name: str, zone: str = "") -> None:
         """Start a respawn countdown for a slain mob based on zone spawn timer."""
         respawn_sec = get_zone_respawn_seconds(zone)
-        timer_id = f"respawn_{mob_name}"
+        normalized_mob = self._normalize_mob_name(mob_name)
 
-        # Replace existing respawn timer for same mob name
-        self.active_timers.pop(timer_id, None)
+        # Replace an existing respawn timer even if the log changes casing or
+        # includes a different article for the same creature name.
+        for existing_id, existing_timer in list(self.active_timers.items()):
+            if (
+                existing_timer.category == "respawn"
+                and self._normalize_mob_name(existing_timer.name) == normalized_mob
+            ):
+                self.active_timers.pop(existing_id, None)
+
+        timer_id = f"respawn_{mob_name}"
 
         timer = Timer(
             id=timer_id,
