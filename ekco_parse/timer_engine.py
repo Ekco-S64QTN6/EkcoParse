@@ -355,6 +355,15 @@ class TimerEngine:
 
         target = " ".join((target or "Self").split())
         target_key = target.casefold()
+
+        # This is the player's personal Buffs window, not a group buff tracker.
+        # During startup catch-up, logs can contain a cleric (or another player)
+        # receiving the same buff before/after it landed on us. Do not create a
+        # personal buff timer for another character; our own landed lines are
+        # normalized to target="Self" by lookup_by_cast_on_you().
+        if sdef.category in ("buff", "cooldown", "util") and target_key != "self":
+            return None
+
         spell_key = sdef.name.strip().casefold()
         timer_id = f"spell:{spell_key}::{target_key}"
 
@@ -451,6 +460,7 @@ class TimerEngine:
         buffs = [
             t for t in self.active_timers.values()
             if t.category in ("buff", "cooldown", "util")
+            and (t.target or "Self").strip().casefold() == "self"
         ]
         return sorted(buffs, key=lambda t: t.remaining_seconds)
 

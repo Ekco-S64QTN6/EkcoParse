@@ -111,6 +111,33 @@ class TestTimerEngine(unittest.TestCase):
         self.assertIsNone(self.engine.pending_cast_spell)
         self.assertEqual(len(created), 1)
 
+    def test_personal_buffs_ignore_other_players_from_startup_log_replay(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        heroism = SPELL_DB.lookup_by_name("Heroic Bond")
+        self.assertIsNotNone(heroism)
+
+        # Catch-up can encounter the caster's own landing message as well as ours.
+        # The caster's timer must not be counted as one of our personal buffs.
+        other_player_timer = self.engine._add_spell_timer(
+            heroism, "ClericName", t0
+        )
+        self.assertIsNone(other_player_timer)
+        self.assertEqual(self.engine.get_sorted_buffs(), [])
+
+        # The line indicating that the buff landed on us remains tracked exactly once.
+        self.engine.process_line("You feel very heroic.", t0 + timedelta(seconds=1))
+        buffs = self.engine.get_sorted_buffs()
+        self.assertEqual([timer.name for timer in buffs], ["Heroic Bond"])
+        self.assertEqual([timer.target for timer in buffs], ["Self"])
+        self.assertEqual(len(self.engine.active_timers), 1)
+
+        # Replaying the same self landing refreshes the same row instead of duplicating it.
+        self.engine.process_line("You feel very heroic.", t0 + timedelta(seconds=2))
+        buffs = self.engine.get_sorted_buffs()
+        self.assertEqual(len(buffs), 1)
+        self.assertEqual(len(self.engine.active_timers), 1)
+        self.assertEqual(buffs[0].created_at, t0 + timedelta(seconds=2))
+
     def test_wiki_audited_spell_durations(self):
         expected_seconds = {
             "Arch Lich": 19 * 60,
