@@ -49,6 +49,7 @@ class MitigationWidget(Static):
             f"  [bold white]Dodges:[/] [bold {COLOR_GREEN}]{p.dodges}[/]  |  "
             f"[bold white]Parries:[/] [bold {COLOR_GREEN}]{p.parries}[/]  |  "
             f"[bold white]Blocks:[/] [bold {COLOR_GREEN}]{p.blocks}[/]  |  "
-            f"[bold white]Ripostes:[/] [bold {COLOR_GREEN}]{p.ripostes}[/]"
+            f"[bold white]Ripostes:[/] [bold {COLOR_GREEN}]{p.ripostes}[/]\n"
+            f"  [bold white]Enemy Misses:[/] [bold {COLOR_GREEN}]{p.enemy_misses}[/]"
         )
         self.update(content)
