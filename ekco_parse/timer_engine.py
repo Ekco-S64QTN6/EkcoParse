@@ -219,11 +219,26 @@ class TimerEngine:
                 except Exception:
                     pass
 
-        # Check generic EverQuest wear-off pattern: Your <Spell> spell has worn off.
-        m_worn = re.match(r"^Your (?P<spell>.+?) spell has worn off\.", message, re.IGNORECASE)
+        # Generic EverQuest early-break / wear-off pattern. Accept a missing or
+        # repeated trailing punctuation because log formats can vary.
+        m_worn = re.match(
+            r"^\s*Your\s+(?P<spell>.+?)\s+spell\s+has\s+worn\s+off[.!]*\s*$",
+            message,
+            re.IGNORECASE,
+        )
         if m_worn:
-            sname = m_worn.group("spell").strip().lower()
-            to_remove.extend([tid for tid, t in self.active_timers.items() if t.name.lower() == sname])
+            sname = " ".join(m_worn.group("spell").split()).casefold().rstrip(".!?")
+            matching_names = {sname}
+            # If the spell DB knows this name, also match its canonical spelling.
+            # Timer rows may have been created from curated data or spells_us.txt.
+            sdef_worn = SPELL_DB.lookup_by_name(sname)
+            if sdef_worn:
+                matching_names.add(" ".join(sdef_worn.name.split()).casefold())
+            to_remove.extend(
+                tid
+                for tid, timer in self.active_timers.items()
+                if " ".join(timer.name.split()).casefold().rstrip(".!?") in matching_names
+            )
 
         # Check SPELL_DB wear off dictionary
         wear_spell = SPELL_DB.lookup_wear_off(message)
