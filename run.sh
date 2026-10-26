@@ -33,7 +33,9 @@ detect_terminal() {
 }
 
 # Kitty overlay flags: transparent background, no padding, no decorations
-KITTY_OVERLAY_OPTS="-o background_opacity=0.55 -o window_padding_width=0 -o hide_window_decorations=no"
+# Fully transparent terminal background; Textual emits ANSI-default backgrounds
+# too, so individual widget cells do not paint opaque black rectangles.
+KITTY_OVERLAY_OPTS="-o background_opacity=0.0 -o window_padding_width=0 -o hide_window_decorations=no"
 
 # 3. Argument routing
 case "$1" in
