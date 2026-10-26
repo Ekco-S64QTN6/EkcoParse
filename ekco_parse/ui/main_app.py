@@ -140,13 +140,6 @@ class EkcoParseApp(App):
         )
 
     def on_mount(self) -> None:
-        # Enforce terminal transparency via OSC 11 escape sequence
-        try:
-            sys.stdout.write("\033]11;[60]#000000\007")
-            sys.stdout.flush()
-        except Exception:
-            pass
-
         # Request always-on-top via xdotool (non-blocking, best-effort)
         self._set_always_on_top()
 
@@ -175,14 +168,6 @@ class EkcoParseApp(App):
                 ["bash", "-c", "sleep 0.3 && xdotool getactivewindow windowactivate --sync set_window --urgency 0 && xdotool getactivewindow windowstate --add ABOVE"],
                 stdout=_sp.DEVNULL, stderr=_sp.DEVNULL,
             )
-        except Exception:
-            pass
-
-    def on_unmount(self) -> None:
-        # Restore terminal background
-        try:
-            sys.stdout.write("\033]111\007")
-            sys.stdout.flush()
         except Exception:
             pass
 
