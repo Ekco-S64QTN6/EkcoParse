@@ -33,7 +33,9 @@ detect_terminal() {
 }
 
 # Kitty overlay flags: transparent background, no padding, no decorations
-KITTY_OVERLAY_OPTS="-o background_opacity=0.55 -o window_padding_width=0 -o hide_window_decorations=no"
+# Use the terminal's default background for all dashboard cells so full
+# Kitty transparency applies to the whole overlay, not just empty terminal space.
+KITTY_OVERLAY_OPTS="-o background_opacity=0.0 -o window_padding_width=0 -o hide_window_decorations=no"
 
 # 3. Argument routing
 case "$1" in
