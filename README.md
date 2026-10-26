@@ -128,7 +128,7 @@ Ekco Parse is an independent, community-made companion. It is not an official Pr
 
 ## References and project influences
 
-The projects and resources below informed the feature goals, implementation research, or visual direction. They are credited as references—not as a claim that Ekco Parse is affiliated with them or that their code or assets have been copied.
+The projects and resources below are useful references for the problem space, implementation research, or dependencies. They are listed to credit the work and documentation the project draws on; Ekco Parse is independent and is not affiliated with the tools or communities listed.
 
 ### EverQuest tools
 
@@ -145,7 +145,6 @@ The projects and resources below informed the feature goals, implementation rese
 
 ### Interface and libraries
 
-- **[Dwarf Fortress Antfarm](https://github.com/Ekco-S64QTN6/dwarffortress-antfarm)** — a separate project by the same maintainer; the dense terminal layout, border hierarchy, and color contrast served as visual inspiration. It is not a dependency of Ekco Parse.
 - **[Textual](https://github.com/Textualize/textual)** — the terminal UI framework.
 - **[Rich](https://github.com/Textualize/rich)** — terminal styling and formatted text.
 - **[PyYAML](https://github.com/yaml/pyyaml)** — YAML configuration loading.
