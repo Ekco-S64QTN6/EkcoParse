@@ -119,6 +119,9 @@ class PoiRadarWidget(Static):
 class EkcoMapApp(App):
     """Standalone EverQuest Map Companion Window."""
 
+    # First valid /loc fix should open a useful player-centered view immediately.
+    AUTO_ZOOM_LEVEL = 4.0
+
     CSS = f"""
     Screen {{
         background: {COLOR_BG};
@@ -186,6 +189,7 @@ class EkcoMapApp(App):
         self.tailer: Optional[LogTailer] = None
         self.zoom: float = 1.0
         self.is_tailing: bool = False
+        self._auto_zoom_pending = True
 
     def compose(self) -> ComposeResult:
         yield Container(
@@ -229,36 +233,42 @@ class EkcoMapApp(App):
                 f.seek(max(0, size - 350000), 0)
                 lines = f.readlines()
             for line in lines:
-                parsed = self.parser.parse_line(line)
-                if not parsed:
-                    continue
-                log_line, event = parsed
-                if isinstance(event, Location):
-                    self.map_engine.update_location(event)
-                elif isinstance(event, dict):
-                    if event.get("type") == "zone_change":
-                        self.map_engine.set_zone(event["zone"])
-                    elif event.get("type") == "heading":
-                        self.map_engine.update_heading(event["heading"])
+                self._process_map_log_line(line)
         except Exception:
             pass
+
+    def _process_map_log_line(self, line: str) -> None:
+        """Apply one parsed log event and auto-zoom on the first usable /loc fix."""
+        parsed = self.parser.parse_line(line)
+        if not parsed:
+            return
+
+        _, event = parsed
+        if isinstance(event, Location):
+            self.map_engine.update_location(event)
+            if self._auto_zoom_pending:
+                self.zoom = self.AUTO_ZOOM_LEVEL
+                self._auto_zoom_pending = False
+        elif isinstance(event, dict):
+            if event.get("type") == "zone_change":
+                self._switch_zone(event["zone"])
+            elif event.get("type") == "heading":
+                self.map_engine.update_heading(event["heading"])
+
+    def _switch_zone(self, zone_name: str) -> None:
+        """Switch zones without carrying stale coordinates into the new zone."""
+        self.map_engine.set_zone(zone_name)
+        self.map_engine.current_location = None
+        self.map_engine.last_loc_time = None
+        self.map_engine.current_speed = 0.0
+        self.zoom = 1.0
+        self._auto_zoom_pending = True
 
     def _tick(self) -> None:
         """Poll new log lines and refresh map display."""
         if self.tailer:
-            lines = self.tailer.read_available_lines()
-            for line in lines:
-                parsed = self.parser.parse_line(line)
-                if not parsed:
-                    continue
-                log_line, event = parsed
-                if isinstance(event, Location):
-                    self.map_engine.update_location(event)
-                elif isinstance(event, dict):
-                    if event.get("type") == "zone_change":
-                        self.map_engine.set_zone(event["zone"])
-                    elif event.get("type") == "heading":
-                        self.map_engine.update_heading(event["heading"])
+            for line in self.tailer.read_available_lines():
+                self._process_map_log_line(line)
 
         self._refresh_ui()
 
@@ -315,7 +325,7 @@ class EkcoMapApp(App):
             next_idx = (zones.index(cur) + 1) % len(zones)
         except ValueError:
             next_idx = 0
-        self.map_engine.set_zone(zones[next_idx])
+        self._switch_zone(zones[next_idx])
 
     def action_manual_loc(self) -> None:
         # Step through simulated test coordinate

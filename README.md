@@ -66,6 +66,14 @@ Follows the aesthetic specifications of `/github/dwarffortress-antfarm/`:
 - **Alert Red / Danger**: `#FF4040`
 - High-contrast block progress bars (`████░░░░`) and unicode sparklines (` ▂▃▄▅▆▇█`).
 
+### Transparent dashboard background
+
+The main dashboard's Textual screen and panels use transparent backgrounds. The application deliberately does not override the terminal background color, because doing so can interfere with Kitty applying its configured background opacity.
+
+The default `./run.sh` launcher opens the dashboard in Kitty with `background_opacity=0.55`. To make the game more visible through the overlay, lower the value in `KITTY_OVERLAY_OPTS` in `run.sh` (for example, `-o background_opacity=0.25`). When launching the Python module directly in Kitty instead of using the launcher, set `background_opacity 0.55` or another preferred value in `kitty.conf`.
+
+Alpha transparency depends on the terminal emulator and the OS/compositor. The non-Kitty fallback runs in the current terminal and needs that terminal's own transparency settings.
+
 ---
 
 ## Installation & Quick Start

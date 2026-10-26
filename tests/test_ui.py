@@ -48,6 +48,23 @@ class TestTextualUI(unittest.IsolatedAsyncioTestCase):
             app._refresh_ui()
             await pilot.pause()
 
+    async def test_map_auto_zooms_on_first_loc_and_respects_manual_zoom(self):
+        app = EkcoMapApp(config=load_config(), zone="East Commonlands")
+
+        app._process_map_log_line(
+            "[Mon Oct 26 12:00:00 2026] Your Location is -130.0, -1580.0, 3.75"
+        )
+        self.assertEqual(app.zoom, app.AUTO_ZOOM_LEVEL)
+        self.assertFalse(app._auto_zoom_pending)
+        self.assertIsNotNone(app.map_engine.current_location)
+
+        # Later /loc updates should track the player without overriding their zoom choice.
+        app.zoom = 2.0
+        app._process_map_log_line(
+            "[Mon Oct 26 12:00:05 2026] Your Location is -120.0, -1580.0, 3.75"
+        )
+        self.assertEqual(app.zoom, 2.0)
+
 
 if __name__ == "__main__":
     unittest.main()
