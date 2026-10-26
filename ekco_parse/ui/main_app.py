@@ -317,7 +317,7 @@ class EkcoParseApp(App):
                 if update_recent:
                     self.dps_engine.on_mob_death(mob, slayer)
                     self.loot_engine.record_kill(mob, slayer, ts)
-                self.timer_engine.on_mob_slain(mob, self.active_zone)
+                self.timer_engine.on_mob_slain(mob, self.active_zone, timestamp=ts)
             elif etype == "player_death":
                 if update_recent:
                     self.dps_engine.end_active_encounter(reason="player_death")
