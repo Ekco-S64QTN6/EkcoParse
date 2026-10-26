@@ -882,6 +882,12 @@ class SpellDatabase:
     def lookup_by_cast_on_other(self, message: str) -> Optional[Tuple[SpellDef, str]]:
         msg_low = message.strip().lower()
         for pattern, sdef in self.spells_by_on_other.items():
+            # Bond of Death's landing text is only "staggers.", which can also
+            # appear as ordinary melee/pet combat feedback. The timer engine can
+            # safely recognize it through the pending-cast path, where the spell
+            # identity is known, but not from this generic text-only lookup.
+            if sdef.name.casefold() == "bond of death":
+                continue
             if pattern in msg_low:
                 idx = msg_low.find(pattern)
                 target = message[:idx].strip() if idx > 0 else "Target"
