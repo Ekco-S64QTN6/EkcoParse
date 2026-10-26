@@ -57,7 +57,7 @@ class TestTextualUI(unittest.IsolatedAsyncioTestCase):
             rendered = live_respawns.render()
             rendered_text = getattr(rendered, "plain", str(rendered))
             self.assertIn("a decaying skeleton", rendered_text)
-            self.assertRegex(rendered_text, r"\\d{2}:\\d{2}")
+            self.assertRegex(rendered_text, r"\d{2}:\d{2}")
 
             # Trigger a tick update
             app._update_ui()
