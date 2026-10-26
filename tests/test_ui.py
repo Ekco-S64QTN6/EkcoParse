@@ -6,6 +6,7 @@ from textual.widgets import TabbedContent
 from ekco_parse.config import load_config
 from ekco_parse.ui.main_app import EkcoParseApp
 from ekco_parse.ui.map_app import EkcoMapApp
+from ekco_parse.ui.widgets.respawn_panel import RespawnWidget
 
 
 class TestTextualUI(unittest.IsolatedAsyncioTestCase):
@@ -47,6 +48,16 @@ class TestTextualUI(unittest.IsolatedAsyncioTestCase):
 
             respawns = app.query_one("#respawn-panel")
             self.assertIsNotNone(respawns)
+
+            # Respawn countdown must be visible in Live, not only on the hidden-tab Ledger view.
+            live_respawns = app.query_one("#respawn-live-panel", RespawnWidget)
+            self.assertEqual(live_respawns.parent.id, "tab-live")
+            app.timer_engine.add_respawn_timer("a decaying skeleton", "Lower Guk")
+            app._update_ui()
+            rendered = live_respawns.render()
+            rendered_text = getattr(rendered, "plain", str(rendered))
+            self.assertIn("a decaying skeleton", rendered_text)
+            self.assertRegex(rendered_text, r"\d{2}:\d{2}")
 
             # Trigger a tick update
             app._update_ui()
