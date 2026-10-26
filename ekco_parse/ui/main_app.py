@@ -267,10 +267,17 @@ class EkcoParseApp(App):
                 if update_recent:
                     self.dps_engine.on_mob_death(mob, slayer)
                     self.loot_engine.record_kill(mob, slayer, ts)
-                self.timer_engine.on_mob_slain(mob)
+                self.timer_engine.on_mob_slain(mob, self.active_zone)
+            elif etype == "player_death":
+                if update_recent:
+                    self.dps_engine.end_active_encounter(reason="player_death")
+                self.timer_engine.on_player_death(play_sound=update_recent)
             elif etype == "experience":
                 if update_recent:
                     self.loot_engine.record_exp(ts)
+            elif etype == "coin_loot":
+                if update_recent:
+                    self.loot_engine.record_coin_loot(event.get("money", ""), ts)
             elif etype == "zone_change":
                 self.active_zone = event.get("zone", self.active_zone)
 

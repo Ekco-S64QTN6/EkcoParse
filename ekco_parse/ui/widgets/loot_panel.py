@@ -22,7 +22,12 @@ class LootWidget(Static):
         self.border_title = "KILL & LOOT LEDGER"
 
     def update_loot(self, engine: LootEngine) -> None:
-        if engine.total_kills == 0 and engine.total_looted == 0 and engine.exp_ticks == 0:
+        if (
+            engine.total_kills == 0
+            and engine.total_looted == 0
+            and engine.exp_ticks == 0
+            and engine.total_coin_messages == 0
+        ):
             self.update(
                 f"  [{COLOR_MUTED}]▲ NO MOBS SLAIN OR LOOT LOGGED THIS SESSION[/]\n\n"
                 f"  [{COLOR_GREEN}]• Kill Counter:[/] Tracks slain mobs, exp milestones, and kills/hour.\n"
@@ -33,12 +38,36 @@ class LootWidget(Static):
         k_hr = engine.kills_per_hour
         exp_hr = engine.exp_per_hour
 
+        coin_parts = []
+        for denomination, suffix in (
+            ("platinum", "pp"),
+            ("gold", "gp"),
+            ("silver", "sp"),
+            ("copper", "cp"),
+        ):
+            amount = engine.coin_totals.get(denomination, 0)
+            if amount:
+                coin_parts.append(f"{amount}{suffix}")
+        coin_summary = " ".join(coin_parts) or "—"
+
         summary = (
             f"[bold {COLOR_CYAN}]KILLS:[/] [bold white]{engine.total_kills}[/] ([bold {COLOR_GREEN}]{k_hr:.1f}/hr[/]) | "
             f"[bold {COLOR_CYAN}]EXP TICKS:[/] [bold {COLOR_AMBER}]{engine.exp_ticks}[/] ([bold {COLOR_GREEN}]{exp_hr:.1f}/hr[/]) | "
             f"[bold {COLOR_CYAN}]LOOTED:[/] [bold white]{engine.total_looted}[/]\n"
+            f"[bold {COLOR_CYAN}]COIN:[/] [bold {COLOR_AMBER}]{coin_summary}[/] "
+            f"([{engine.total_coin_messages} messages])\n"
             f"───────────────────────────────────────────────────────────────────"
         )
+
+        # Recent coin messages
+        coin_lines = [f"[bold {COLOR_AMBER}]RECENT COIN LOOT:[/]\n"]
+        if engine.coin_history:
+            for record in list(engine.coin_history)[:3]:
+                t_str = record["time"]
+                money = escape(record["money"])
+                coin_lines.append(f"  [{COLOR_MUTED}]{t_str}[/] [bold white]{money}[/]")
+        else:
+            coin_lines.append(f"  [{COLOR_MUTED}]No coin received yet.[/]")
 
         # Recent loot list
         loot_lines = [f"[bold {COLOR_AMBER}]RECENT LOOT ITEMS:[/]\n"]
@@ -61,5 +90,12 @@ class LootWidget(Static):
         else:
             mob_lines.append(f"  [{COLOR_MUTED}]No mobs recorded yet.[/]")
 
-        content = f"{summary}\n" + "\n".join(loot_lines) + "\n" + "\n".join(mob_lines)
+        content = (
+            f"{summary}\n"
+            + "\n".join(coin_lines)
+            + "\n"
+            + "\n".join(loot_lines)
+            + "\n"
+            + "\n".join(mob_lines)
+        )
         self.update(content)

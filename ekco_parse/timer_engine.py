@@ -119,8 +119,12 @@ class TimerEngine:
         if mob_name.strip():
             self.add_respawn_timer(mob_name.strip(), zone)
 
-    def on_player_death(self) -> None:
-        """Player died — clear ALL buff timers (EQ strips all buffs on death)."""
+    def on_player_death(self, play_sound: bool = True) -> None:
+        """Clear buffs after death and optionally sound an alert.
+
+        Set play_sound=False while replaying historical log lines at startup so an
+        old death does not ring the terminal bell on launch.
+        """
         to_delete = [
             tid for tid, t in self.active_timers.items()
             if t.category in ("buff", "cooldown", "util")
@@ -136,7 +140,7 @@ class TimerEngine:
             "color": "#FF4040",
         })
 
-        if self.audio_enabled:
+        if self.audio_enabled and play_sound:
             self.beep()
 
     def add_respawn_timer(self, mob_name: str, zone: str = "") -> None:
