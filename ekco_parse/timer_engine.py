@@ -167,6 +167,19 @@ class TimerEngine:
 
     def process_line(self, message: str, timestamp: datetime) -> List[Timer]:
         """Evaluate raw log message against wear-offs, spell landings, and triggers."""
+        # Clear failed casts before the elapsed-cast fallback can mistake the resist
+        # message for a successful landing. This is important when replaying logs too.
+        if (
+            re.match(r"^Your spell is interrupted\\.$", message, re.IGNORECASE)
+            or re.search(
+                r"\\bresisted\\s+(?:your|the)\\s+.+?\\s+spell\\.$",
+                message,
+                re.IGNORECASE,
+            )
+        ):
+            self.handle_spell_resist()
+            return []
+
         new_timers: List[Timer] = []
 
         # 1. Wear-off checks
@@ -223,25 +236,46 @@ class TimerEngine:
         # 2. Universal Spell Landing Detection (Self buffs, Raid buffs, DoTs)
         matched_spell = None
         target_name = self.current_target
+        pending_sdef = (
+            SPELL_DB.lookup_by_name(self.pending_cast_spell)
+            if self.pending_cast_spell
+            else None
+        )
+        message_lower = message.casefold()
+
+        # Prefer the spell actually being cast when its landing text matches. Some P99
+        # spells share the same message (notably Arch Lich and Demi Lich).
+        if (
+            pending_sdef
+            and pending_sdef.cast_on_you
+            and pending_sdef.cast_on_you.strip().casefold() in message_lower
+        ):
+            matched_spell = pending_sdef
+            target_name = "Self"
+            self.pending_cast_spell = None
+            self.pending_cast_time = None
 
         # Check if spell landed on YOU (e.g. self-buff or buffed by another player)
-        sdef_you = SPELL_DB.lookup_by_cast_on_you(message)
-        if sdef_you:
-            matched_spell = sdef_you
-            target_name = "Self"
+        if not matched_spell:
+            sdef_you = SPELL_DB.lookup_by_cast_on_you(message)
+            if sdef_you:
+                matched_spell = sdef_you
+                target_name = "Self"
 
         # Check if spell landed on an enemy (DoT / snare / root / debuff)
-        if not matched_spell:
-            # If we had a pending spell casting (e.g. Dooming Darkness), prioritize it if message matches
-            if self.pending_cast_spell:
-                sdef_pend = SPELL_DB.lookup_by_name(self.pending_cast_spell)
-                if sdef_pend and sdef_pend.cast_on_other and sdef_pend.cast_on_other.lower() in message.lower():
-                    matched_spell = sdef_pend
-                    idx = message.lower().find(sdef_pend.cast_on_other.lower())
-                    target_name = message[:idx].strip() if idx > 0 else self.current_target
-                    self.current_target = target_name
-                    self.pending_cast_spell = None
-                    self.pending_cast_time = None
+        if not matched_spell and self.pending_cast_spell:
+            sdef_pend = pending_sdef or SPELL_DB.lookup_by_name(self.pending_cast_spell)
+            if (
+                sdef_pend
+                and sdef_pend.cast_on_other
+                and sdef_pend.cast_on_other.casefold() in message_lower
+            ):
+                matched_spell = sdef_pend
+                idx = message_lower.find(sdef_pend.cast_on_other.casefold())
+                target_name = message[:idx].strip() if idx > 0 else self.current_target
+                self.current_target = target_name
+                self.pending_cast_spell = None
+                self.pending_cast_time = None
 
         if not matched_spell:
             res_other = SPELL_DB.lookup_by_cast_on_other(message)
@@ -313,15 +347,40 @@ class TimerEngine:
 
         return new_timers
 
-    def _add_spell_timer(self, sdef: SpellDef, target: str, timestamp: datetime) -> Timer:
-        """Create and register a spell timer from SpellDef."""
-        # If this buff occupies a specific slot (e.g. lich, shielding, rune), replace existing
+    def _add_spell_timer(self, sdef: SpellDef, target: str, timestamp: datetime) -> Optional[Timer]:
+        """Create or refresh a spell timer from a P99 SpellDef."""
+        # Instant-effect spells (e.g. Defoliation) should not leave a countdown behind.
+        if sdef.duration_seconds <= 0:
+            return None
+
+        target = " ".join((target or "Self").split())
+        target_key = target.casefold()
+        spell_key = sdef.name.strip().casefold()
+        timer_id = f"spell:{spell_key}::{target_key}"
+
+        # Replace the same buff slot only on the same target. A recast refreshes the
+        # existing row instead of creating another row due to target-name casing.
         if sdef.buff_slot:
-            to_replace = [tid for tid, t in self.active_timers.items() if t.buff_slot == sdef.buff_slot]
+            to_replace = [
+                tid
+                for tid, t in self.active_timers.items()
+                if t.buff_slot == sdef.buff_slot
+                and " ".join((t.target or "Self").split()).casefold() == target_key
+            ]
             for tid in to_replace:
                 self.active_timers.pop(tid, None)
 
-        timer_id = f"{sdef.name}_{target}"
+        # Remove any duplicate spell/target rows left by older case-sensitive IDs.
+        duplicates = [
+            tid
+            for tid, t in self.active_timers.items()
+            if t.name.strip().casefold() == spell_key
+            and " ".join((t.target or "Self").split()).casefold() == target_key
+            and t.category == sdef.category
+        ]
+        for tid in duplicates:
+            self.active_timers.pop(tid, None)
+
         alert_msg = f"{sdef.name} on {target}" if target != "Self" else f"{sdef.name} Active"
 
         wear_off_pat = sdef.wear_off or f"Your {sdef.name} spell has worn off\\."

@@ -21,13 +21,16 @@ class SpellDef:
     recast_warning_seconds: float = 10.0
 
 
-# P99 Necromancer Spell Catalog (with exact ticks from EQ P99 Wiki & spells_us.txt)
+# P99 spell durations are curated against individual Project 1999 Wiki spell pages.
+# Duration references used for this audit include Splurt, the Necromancer Spell Lines,
+# Scourge, Plague, Bond of Death, Asystole, Cessation of Cor, Demi Lich, Arch Lich,
+# Diamondskin, Clarity, Celerity, Regrowth, Levitate, Symbol of Naltron, and Heroic Bond.
 NECRO_SPELLS: Dict[str, SpellDef] = {
     # ── Level 60 & Endgame DoTs ──
     "Splurt": SpellDef(
         name="Splurt",
-        duration_ticks=16,
-        duration_seconds=96.0,
+        duration_ticks=17,
+        duration_seconds=102.0,
         category="dot",
         dot_type="magic",
         cast_time_sec=4.0,
@@ -52,8 +55,8 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
     ),
     "Cascading Darkness": SpellDef(
         name="Cascading Darkness",
-        duration_ticks=15,
-        duration_seconds=90.0,
+        duration_ticks=16,
+        duration_seconds=96.0,
         category="snare",
         dot_type="magic",
         cast_time_sec=7.0,
@@ -66,7 +69,7 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
     "Dooming Darkness": SpellDef(
         name="Dooming Darkness",
         duration_ticks=16,
-        duration_seconds=94.0,
+        duration_seconds=96.0,
         category="snare",
         dot_type="magic",
         cast_time_sec=4.0,
@@ -78,8 +81,8 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
     ),
     "Cessation of Cor": SpellDef(
         name="Cessation of Cor",
-        duration_ticks=9,
-        duration_seconds=54.0,
+        duration_ticks=10,
+        duration_seconds=60.0,
         category="dot",
         dot_type="magic",
         cast_time_sec=5.0,
@@ -91,8 +94,8 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
     ),
     "Asystole": SpellDef(
         name="Asystole",
-        duration_ticks=12,
-        duration_seconds=72.0,
+        duration_ticks=10,
+        duration_seconds=60.0,
         category="dot",
         dot_type="disease",
         cast_time_sec=6.1,
@@ -104,8 +107,8 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
     ),
     "Envenomed Bolt": SpellDef(
         name="Envenomed Bolt",
-        duration_ticks=11,
-        duration_seconds=66.0,
+        duration_ticks=8,
+        duration_seconds=48.0,
         category="dot",
         dot_type="poison",
         cast_time_sec=6.1,
@@ -117,8 +120,8 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
     ),
     "Boil Blood": SpellDef(
         name="Boil Blood",
-        duration_ticks=9,
-        duration_seconds=54.0,
+        duration_ticks=21,
+        duration_seconds=126.0,
         category="dot",
         dot_type="fire",
         cast_time_sec=4.0,
@@ -130,8 +133,8 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
     ),
     "Ignite Blood": SpellDef(
         name="Ignite Blood",
-        duration_ticks=10,
-        duration_seconds=60.0,
+        duration_ticks=21,
+        duration_seconds=126.0,
         category="dot",
         dot_type="fire",
         cast_time_sec=4.0,
@@ -143,8 +146,8 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
     ),
     "Plague": SpellDef(
         name="Plague",
-        duration_ticks=18,
-        duration_seconds=108.0,
+        duration_ticks=22,
+        duration_seconds=132.0,
         category="dot",
         dot_type="disease",
         cast_time_sec=6.1,
@@ -156,8 +159,8 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
     ),
     "Scourge": SpellDef(
         name="Scourge",
-        duration_ticks=14,
-        duration_seconds=84.0,
+        duration_ticks=21,
+        duration_seconds=126.0,
         category="dot",
         dot_type="disease",
         cast_time_sec=6.1,
@@ -169,8 +172,8 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
     ),
     "Bond of Death": SpellDef(
         name="Bond of Death",
-        duration_ticks=4,
-        duration_seconds=24.0,
+        duration_ticks=9,
+        duration_seconds=54.0,
         category="dot",
         dot_type="lifetap",
         cast_time_sec=7.0,
@@ -182,13 +185,13 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
     ),
     "Defoliation": SpellDef(
         name="Defoliation",
-        duration_ticks=5,
-        duration_seconds=30.0,
+        duration_ticks=0,
+        duration_seconds=0.0,
         category="dot",
         dot_type="magic",
         cast_time_sec=4.0,
-        cast_on_other=" begins to wither.",
-        cast_on_you="You begin to wither.",
+        cast_on_other=" wilts.",
+        cast_on_you=None,
         wear_off="You stop withering.",
         color="#FFC857",
         recast_warning_seconds=6.0,
@@ -262,11 +265,12 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
     ),
 
     # ── Lich, Buffs & Pets ──
+    # Project 1999 Wiki lists Arch Lich as 19 minutes (not the longer live-era value).
     "Arch Lich": SpellDef(
         name="Arch Lich",
         buff_slot="lich",
-        duration_ticks=205,
-        duration_seconds=1230.0,
+        duration_ticks=190,
+        duration_seconds=1140.0,
         category="buff",
         dot_type=None,
         cast_time_sec=2.0,
@@ -276,16 +280,17 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
         color="#B64CFF",
         recast_warning_seconds=30.0,
     ),
+    # Project 1999 Wiki lists Demi Lich as 19 minutes (190 six-second ticks).
     "Demi Lich": SpellDef(
         name="Demi Lich",
         buff_slot="lich",
-        duration_ticks=1440,
-        duration_seconds=8640.0,
+        duration_ticks=190,
+        duration_seconds=1140.0,
         category="buff",
         dot_type=None,
         cast_time_sec=2.0,
-        cast_on_other="'s body transforms into a skeletal form.",
-        cast_on_you="Your body transforms into a skeletal form.",
+        cast_on_other="'s skin peels away.",
+        cast_on_you="You feel the skin peel from your bones.",
         wear_off="Your flesh returns.",
         color="#B64CFF",
         recast_warning_seconds=60.0,
@@ -321,8 +326,8 @@ NECRO_SPELLS: Dict[str, SpellDef] = {
     "Diamondskin": SpellDef(
         name="Diamondskin",
         buff_slot="rune",
-        duration_ticks=720,
-        duration_seconds=4320.0,
+        duration_ticks=900,
+        duration_seconds=5400.0,
         category="buff",
         dot_type=None,
         cast_time_sec=5.0,
@@ -464,8 +469,8 @@ KNOWN_BUFF_LANDINGS: Dict[str, SpellDef] = {
     ),
     "you feel very heroic.": SpellDef(
         name="Heroic Bond",
-        duration_ticks=900,
-        duration_seconds=5400.0,
+        duration_ticks=720,
+        duration_seconds=4320.0,
         category="buff",
         dot_type=None,
         cast_time_sec=6.0,
@@ -477,8 +482,8 @@ KNOWN_BUFF_LANDINGS: Dict[str, SpellDef] = {
     ),
     "you feel a holy aura surround you.": SpellDef(
         name="Symbol of Naltron",
-        duration_ticks=900,
-        duration_seconds=5400.0,
+        duration_ticks=540,
+        duration_seconds=3240.0,
         category="buff",
         dot_type=None,
         cast_time_sec=7.0,
@@ -529,8 +534,8 @@ KNOWN_BUFF_LANDINGS: Dict[str, SpellDef] = {
     ),
     "you feel your pulse quicken.": SpellDef(
         name="Clarity",
-        duration_ticks=300,
-        duration_seconds=1800.0,
+        duration_ticks=270,
+        duration_seconds=1620.0,
         category="buff",
         dot_type=None,
         cast_time_sec=4.0,
@@ -555,8 +560,8 @@ KNOWN_BUFF_LANDINGS: Dict[str, SpellDef] = {
     ),
     "your body quickens.": SpellDef(
         name="Celerity",
-        duration_ticks=300,
-        duration_seconds=1800.0,
+        duration_ticks=160,
+        duration_seconds=960.0,
         category="buff",
         dot_type=None,
         cast_time_sec=3.0,
@@ -568,8 +573,8 @@ KNOWN_BUFF_LANDINGS: Dict[str, SpellDef] = {
     ),
     "you feel your body regenerating.": SpellDef(
         name="Regrowth",
-        duration_ticks=200,
-        duration_seconds=1200.0,
+        duration_ticks=190,
+        duration_seconds=1140.0,
         category="buff",
         dot_type=None,
         cast_time_sec=5.0,
@@ -607,8 +612,8 @@ KNOWN_BUFF_LANDINGS: Dict[str, SpellDef] = {
     ),
     "you feel yourself floating.": SpellDef(
         name="Levitate",
-        duration_ticks=300,
-        duration_seconds=1800.0,
+        duration_ticks=190,
+        duration_seconds=1140.0,
         category="buff",
         dot_type=None,
         cast_time_sec=3.0,
@@ -651,7 +656,11 @@ class SpellDatabase:
     """Universal Project 1999 spell catalog, reading spells_us.txt with full fallback."""
 
     def __init__(self, eq_dir: Optional[str] = "/home/ekco/Games/Project1999"):
-        self.spells_by_name: Dict[str, SpellDef] = dict(NECRO_SPELLS)
+        # The lookup API case-folds names. Store curated P99 entries under the same
+        # normalized keys so local spells_us.txt data cannot replace these durations.
+        self.spells_by_name: Dict[str, SpellDef] = {
+            name.casefold(): sdef for name, sdef in NECRO_SPELLS.items()
+        }
         self.spells_by_on_you: Dict[str, SpellDef] = dict(KNOWN_BUFF_LANDINGS)
         self.spells_by_wear_off: Dict[str, str] = {}
         self.spells_by_on_other: Dict[str, SpellDef] = {}
