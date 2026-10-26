@@ -18,20 +18,20 @@ ZONE_SPAWN_TIMERS: Dict[str, int] = {
     "East Freeport": 1440,             # 24:00
     "Freeport": 1440,                  # 24:00
     "Northern Plains of Karana": 400,   # 6:40
-    "Southern Plains of Karana": 400,   # 6:40
+    "Southern Plains of Karana": 360, # 6:00
     "Western Plains of Karana": 400,    # 6:40
     "Eastern Plains of Karana": 400,    # 6:40
     "Qeynos Hills": 400,               # 6:40
-    "North Qeynos": 1440,              # 24:00
-    "South Qeynos": 1440,              # 24:00
-    "Surefall Glade": 1440,            # 24:00
+    "North Qeynos": 400,          # 6:40
+    "South Qeynos": 400,          # 6:40
+    "Surefall Glade": 400,        # 6:40
     "Halas": 1440,                     # 24:00
     "Everfrost Peaks": 400,            # 6:40
     "Blackburrow": 1320,               # 22:00
     "Highpass Hold": 400,               # 6:40
     "High Keep": 600,                   # 10:00 (varies by area)
     "Kithicor Forest": 400,            # 6:40
-    "Rivervale": 1440,                 # 24:00
+    "Rivervale": 1320,            # 22:00
     "Misty Thicket": 400,              # 6:40
     "Runnyeye Citadel": 1320,          # 22:00
     "Befallen": 1140,                  # 19:00
@@ -46,7 +46,7 @@ ZONE_SPAWN_TIMERS: Dict[str, int] = {
     "Najena": 1110,                    # 18:30
     "South Ro": 400,                   # 6:40
     "North Ro": 400,                   # 6:40
-    "Oasis of Marr": 400,              # 6:40
+    "Oasis of Marr": 990,         # 16:30
     "Innothule Swamp": 400,            # 6:40
     "Grobb": 1440,                     # 24:00
     "Oggok": 1440,                     # 24:00
@@ -62,21 +62,21 @@ ZONE_SPAWN_TIMERS: Dict[str, int] = {
     "Estate of Unrest": 1320,          # 22:00
     "Infected Paw": 1320,              # 22:00
     "Splitpaw Lair": 1320,             # 22:00
-    "Plane of Fear": 1680,             # 28:00
-    "Plane of Hate": 1680,             # 28:00
-    "Plane of Sky": 1680,              # 28:00
+    "Plane of Fear": 28800,       # 8:00:00
+    "Plane of Hate": 28800,       # 8:00:00
+    "Plane of Sky": 28800,        # 8:00:00
     "Plane of Air": 1680,              # 28:00
 
     # ── Faydwer ───────────────────────────────────────────────────
-    "Greater Faydark": 400,            # 6:40
-    "Lesser Faydark": 400,             # 6:40
+    "Greater Faydark": 425,       # 7:05
+    "Lesser Faydark": 390,        # 6:30
     "Butcherblock Mountains": 400,     # 6:40
-    "Ocean of Tears": 400,             # 6:40
+    "Ocean of Tears": 360,        # 6:00
     "Felwithe": 1440,                  # 24:00
-    "Kaladim": 1440,                   # 24:00
-    "Ak'Anon": 1440,                   # 24:00
+    "Kaladim": 400,               # 6:40
+    "Ak'Anon": 400,               # 6:40
     "Steamfont Mountains": 400,        # 6:40
-    "Crushbone": 1320,                 # 22:00
+    "Crushbone": 540,             # 9:00
     "Castle Mistmoore": 1320,          # 22:00
     "Kedge Keep": 1320,                # 22:00
     "Dagnor's Cauldron": 400,          # 6:40
@@ -86,15 +86,15 @@ ZONE_SPAWN_TIMERS: Dict[str, int] = {
     "Erudin Palace": 1500,             # 25:00
     "Toxxulia Forest": 400,            # 6:40
     "Paineel": 630,                    # 10:30
-    "The Hole": 1320,                  # 22:00
-    "Stonebrunt Mountains": 400,       # 6:40
-    "Warrens": 1320,                   # 22:00
+    "The Hole": 1290,             # 21:30
+    "Stonebrunt Mountains": 670,  # 11:10
+    "Warrens": 400,               # 6:40
 
     # ── Kunark ────────────────────────────────────────────────────
     "Firiona Vie": 400,                # 6:40
     "Field of Bone": 400,              # 6:40
-    "Cabilis East": 1440,              # 24:00
-    "Cabilis West": 1440,              # 24:00
+    "Cabilis East": 400,          # 6:40
+    "Cabilis West": 400,          # 6:40
     "Swamp of No Hope": 400,           # 6:40
     "Lake of Ill Omen": 400,           # 6:40
     "Warsliks Woods": 400,             # 6:40
@@ -105,37 +105,37 @@ ZONE_SPAWN_TIMERS: Dict[str, int] = {
     "Trakanon's Teeth": 400,           # 6:40
     "Emerald Jungle": 400,             # 6:40
     "City of Mist": 1320,              # 22:00
-    "Kurn's Tower": 1080,              # 18:00
-    "Kaesora": 1320,                   # 22:00
-    "Mines of Nurga": 1320,            # 22:00
-    "Temple of Droga": 1320,           # 22:00
-    "Chardok": 1320,                   # 22:00
-    "Howling Stones": 1320,            # 22:00 (Charasis)
-    "Charasis": 1320,                  # 22:00
-    "Old Sebilis": 1320,               # 22:00
-    "Sebilis": 1320,                   # 22:00
+    "Kurn's Tower": 1100,         # 18:20
+    "Kaesora": 1080,              # 18:00
+    "Mines of Nurga": 1230,       # 20:30
+    "Temple of Droga": 1230,      # 20:30
+    "Chardok": 1080,              # 18:00
+    "Howling Stones": 1230,       # 20:30
+    "Charasis": 1230,             # 20:30
+    "Old Sebilis": 1620,          # 27:00
+    "Sebilis": 1620,              # 27:00
     "Veeshan's Peak": 1680,            # 28:00
 
     # ── Velious ───────────────────────────────────────────────────
     "Iceclad Ocean": 400,              # 6:40
     "Eastern Wastes": 400,             # 6:40
-    "Great Divide": 400,               # 6:40
-    "Cobalt Scar": 400,                # 6:40
+    "Great Divide": 640,          # 10:40
+    "Cobalt Scar": 1200,          # 20:00
     "Wakening Land": 400,              # 6:40
-    "Skyshrine": 1320,                 # 22:00
-    "Kael Drakkal": 1320,              # 22:00
-    "Thurgadin": 1440,                 # 24:00
-    "Icewell Keep": 1320,              # 22:00
-    "Crystal Caverns": 1320,           # 22:00
-    "Velketor's Labyrinth": 1320,      # 22:00
-    "Tower of Frozen Shadow": 1320,    # 22:00
-    "Dragon Necropolis": 1320,         # 22:00
-    "Siren's Grotto": 1320,            # 22:00
+    "Skyshrine": 1800,            # 30:00
+    "Kael Drakkal": 1680,         # 28:00
+    "Thurgadin": 420,             # 7:00
+    "Icewell Keep": 1260,         # 21:00
+    "Crystal Caverns": 885,       # 14:45
+    "Velketor's Labyrinth": 1970, # 32:50
+    "Tower of Frozen Shadow": 1200, # 20:00
+    "Dragon Necropolis": 1620,    # 27:00
+    "Siren's Grotto": 1680,       # 28:00
     "Western Wastes": 400,             # 6:40
-    "Temple of Veeshan": 1680,         # 28:00
-    "Sleeper's Tomb": 1680,            # 28:00
-    "Plane of Growth": 1680,           # 28:00
-    "Plane of Mischief": 1320,         # 22:00
+    "Temple of Veeshan": 259200,  # 72:00:00
+    "Sleeper's Tomb": 28800,      # 8:00:00
+    "Plane of Growth": 43200,     # 12:00:00
+    "Plane of Mischief": 4210,    # 1:10:10
 }
 
 # Aliases for zone name normalization
