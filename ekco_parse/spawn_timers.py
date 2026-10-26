@@ -132,7 +132,7 @@ ZONE_SPAWN_TIMERS: Dict[str, int] = {
     "Dragon Necropolis": 1620,    # 27:00
     "Siren's Grotto": 1680,       # 28:00
     "Western Wastes": 400,             # 6:40
-    "Temple of Veeshan": 259200,  # 72:00:00
+    "Temple of Veeshan": 4320,    # 72:00
     "Sleeper's Tomb": 28800,      # 8:00:00
     "Plane of Growth": 43200,     # 12:00:00
     "Plane of Mischief": 4210,    # 1:10:10
