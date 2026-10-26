@@ -175,33 +175,19 @@ class EkcoParseApp(App):
         self._LOG_IDLE_THRESHOLD: float = 30.0  # Seconds of no log = game offline, freeze timers
 
     def compose(self) -> ComposeResult:
-        yield Container(
-            HeaderWidget(id="header-bar"),
-            TabbedContent(
-                TabPane(
-                    "Live",
-                    DotClockWidget(id="dot-panel", classes="panel"),
-                    DpsWidget(id="dps-panel", classes="panel"),
-                    TickerWidget(id="ticker-panel", classes="panel"),
-                    BuffClockWidget(id="buff-panel", classes="panel"),
-                    id="tab-live",
-                ),
-                TabPane(
-                    "Defense",
-                    MitigationWidget(id="mitigation-panel", classes="panel"),
-                    id="tab-defense",
-                ),
-                TabPane(
-                    "Ledger",
-                    LootWidget(id="loot-panel", classes="panel"),
-                    RespawnWidget(id="respawn-panel", classes="panel"),
-                    id="tab-ledger",
-                ),
-                initial="tab-live",
-                id="dashboard-tabs",
-            ),
-            id="main-container",
-        )
+        with Container(id="main-container"):
+            yield HeaderWidget(id="header-bar")
+            with TabbedContent(initial="tab-live", id="dashboard-tabs"):
+                with TabPane("Live", id="tab-live"):
+                    yield DotClockWidget(id="dot-panel", classes="panel")
+                    yield DpsWidget(id="dps-panel", classes="panel")
+                    yield TickerWidget(id="ticker-panel", classes="panel")
+                    yield BuffClockWidget(id="buff-panel", classes="panel")
+                with TabPane("Defense", id="tab-defense"):
+                    yield MitigationWidget(id="mitigation-panel", classes="panel")
+                with TabPane("Ledger", id="tab-ledger"):
+                    yield LootWidget(id="loot-panel", classes="panel")
+                    yield RespawnWidget(id="respawn-panel", classes="panel")
 
     def on_mount(self) -> None:
         # Request always-on-top via xdotool (non-blocking, best-effort)
