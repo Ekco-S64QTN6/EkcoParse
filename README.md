@@ -104,9 +104,9 @@ In the map window:
 
 ## Overlay transparency
 
-The default launcher starts the dashboard in Kitty with `background_opacity=0.55`. To make the game more visible through the overlay, change the `background_opacity` value in `KITTY_OVERLAY_OPTS` near the top of `run.sh`; lower values are more transparent. The dashboard itself uses transparent Textual backgrounds and no longer forces the terminal background color.
+The default launcher starts the dashboard in Kitty with `background_opacity=0.0` (fully transparent). The dashboard runs Textual in ANSI-color mode and uses the terminal's **default background** for the screen and every panel. This matters: CSS transparency alone can resolve against Textual's opaque theme surface, and Kitty only applies `background_opacity` to cells using the terminal's default background.
 
-Transparency depends on terminal and compositor support. If you launch in a terminal other than Kitty, use that terminal's own transparency settings. The standalone map window intentionally uses a dark panel background for map readability.
+To make the overlay less transparent, raise the `background_opacity` value in `KITTY_OVERLAY_OPTS` near the top of `run.sh` (for example, `0.25` or `0.50`). Transparency requires terminal and compositor support. When launching outside Kitty, configure that terminal's opacity and use a terminal that supports ANSI default-background behavior. The standalone map window intentionally keeps dark panels for map readability.
 
 ## Tests and roadmap
 
@@ -128,13 +128,16 @@ Ekco Parse is an independent, community-made companion. It is not an official Pr
 
 ## References and project influences
 
-The projects and resources below informed the feature goals, implementation research, or visual direction. They are credited as references—not as a claim that Ekco Parse is affiliated with them or that their code or assets have been copied.
+The projects and resources below are useful references for the problem space, implementation research, or dependencies. They are listed to credit the work and documentation the project draws on; Ekco Parse is independent and is not affiliated with the tools or communities listed.
 
 ### EverQuest tools
 
 - **[GINA](https://eq.gimasoft.com/gina/Default.aspx)** — a reference for log-triggered alerts, timers, and player-configurable triggers.
 - **[GamParse](https://gambosoft.eqresource.com/downloads.php)** — a reference for combat-log analysis, DPS reporting, and tanking/defense statistics.
 - **[nParse](https://github.com/nomns/nparse)** — an open-source Project 1999 companion that reads player logs for location and spell tracking; a useful point of comparison for log-driven map behavior.
+- **[PigParse / EqTool](https://github.com/smasherprog/EqTool)** — a community P99 tool reference covering combat reporting, maps, and spell timers.
+- **[EQ Travel Map](https://github.com/ajbtech/EQ-Travel-Map)** — an open-source log analyzer that reconstructs zone-to-zone travel and play summaries from EverQuest logs.
+- **[EQLogParser](https://github.com/kauffman12/EQLogParser)** — an open-source EverQuest log viewer/parser with trigger and overlay functionality; useful for comparing log-driven event handling.
 
 ### Project 1999, emulation, and map resources
 
@@ -145,7 +148,6 @@ The projects and resources below informed the feature goals, implementation rese
 
 ### Interface and libraries
 
-- **[Dwarf Fortress Antfarm](https://github.com/Ekco-S64QTN6/dwarffortress-antfarm)** — a separate project by the same maintainer; the dense terminal layout, border hierarchy, and color contrast served as visual inspiration. It is not a dependency of Ekco Parse.
 - **[Textual](https://github.com/Textualize/textual)** — the terminal UI framework.
 - **[Rich](https://github.com/Textualize/rich)** — terminal styling and formatted text.
 - **[PyYAML](https://github.com/yaml/pyyaml)** — YAML configuration loading.
