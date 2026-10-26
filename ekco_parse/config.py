@@ -57,7 +57,9 @@ class Config:
 
         # Log Tailer
         tailer = config_dict.get("log_tailer", {})
-        self.log_dir: Path = Path(tailer.get("log_dir", str(Path.home() / "Games" / "Project1999" / "Logs"))).expanduser()
+        self.log_dir: Path = Path(
+            tailer.get("log_dir", str(Path.home() / "Games" / "Project1999" / "Logs"))
+        ).expanduser()
         self.filename_pattern: str = tailer.get("filename_pattern", "eqlog_{character}_{server}.txt")
         self.poll_interval_sec: float = float(tailer.get("poll_interval_sec", 0.1))
         self.start_at_end: bool = bool(tailer.get("start_at_end", True))
