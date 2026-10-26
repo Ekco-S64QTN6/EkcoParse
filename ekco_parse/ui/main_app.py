@@ -42,14 +42,14 @@ class EkcoParseApp(App):
 
     CSS = f"""
     Screen {{
-        background: transparent;
+        background: ansi_default;
         padding: 0;
         margin: 0;
         overflow: hidden;
     }}
 
     #main-container {{
-        background: transparent;
+        background: ansi_default;
         layout: vertical;
         height: 100%;
         padding: 0 1;
@@ -57,7 +57,7 @@ class EkcoParseApp(App):
 
     #header-bar {{
         height: 1;
-        background: transparent;
+        background: ansi_default;
         color: white;
         padding: 0;
         margin-top: 0;
@@ -65,7 +65,7 @@ class EkcoParseApp(App):
     }}
 
     .panel {{
-        background: transparent;
+        background: ansi_default;
         margin-bottom: 0;
         padding: 0 1;
     }}
@@ -74,27 +74,27 @@ class EkcoParseApp(App):
         height: auto;
         max-height: 8;
         border: round {COLOR_MAGENTA};
-        background: transparent;
+        background: ansi_default;
     }}
 
     #dps-panel {{
         height: auto;
         max-height: 6;
         border: round {COLOR_CYAN};
-        background: transparent;
+        background: ansi_default;
     }}
 
     #ticker-panel {{
         height: auto;
         max-height: 2;
         border: round {COLOR_PURPLE};
-        background: transparent;
+        background: ansi_default;
     }}
 
     #buff-panel {{
         height: 1fr;
         border: round {COLOR_GREEN};
-        background: transparent;
+        background: ansi_default;
     }}
     """
 
@@ -108,7 +108,10 @@ class EkcoParseApp(App):
     ]
 
     def __init__(self, config: Optional[Config] = None):
-        super().__init__()
+        # ANSI default backgrounds let the terminal/compositor's own opacity
+        # show through every widget cell. CSS "transparent" alone can resolve
+        # against Textual's opaque theme surface.
+        super().__init__(ansi_color=True)
         self.config = config or load_config()
 
         self.dps_engine = DpsEngine(
