@@ -4,16 +4,7 @@ from textual.widgets import Static
 from rich.markup import escape
 
 from ekco_parse.models import Timer
-from ekco_parse.ui.theme import (
-    COLOR_CYAN,
-    COLOR_MAGENTA,
-    COLOR_PURPLE,
-    COLOR_GREEN,
-    COLOR_AMBER,
-    COLOR_RED,
-    COLOR_MUTED,
-    render_progress_bar,
-)
+from ekco_parse.ui.theme import COLOR_AMBER, COLOR_GREEN, COLOR_RED
 
 
 class DotClockWidget(Static):
@@ -46,8 +37,6 @@ class DotClockWidget(Static):
         for timer in sorted_dots:
             rem = max(0.0, timer.remaining_seconds)
             clock_plain = self.format_clock(rem)
-            total = timer.total_seconds
-
             spell_name = timer.name
             target_str = f"({timer.target})" if timer.target and timer.target != "Self" else ""
             label = f"{spell_name} {target_str}".strip()
@@ -65,20 +54,15 @@ class DotClockWidget(Static):
                 status_text, status_color = "ACTIVE", COLOR_GREEN
                 clock_str = f"[bold white]{clock_plain}[/]"
 
-            # Give the spell + target all available space. Shrink the progress bar
-            # first on narrower windows; the status stays pinned to the right edge.
-            bar_width = max(
-                0,
-                min(8, content_width - len(label) - 1 - len(clock_plain) - 1 - 1 - status_width),
-            )
-            p_bar = render_progress_bar(rem, total, width=bar_width, color=timer.color) if bar_width else ""
+            # With the progress bar removed, use the freed space to keep the
+            # status column at the right edge of the panel.
             gap_width = max(
                 1,
-                content_width - (len(label) + 1 + len(clock_plain) + 1 + bar_width + status_width),
+                content_width - (len(label) + 1 + len(clock_plain) + 1 + status_width),
             )
             status_tag = f"[bold {status_color}]{status_text:>{status_width}}[/]"
             lines.append(
-                f"[bold white]{escape(label)}[/] {clock_str} {p_bar}{' ' * gap_width}{status_tag}"
+                f"[bold white]{escape(label)}[/] {clock_str}{' ' * gap_width}{status_tag}"
             )
 
         self.update("\n".join(lines))

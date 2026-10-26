@@ -4,16 +4,7 @@ from textual.widgets import Static
 from rich.markup import escape
 
 from ekco_parse.models import Timer
-from ekco_parse.ui.theme import (
-    COLOR_CYAN,
-    COLOR_MAGENTA,
-    COLOR_PURPLE,
-    COLOR_GREEN,
-    COLOR_AMBER,
-    COLOR_RED,
-    COLOR_MUTED,
-    render_progress_bar,
-)
+from ekco_parse.ui.theme import COLOR_GREEN, COLOR_AMBER, COLOR_RED
 
 
 class BuffClockWidget(Static):
@@ -50,8 +41,6 @@ class BuffClockWidget(Static):
             rem = max(0.0, timer.remaining_seconds)
             time_str = self.format_buff_time(rem)
             time_width = max(7, len(time_str))
-            total = timer.total_seconds
-
             # Keep full spell names; the old 18-character cap cut off valid names.
             name = timer.name
 
@@ -68,18 +57,15 @@ class BuffClockWidget(Static):
                 status_text, status_color = "ACTIVE", COLOR_GREEN
                 time_styled = f"[bold white]{time_str:>{time_width}}[/]"
 
-            bar_width = max(
-                0,
-                min(8, content_width - len(name) - 1 - time_width - 1 - 1 - status_width),
-            )
-            p_bar = render_progress_bar(rem, total, width=bar_width, color=timer.color) if bar_width else ""
+            # Use whitespace instead of a colored progress bar, keeping the
+            # status label aligned to the panel's right edge.
             gap_width = max(
                 1,
-                content_width - (len(name) + 1 + time_width + 1 + bar_width + status_width),
+                content_width - (len(name) + 1 + time_width + 1 + status_width),
             )
             status_tag = f"[bold {status_color}]{status_text:>{status_width}}[/]"
             lines.append(
-                f"[bold white]{escape(name)}[/] {time_styled} {p_bar}{' ' * gap_width}{status_tag}"
+                f"[bold white]{escape(name)}[/] {time_styled}{' ' * gap_width}{status_tag}"
             )
 
         self.update("\n".join(lines))
