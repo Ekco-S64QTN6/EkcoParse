@@ -62,4 +62,4 @@ class RespawnWidget(Static):
                 f"[bold white]{escape(name)}[/] {time_styled}{' ' * gap_width}{status_tag}"
             )
 
-        self.update("\\n".join(lines))
+        self.update("\n".join(lines))
