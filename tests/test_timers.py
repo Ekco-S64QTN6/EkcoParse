@@ -247,6 +247,109 @@ class TestTimerEngine(unittest.TestCase):
             self.assertEqual([timer.name for timer in engine.get_sorted_dots()], ["Invoke Fear"])
             self.assertEqual(len(engine.active_timers), 1)
 
+    def test_unrelated_log_line_does_not_consume_pending_invoke_fear(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        invoke_fear = SpellDef(
+            name="Invoke Fear",
+            duration_ticks=25,
+            duration_seconds=150.0,
+            category="mez",
+            dot_type=None,
+            cast_time_sec=3.0,
+            cast_on_other=" is overcome by supernatural terror.",
+        )
+        inspire_fear = SpellDef(
+            name="Inspire Fear",
+            duration_ticks=25,
+            duration_seconds=150.0,
+            category="mez",
+            dot_type=None,
+            cast_time_sec=3.0,
+            cast_on_other=" cowers in terror.",
+        )
+
+        with patch.dict(
+            SPELL_DB.spells_by_name,
+            {"invoke fear": invoke_fear, "inspire fear": inspire_fear},
+        ), patch.dict(
+            SPELL_DB.spells_by_on_other,
+            {inspire_fear.cast_on_other.lower(): inspire_fear},
+        ):
+            engine = TimerEngine()
+            engine.handle_spell_cast_start("You", "Invoke Fear", t0)
+
+            # Cross the expected cast time with an unrelated message first.
+            created = engine.process_line(
+                "You say, 'still casting'.",
+                t0 + timedelta(seconds=2.6),
+            )
+            self.assertEqual(created, [])
+            self.assertEqual(engine.pending_cast_spell, "Invoke Fear")
+            self.assertEqual(engine.active_timers, {})
+
+            # Even if the landing text maps generically to Inspire Fear, the cast
+            # identity should win and only the correctly targeted timer is added.
+            created = engine.process_line(
+                "a spectre cowers in terror.",
+                t0 + timedelta(seconds=3.0),
+            )
+            self.assertEqual([timer.name for timer in created], ["Invoke Fear"])
+            self.assertEqual(len(engine.active_timers), 1)
+            timer = next(iter(engine.active_timers.values()))
+            self.assertEqual(timer.name, "Invoke Fear")
+            self.assertEqual(timer.target, "a spectre")
+            self.assertIsNone(engine.pending_cast_spell)
+
+    def test_unrelated_log_line_does_not_create_unknown_dooming_darkness_duplicate(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        dooming_darkness = SpellDef(
+            name="Dooming Darkness",
+            duration_ticks=16,
+            duration_seconds=96.0,
+            category="snare",
+            dot_type="magic",
+            cast_time_sec=4.0,
+            cast_on_other=" is engulfed in shadow.",
+        )
+        cascading_darkness = SpellDef(
+            name="Cascading Darkness",
+            duration_ticks=16,
+            duration_seconds=96.0,
+            category="snare",
+            dot_type="magic",
+            cast_time_sec=7.0,
+            cast_on_other=" is engulfed in darkness.",
+        )
+
+        with patch.dict(
+            SPELL_DB.spells_by_name,
+            {"dooming darkness": dooming_darkness, "cascading darkness": cascading_darkness},
+        ), patch.dict(
+            SPELL_DB.spells_by_on_other,
+            {cascading_darkness.cast_on_other.lower(): cascading_darkness},
+        ):
+            engine = TimerEngine()
+            engine.handle_spell_cast_start("You", "Dooming Darkness", t0)
+
+            created = engine.process_line(
+                "You say, 'still casting'.",
+                t0 + timedelta(seconds=3.6),
+            )
+            self.assertEqual(created, [])
+            self.assertEqual(engine.pending_cast_spell, "Dooming Darkness")
+            self.assertEqual(engine.active_timers, {})
+
+            created = engine.process_line(
+                "a hill giant is engulfed in darkness.",
+                t0 + timedelta(seconds=4.0),
+            )
+            self.assertEqual([timer.name for timer in created], ["Dooming Darkness"])
+            self.assertEqual(len(engine.active_timers), 1)
+            timer = next(iter(engine.active_timers.values()))
+            self.assertEqual(timer.name, "Dooming Darkness")
+            self.assertEqual(timer.target, "a hill giant")
+            self.assertIsNone(engine.pending_cast_spell)
+
     def test_recast_refreshes_same_spell_target_even_if_target_case_changes(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
         sdef = SPELL_DB.lookup_by_name("Scourge")
