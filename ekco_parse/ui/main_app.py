@@ -95,7 +95,8 @@ class EkcoParseApp(App):
     }}
 
     #buff-panel {{
-        height: 1fr;
+        height: auto;
+        max-height: 15;
         border: round {COLOR_GREEN};
         background: ansi_default;
         overflow-y: auto;
