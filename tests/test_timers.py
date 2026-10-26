@@ -21,7 +21,8 @@ class TestTimerEngine(unittest.TestCase):
         self.engine.process_line("a hill giant's body begins to splurt.", t0)
         self.engine.process_line("a hill giant is enveloped in a funeral pyre.", t0)
         self.engine.process_line("a hill giant is engulfed in darkness.", t0)
-        self.engine.process_line("a hill giant staggers.", t0)
+        self.engine.handle_spell_cast_start("You", "Bond of Death", t0)
+        self.engine.process_line("a hill giant staggers.", t0 + timedelta(seconds=7))
 
         # Get sorted DoTs
         sorted_dots = self.engine.get_sorted_dots()
@@ -33,6 +34,26 @@ class TestTimerEngine(unittest.TestCase):
         self.assertEqual(actual_order[1], "Bond of Death")
         self.assertIn(actual_order[2], ("Cascading Darkness", "Dooming Darkness"))
         self.assertEqual(actual_order[3], "Splurt")
+
+    def test_pet_combat_stagger_does_not_create_bond_of_death_timer(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+
+        # Pet/melee combat can produce the same generic "staggers" text as
+        # Bond of Death's landing message. Without a player cast, it is not a DoT.
+        created = self.engine.process_line("a hill giant staggers.", t0)
+        self.assertEqual(created, [])
+        self.assertEqual(self.engine.get_sorted_dots(), [])
+        self.assertEqual(self.engine.active_timers, {})
+
+        # The same landing text remains valid when Bond of Death is actually cast.
+        self.engine.handle_spell_cast_start("You", "Bond of Death", t0 + timedelta(seconds=1))
+        created = self.engine.process_line(
+            "a hill giant staggers.",
+            t0 + timedelta(seconds=8),
+        )
+        self.assertEqual([timer.name for timer in created], ["Bond of Death"])
+        self.assertEqual([timer.name for timer in self.engine.get_sorted_dots()], ["Bond of Death"])
+        self.assertEqual(self.engine.get_sorted_dots()[0].target, "a hill giant")
 
     def test_buffs_separate_list(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
