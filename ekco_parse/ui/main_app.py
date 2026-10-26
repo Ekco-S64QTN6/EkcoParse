@@ -12,7 +12,7 @@ from typing import Optional
 from rich.markup import escape
 from textual.app import App, ComposeResult
 from textual.containers import Container, Vertical
-from textual.widgets import Static
+from textual.widgets import Static, TabbedContent, TabPane
 
 from ekco_parse.config import Config, load_config
 from ekco_parse.dps_engine import DpsEngine
@@ -35,6 +35,9 @@ from ekco_parse.ui.widgets.dot_panel import DotClockWidget
 from ekco_parse.ui.widgets.dps_panel import DpsWidget
 from ekco_parse.ui.widgets.header import HeaderWidget
 from ekco_parse.ui.widgets.ticker import TickerWidget
+from ekco_parse.ui.widgets.mitigation_panel import MitigationWidget
+from ekco_parse.ui.widgets.loot_panel import LootWidget
+from ekco_parse.ui.widgets.respawn_panel import RespawnWidget
 
 
 class EkcoParseApp(App):
@@ -105,6 +108,9 @@ class EkcoParseApp(App):
         ("c", "clear_timers", "Clear Timers"),
         ("s", "toggle_audio", "Mute/Unmute"),
         ("t", "test_sim", "Simulate"),
+        ("1", "show_live", "Live"),
+        ("2", "show_defense", "Defense"),
+        ("3", "show_ledger", "Ledger"),
     ]
 
     def __init__(self, config: Optional[Config] = None):
@@ -132,11 +138,30 @@ class EkcoParseApp(App):
     def compose(self) -> ComposeResult:
         yield Container(
             HeaderWidget(id="header-bar"),
-            DotClockWidget(id="dot-panel", classes="panel"),
-            DpsWidget(id="dps-panel", classes="panel"),
-            TickerWidget(id="ticker-panel", classes="panel"),
-            BuffClockWidget(id="buff-panel", classes="panel"),
-            id="main-container"
+            TabbedContent(
+                TabPane(
+                    "Live",
+                    DotClockWidget(id="dot-panel", classes="panel"),
+                    DpsWidget(id="dps-panel", classes="panel"),
+                    TickerWidget(id="ticker-panel", classes="panel"),
+                    BuffClockWidget(id="buff-panel", classes="panel"),
+                    id="tab-live",
+                ),
+                TabPane(
+                    "Defense",
+                    MitigationWidget(id="mitigation-panel", classes="panel"),
+                    id="tab-defense",
+                ),
+                TabPane(
+                    "Ledger",
+                    LootWidget(id="loot-panel", classes="panel"),
+                    RespawnWidget(id="respawn-panel", classes="panel"),
+                    id="tab-ledger",
+                ),
+                initial="tab-live",
+                id="dashboard-tabs",
+            ),
+            id="main-container",
         )
 
     def on_mount(self) -> None:
@@ -315,6 +340,29 @@ class EkcoParseApp(App):
         # Update Ticker
         alerts = list(self.timer_engine.recent_alerts)
         self.query_one("#ticker-panel", TickerWidget).update_alerts(alerts, self.last_log_line)
+
+        # Defense details are available on their own tab so the compact live
+        # overlay remains readable while still exposing the existing engine.
+        player_stats = enc.combatants.get("You") if enc else None
+        self.query_one("#mitigation-panel", MitigationWidget).update_mitigation(
+            encounter=enc,
+            player_stats=player_stats,
+        )
+
+        # Kill/loot and respawn views are updated even while their tab is inactive.
+        self.query_one("#loot-panel", LootWidget).update_loot(self.loot_engine)
+        self.query_one("#respawn-panel", RespawnWidget).update_respawns(
+            self.timer_engine.get_sorted_respawns()
+        )
+
+    def action_show_live(self) -> None:
+        self.query_one("#dashboard-tabs", TabbedContent).active = "tab-live"
+
+    def action_show_defense(self) -> None:
+        self.query_one("#dashboard-tabs", TabbedContent).active = "tab-defense"
+
+    def action_show_ledger(self) -> None:
+        self.query_one("#dashboard-tabs", TabbedContent).active = "tab-ledger"
 
     def action_reset_encounter(self) -> None:
         self.dps_engine.end_active_encounter(reason="manual_reset")
