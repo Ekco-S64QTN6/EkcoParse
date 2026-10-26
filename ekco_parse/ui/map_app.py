@@ -71,7 +71,7 @@ class MapCanvasWidget(Static):
     """ASCII / Braille 2D radar grid display."""
 
     def on_mount(self) -> None:
-        self.border_title = "ZONE RADAR (100% P99 COMPLIANT LOG-DRIVEN)"
+        self.border_title = "ZONE RADAR (LOG-DRIVEN)"
 
     def update_radar(self, radar_rows: list[str]) -> None:
         self.update("\n".join(radar_rows))
@@ -181,7 +181,7 @@ class EkcoMapApp(App):
         self.config = config or load_config()
         initial_zone = zone or self.config.default_zone
         self.map_engine = MapEngine(
-            maps_dir=Path("/home/ekco/Games/Project1999/maps"),
+            maps_dir=self.config.maps_dir,
             default_zone=initial_zone,
             max_breadcrumbs=self.config.max_breadcrumbs,
         )

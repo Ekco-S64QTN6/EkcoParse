@@ -1,9 +1,9 @@
-"""Theme tokens, color palettes, and UI render utilities matching dwarffortress-antfarm."""
+"""Theme tokens, color palettes, and UI render utilities matching Ekco Parse."""
 
 from rich.markup import escape
 
 
-# dwarffortress-antfarm color tokens
+# Ekco Parse color tokens
 COLOR_BG = "#05070D"            # Void dark screen background
 COLOR_PANEL_BG = "#0D1120"      # Slate navy panel background
 COLOR_CYAN = "#00F5FF"          # Primary accent / Column Left
