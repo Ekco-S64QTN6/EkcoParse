@@ -57,6 +57,7 @@ class CombatantStats:
     parries: int = 0
     ripostes: int = 0
     blocks: int = 0
+    enemy_misses: int = 0
     max_hit_taken: int = 0
 
     # Healing
@@ -81,10 +82,10 @@ class CombatantStats:
 
     @property
     def avoidance_rate(self) -> float:
-        total_incoming = self.hits_taken + self.dodges + self.parries + self.ripostes + self.blocks
+        total_incoming = self.hits_taken + self.dodges + self.parries + self.ripostes + self.blocks + self.enemy_misses
         if total_incoming == 0:
             return 0.0
-        avoided = self.dodges + self.parries + self.ripostes + self.blocks
+        avoided = self.dodges + self.parries + self.ripostes + self.blocks + self.enemy_misses
         return (avoided / total_incoming) * 100.0
 
 

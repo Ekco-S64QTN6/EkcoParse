@@ -74,24 +74,28 @@ class DpsEngine:
         if actor_name.lower() in ("you", self.character_name.lower()):
             actor_name = "You"
 
-        combatant = enc.get_combatant(actor_name)
-        if action.damage > 0:
-            combatant.damage_dealt += action.damage
-            combatant.hits_landed += 1
-            if action.is_crit or action.is_crippling:
-                combatant.crits += 1
-            if action.is_non_melee:
-                combatant.non_melee_damage += action.damage
-            if action.damage > combatant.max_hit:
-                combatant.max_hit = action.damage
+        # Incoming attacks on YOU belong to tank-mitigation statistics, not
+        # outgoing DPS. Counting the NPC as a damage dealer here inflated both
+        # encounter total damage and damage-per-second.
+        if action.target.upper() != "YOU":
+            combatant = enc.get_combatant(actor_name)
+            if action.damage > 0:
+                combatant.damage_dealt += action.damage
+                combatant.hits_landed += 1
+                if action.is_crit or action.is_crippling:
+                    combatant.crits += 1
+                if action.is_non_melee:
+                    combatant.non_melee_damage += action.damage
+                if action.damage > combatant.max_hit:
+                    combatant.max_hit = action.damage
 
-            # Update session aggregates
-            self.session_total_damage += action.damage
-            if action.damage > self.session_max_hit:
-                self.session_max_hit = action.damage
-                self.session_max_hit_actor = actor_name
-        elif action.is_miss:
-            combatant.misses += 1
+                # Update outgoing-damage session aggregates only.
+                self.session_total_damage += action.damage
+                if action.damage > self.session_max_hit:
+                    self.session_max_hit = action.damage
+                    self.session_max_hit_actor = actor_name
+            elif action.is_miss:
+                combatant.misses += 1
 
         # Track tank mitigation if YOU are the target
         if action.target.upper() == "YOU":
@@ -112,9 +116,8 @@ class DpsEngine:
                     player_tank.ripostes += 1
                 elif m_type == "block":
                     player_tank.blocks += 1
-                else:
-                    # Enemy missed player
-                    pass
+                elif m_type == "miss":
+                    player_tank.enemy_misses += 1
 
     def process_heal(self, heal: HealAction) -> None:
         """Process healing cast or received."""

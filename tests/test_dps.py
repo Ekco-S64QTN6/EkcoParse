@@ -39,6 +39,42 @@ class TestDpsEngine(unittest.TestCase):
         self.assertEqual(archived.target, "a hill giant")
         self.assertEqual(archived.total_damage, 150)
 
+    def test_incoming_damage_does_not_inflate_outgoing_dps(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        incoming = CombatAction(
+            actor="a hill giant",
+            target="YOU",
+            verb="slashes",
+            damage=50,
+            timestamp=t0,
+        )
+        self.engine.process_combat_action(incoming)
+
+        enc = self.engine.active_encounter
+        self.assertIsNotNone(enc)
+        self.assertEqual(enc.total_damage, 0)
+        self.assertEqual(self.engine.session_total_damage, 0)
+        self.assertNotIn("a hill giant", enc.combatants)
+        self.assertEqual(enc.get_combatant("You").damage_taken, 50)
+
+    def test_enemy_misses_contribute_to_avoidance(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        self.engine.process_combat_action(
+            CombatAction(actor="a hill giant", target="YOU", verb="slashes", damage=50, timestamp=t0)
+        )
+        self.engine.process_combat_action(
+            CombatAction(actor="a hill giant", target="YOU", verb="punches", damage=0,
+                         is_miss=True, miss_type="dodge", timestamp=t0)
+        )
+        self.engine.process_combat_action(
+            CombatAction(actor="a hill giant", target="YOU", verb="bashes", damage=0,
+                         is_miss=True, miss_type="miss", timestamp=t0)
+        )
+
+        player = self.engine.active_encounter.get_combatant("You")
+        self.assertEqual(player.enemy_misses, 1)
+        self.assertAlmostEqual(player.avoidance_rate, 2 / 3 * 100)
+
     def test_mitigation_and_avoidance(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
         # Mob hits YOU for 50
