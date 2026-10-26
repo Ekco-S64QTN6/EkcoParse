@@ -1,6 +1,8 @@
 """Headless UI tests verifying Textual app composition and widget mounting."""
 
 import unittest
+from textual.widgets import TabbedContent
+
 from ekco_parse.config import load_config
 from ekco_parse.ui.main_app import EkcoParseApp
 from ekco_parse.ui.map_app import EkcoMapApp
@@ -45,11 +47,11 @@ class TestTextualUI(unittest.IsolatedAsyncioTestCase):
 
             # Numeric shortcuts make all three views usable without a mouse.
             await pilot.press("2")
-            self.assertEqual(app.query_one("#dashboard-tabs", __import__("textual.widgets", fromlist=["TabbedContent"]).TabbedContent).active, "tab-defense")
+            self.assertEqual(app.query_one("#dashboard-tabs", TabbedContent).active, "tab-defense")
             await pilot.press("3")
-            self.assertEqual(app.query_one("#dashboard-tabs", __import__("textual.widgets", fromlist=["TabbedContent"]).TabbedContent).active, "tab-ledger")
+            self.assertEqual(app.query_one("#dashboard-tabs", TabbedContent).active, "tab-ledger")
             await pilot.press("1")
-            self.assertEqual(app.query_one("#dashboard-tabs", __import__("textual.widgets", fromlist=["TabbedContent"]).TabbedContent).active, "tab-live")
+            self.assertEqual(app.query_one("#dashboard-tabs", TabbedContent).active, "tab-live")
 
     async def test_map_app_mounts(self):
         config = load_config()
