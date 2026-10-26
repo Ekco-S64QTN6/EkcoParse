@@ -27,6 +27,18 @@ class TestMainAppEventRouting(unittest.TestCase):
         self.assertTrue(self.app.timer_engine.recent_alerts)
         self.assertIn("died", self.app.timer_engine.recent_alerts[0]["text"].lower())
 
+    def test_coin_loot_events_update_denomination_totals(self):
+        self.app._process_log_line(
+            log_line("You receive 2 platinum, 3 gold, 4 silver, and 5 copper from the corpse.")
+        )
+
+        self.assertEqual(self.app.loot_engine.total_coin_messages, 1)
+        self.assertEqual(self.app.loot_engine.coin_totals["platinum"], 2)
+        self.assertEqual(self.app.loot_engine.coin_totals["gold"], 3)
+        self.assertEqual(self.app.loot_engine.coin_totals["silver"], 4)
+        self.assertEqual(self.app.loot_engine.coin_totals["copper"], 5)
+        self.assertIn("platinum", self.app.loot_engine.coin_history[0]["money"])
+
     def test_mob_death_uses_current_zone_respawn_duration(self):
         self.app.active_zone = "Lower Guk"
 
