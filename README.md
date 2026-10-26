@@ -1,182 +1,153 @@
 # Ekco Parse
 
-**High-Performance Terminal Desktop Companion for Project 1999 EverQuest**
+**A Linux-first, log-driven companion for EverQuest: Project 1999.**
 
-Ekco Parse is a lightweight, zero-latency Linux terminal companion application designed specifically for **Project 1999 EverQuest**. It unites the core capabilities of **GINA** (spell, buff, and DoT timers & alerts), **GamParse** (live DPS, combat breakdowns, and tank mitigation), a **100% P99-compliant log-driven standalone map tracker** (`/loc` GPS radar), and a **live kill & loot ledger** into an ultra-fast monospace dashboard.
+<p>
+  <a href="https://github.com/Ekco-S64QTN6/EkcoParse/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/Ekco-S64QTN6/EkcoParse?style=flat"></a>
+  <a href="https://github.com/Ekco-S64QTN6/EkcoParse/issues"><img alt="Open issues" src="https://img.shields.io/github/issues/Ekco-S64QTN6/EkcoParse?style=flat"></a>
+  <img alt="Python 3.10+" src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white">
+  <img alt="Platform Linux" src="https://img.shields.io/badge/platform-Linux-lightgrey?logo=linux&logoColor=white">
+  <img alt="Target game Project 1999" src="https://img.shields.io/badge/game-EverQuest%20P99-blue">
+  <img alt="Project status: in development" src="https://img.shields.io/badge/status-in%20development-orange">
+</p>
 
-Designed following the visual aesthetics, dark color palette, and high-density dashboard layouts of `dwarffortress-antfarm`, Ekco Parse is engineered to run in borderless terminal windows (e.g. Kitty, XTerm) pinned "Always on Top" next to your P99 client or captured cleanly as a streaming overlay.
+Ekco Parse brings several useful EverQuest tools into a compact terminal dashboard and a separate map window. It watches your local client log to track spell timers, buffs, combat activity, and player location.
 
-See [ROADMAP.md](ROADMAP.md) for a code-reviewed breakdown of what is implemented, what is partially wired into the UI, and what remains to reach the GINA / GamParse / map / kill-and-loot goals.
+The map uses the coordinates printed by `/loc` and compatible zone-map files. Ekco Parse does **not** read game memory, inject into the client, or attach to the game process.
 
----
+> **Project status:** actively being developed. See the [roadmap](ROADMAP.md) for an honest breakdown of what is connected, what is partial, and what remains.
 
-## Key Features
+## Features
 
-### 1. GINA Clone: Running Clocks & Dual Lists
-- **DoT & CC Rotation Clock (Sorted Soonest-to-Fade First)**:
-  - Specially tailored for a **Level 60 Necromancer** running multi-DoT rotations.
-  - Built-in exact tick & duration data for **Splurt** (96s), **Funeral Pyre of Kelador** (42s), **Cascading Darkness** (90s), **Cessation of Cor** (54s), **Asystole** (72s), **Envenomed Bolt** (66s), **Boil Blood** (54s), **Ignite Blood** (60s), **Plague** (108s), **Bond of Death** (24s), **Paralyzing Earth** (180s), and **Screaming Terror** (18s).
-  - Displays a live running clock (`MM:SS`) strictly ordered by which spell will expire first so you know the exact recast priority.
-  - Recast warnings: Changes to high-contrast red at `< 10s` (`▲ RECAST SOON`) and pulses `! RECAST NOW !` on fade.
-  - Auto-wear-off detection and instant DoT purging when the target dies.
-- **Separate Buffs & Cooldowns List**:
-  - Maintained as a **separate list on the TUI** to keep combat rotations clear.
-  - Tracks self and pet buffs: **Arch Lich** (20.5m), **Demi Lich** (144m), **Dead Man Floating** (72m), **Shield of the Undertaker** (36m), **Diamondskin** (72m), **Spirit of Wolf** (36m), **Clarity / Breeze** (24m), and **Haste**.
-  - Displays duration remaining, visual progress bar (`████░░░░`), and early warning when fading.
+| Area | Available now |
+| --- | --- |
+| **Spell and buff timers** | Separate DoT/CC and buff lists, countdowns, progress bars, fade/recast states, and configurable log triggers. Spell coverage and ready-to-use trigger presets are still evolving. |
+| **Combat DPS** | Live encounter damage and DPS with per-combatant contributions. Additional combat and tank-mitigation calculations exist but are not all exposed in the main dashboard yet. |
+| **Standalone map and GPS** | Log-driven `/loc` coordinates, zone geometry, a player marker, breadcrumb trail, heading and speed display, nearby points of interest, distances, and bearings. The first valid location centers the map and opens a 4× view; zoom can then be adjusted manually. |
+| **Kills, experience, loot, and respawns** | Tracking engines and widgets are present, but the kill/loot and respawn panels still need to be fully connected to the main dashboard. See the roadmap for remaining work. |
+| **Alerts** | A compact ticker shows recent trigger alerts and recent log activity. Custom triggers can define patterns, timers, messages, colors, and sound behavior. |
 
-### 2. GamParse Clone: Live DPS & Tank Mitigation
-- **Combat Breakdown**:
-  - Live DPS calculation across active encounters (`DPS = Damage / Active Seconds`).
-  - Real-time ASCII sparklines showing damage trends.
-  - Ranked combatants table: Player, Pet, and Party/Raid members with Damage, Share %, DPS, Accuracy %, Crits, and Max Hit.
-- **Tank Mitigation & Avoidance**:
-  - Tracks incoming damage dealt to `YOU`.
-  - Calculates defensive avoidance percentage: Dodges, Parries, Blocks, Ripostes, and Enemy Misses.
-  - Real-time incoming DPS and max hit taken tracking.
+The project favors a dense, readable terminal interface with high-contrast colors and bordered panels. It is designed to sit beside your game rather than replace the client.
 
-### 3. Standalone Map Window (`/loc` Radar & GPS)
-- **100% P99 Compliant**: Reads purely from client log file updates when `/loc` is invoked (no memory scanning or hooks).
-- **Runs as its own Standalone Window**: Designed to float anywhere on screen or over the game window.
-- **Real In-Game Map Geometry**: Directly loads map files (`L` and `P` lines) from your EverQuest directory (`/home/ekco/Games/Project1999/maps/`) or built-in fallbacks.
-- **Live 2D Radar Canvas**:
-  - High-resolution ASCII/Unicode radar grid with player marker `[@]`, breadcrumb trail (`░`), and zone lines (`[Z]`), merchants (`[M]`), banks (`[B]`).
-  - Live coordinates (`Y: 1234.5 | X: -567.8 | Z: 12.0`), travel speed (`u/s`), and compass rose heading.
-  - POI radar table displaying all nearby landmarks, distances in meters, and bearings (`[NW]`, `[E]`, etc.).
-  - Zoom levels (`1x`, `2x`, `4x`) and zone switching.
+## Requirements
 
-### 4. Kill & Loot Ledger
-- Slain mob counters and real-time **Kills / Hour** calculation.
-- Experience ticks milestone tracker and **Exp / Hour**.
-- Item drop logging parsing `--You have looted a ...--` with item counts and looter history.
+- Linux
+- Python 3.10 or newer
+- A Project 1999 client installation that writes its log file
+- A terminal emulator; Kitty is the best-supported option for the transparent overlay
 
-### 5. Urgent Alert Ticker / Story Card
-- High-contrast alert card at bottom for peripheral vision scanning.
-- Instant warnings for mob **Enrage** (`STOP MELEE!`), **Dragon Roar** (AE Fear), **Deathtouch** timers, and rare loot drops.
+## Installation and first launch
 
----
-
-## Visual Design & Aesthetics
-
-Follows the aesthetic specifications of `/github/dwarffortress-antfarm/`:
-- **Dark Void Screen**: `#05070D`
-- **Slate Navy Panels**: `#0D1120`
-- **Primary Borders / Cyan**: `#00F5FF`
-- **Secondary Borders / Pink**: `#FF2D95`
-- **Header Accent / Violet**: `#B64CFF`
-- **Status Green / Success**: `#59FF8E`
-- **Warning Gold / Buffs**: `#FFC857`
-- **Alert Red / Danger**: `#FF4040`
-- High-contrast block progress bars (`████░░░░`) and unicode sparklines (` ▂▃▄▅▆▇█`).
-
-### Transparent dashboard background
-
-The main dashboard's Textual screen and panels use transparent backgrounds. The application deliberately does not override the terminal background color, because doing so can interfere with Kitty applying its configured background opacity.
-
-The default `./run.sh` launcher opens the dashboard in Kitty with `background_opacity=0.55`. To make the game more visible through the overlay, lower the value in `KITTY_OVERLAY_OPTS` in `run.sh` (for example, `-o background_opacity=0.25`). When launching the Python module directly in Kitty instead of using the launcher, set `background_opacity 0.55` or another preferred value in `kitty.conf`.
-
-Alpha transparency depends on the terminal emulator and the OS/compositor. The non-Kitty fallback runs in the current terminal and needs that terminal's own transparency settings.
-
----
-
-## Installation & Quick Start
-
-Ekco Parse requires Python 3.10+ and uses `uv` or `pip` to install dependencies (`textual`, `rich`, `pyyaml`).
-
-### Setup
+Clone the repository, copy the example configuration, and edit it to match your character and local P99 installation:
 
 ```bash
-cd "/home/ekco/github/Ekco Parse"
-
-# Initialize virtual environment and install dependencies
-uv venv .venv
-uv pip install -r requirements.txt --python .venv/bin/python
+git clone https://github.com/Ekco-S64QTN6/EkcoParse.git
+cd EkcoParse
+cp config.example.yaml config.yaml
 ```
 
-### Launch Modes
-
-```bash
-# 1. Launch Main Companion Dashboard
-./run.sh
-
-# 2. Launch Standalone Map Window
-./run.sh --map
-
-# 3. Launch Both Dashboard & Map in separate terminal windows (Kitty/XTerm)
-./run.sh --all
-
-# 4. Launch with Realistic P99 Log Simulator (offline testing & demo)
-./run.sh --sim
-
-# 5. Run Test Suite
-./run.sh --test
-```
-
----
-
-## Configuration (`config.yaml`)
-
-Configuration is stored in `config.yaml` with safe defaults:
+Open `config.yaml` and set at least the character name, server, and log directory. For example:
 
 ```yaml
 character:
-  name: "Ekco"
-  server: "green"         # green, blue, red, or project1999
-  class: "Necromancer"
+  name: "YourCharacter"
+  server: "green" # green, blue, red, etc.
 
 log_tailer:
-  log_dir: "/home/ekco/Games/Project1999/Logs"
+  log_dir: "~/Games/Project1999/Logs"
   filename_pattern: "eqlog_{character}_{server}.txt"
-  poll_interval_sec: 0.1
-  start_at_end: true
-
-combat:
-  encounter_timeout_sec: 12.0
-  history_limit: 50
 
 map:
   default_zone: "East Commonlands"
   max_breadcrumbs: 60
-
-triggers:
-  - name: "Mob Enraged"
-    pattern: "^(?P<mob>.+?) (?:looks very angry!|has become ENRAGED\\.)"
-    timer_seconds: 10
-    alert_text: "URGENT: {mob} is ENRAGED! STOP MELEE!"
-    category: "raid"
-    color: "#FF4040"
-    sound: true
 ```
 
----
+The exact log path depends on your installation. The launcher creates a local `.venv` and installs the required Python packages the first time it runs, if needed.
 
-## Keybindings
+```bash
+./run.sh
+```
 
-### Main Dashboard
+If the dashboard does not find your log, double-check the filename, character/server values, and `log_dir`. The map updates when location output appears in the log, so use `/loc` in game and ensure logging is enabled.
+
+## Launch options
+
+| Command | Purpose |
+| --- | --- |
+| `./run.sh` | Start the main dashboard/overlay. |
+| `./run.sh --overlay` | Explicitly launch the dashboard overlay. |
+| `./run.sh --map` | Launch the standalone map window. |
+| `./run.sh --all` | Launch the dashboard and map in separate windows where supported. |
+| `./run.sh --sim` | Run with a simulated log stream for offline demonstration. |
+| `./run.sh --test` | Run the automated test suite. |
+
+The main dashboard also provides these keyboard shortcuts:
+
 | Key | Action |
-|:---:|:---|
-| `q` | Quit application |
-| `m` | Launch Standalone Map Window in dedicated terminal |
-| `r` | Conclude and reset current combat encounter |
-| `c` | Clear all active timers |
-| `s` | Toggle audible terminal bell on alerts |
-| `t` | Inject simulated Necromancer DoT test sequence |
+| --- | --- |
+| `q` | Quit |
+| `m` | Open the standalone map |
+| `r` | End/reset the current encounter |
+| `c` | Clear active timers |
+| `s` | Toggle the terminal bell for alerts |
+| `t` | Run the simulated Necromancer DoT sequence |
 
-### Standalone Map Window
+In the map window:
+
 | Key | Action |
-|:---:|:---|
-| `q` | Quit map window |
-| `z` | Cycle / switch active zone |
-| `+` | Zoom in (up to 4.0x) |
-| `-` | Zoom out (down to 1.0x) |
-| `b` | Clear breadcrumb trail |
-| `l` | Manually advance test `/loc` coordinates |
+| --- | --- |
+| `q` | Quit |
+| `z` | Cycle through supported zones |
+| `+` / `-` | Zoom in / out |
+| `b` | Clear the breadcrumb trail |
+| `l` | Add a test location step |
 
----
+## Overlay transparency
 
-## Testing & Verification
+The default launcher starts the dashboard in Kitty with `background_opacity=0.55`. To make the game more visible through the overlay, change the `background_opacity` value in `KITTY_OVERLAY_OPTS` near the top of `run.sh`; lower values are more transparent. The dashboard itself uses transparent Textual backgrounds and no longer forces the terminal background color.
 
-Run the full automated test suite verifying parsing, combat mathematics, DoT timers, and map rendering:
+Transparency depends on terminal and compositor support. If you launch in a terminal other than Kitty, use that terminal's own transparency settings. The standalone map window intentionally uses a dark panel background for map readability.
+
+## Tests and roadmap
+
+Run the test suite with:
 
 ```bash
 ./run.sh --test
 ```
+
+Tests cover core log parsing, combat calculations, timer behavior, map math/rendering, and Textual UI mounting. Real-log validation and broader feature coverage are still ongoing.
+
+See [ROADMAP.md](ROADMAP.md) for implementation status, known gaps, and prioritized follow-up work.
+
+## Acknowledgements
+
+A sincere thank-you to the **Project 1999 developers, staff, volunteers, wiki contributors, mapmakers, and players**. Your work keeps the classic EverQuest experience alive and gives projects like this a world worth building tools for. Thanks as well to the wider EverQuest emulation and preservation community for years of shared research, documentation, and tooling.
+
+Ekco Parse is an independent, community-made companion. It is not an official Project 1999 tool and is not affiliated with or endorsed by Project 1999 or Daybreak Game Company. EverQuest and related game names and assets belong to their respective rights holders.
+
+## References and project influences
+
+The projects and resources below informed the feature goals, implementation research, or visual direction. They are credited as references—not as a claim that Ekco Parse is affiliated with them or that their code or assets have been copied.
+
+### EverQuest tools
+
+- **[GINA](https://eq.gimasoft.com/gina/Default.aspx)** — a reference for log-triggered alerts, timers, and player-configurable triggers.
+- **[GamParse](https://gambosoft.eqresource.com/downloads.php)** — a reference for combat-log analysis, DPS reporting, and tanking/defense statistics.
+- **[nParse](https://github.com/nomns/nparse)** — an open-source Project 1999 companion that reads player logs for location and spell tracking; a useful point of comparison for log-driven map behavior.
+
+### Project 1999, emulation, and map resources
+
+- **[Project 1999](https://project1999.com/)** — the server and community this project is built to support. Thanks to the team and players for maintaining it.
+- **[Project 1999 Wiki](https://wiki.project1999.com/)** — community-maintained reference material for zones, NPCs, spells, game mechanics, and technical topics. The wiki is community-run and is not an official staff-maintained source.
+- **[EQEmulator](https://eqemulator.org/)** and its **[documentation](https://docs.eqemu.dev/)** — resources from the broader EverQuest emulation community.
+- **[Brewall's EverQuest Maps](https://www.eqmaps.info/)** and the **[EverQuest Map Preserve](https://steveprutz.com/eq/index.html)** — community mapmaking and historical map references. Map files remain the work of their respective creators; follow their terms and attribution requirements wherever applicable.
+
+### Interface and libraries
+
+- **[Dwarf Fortress Antfarm](https://github.com/Ekco-S64QTN6/dwarffortress-antfarm)** — a separate project by the same maintainer; the dense terminal layout, border hierarchy, and color contrast served as visual inspiration. It is not a dependency of Ekco Parse.
+- **[Textual](https://github.com/Textualize/textual)** — the terminal UI framework.
+- **[Rich](https://github.com/Textualize/rich)** — terminal styling and formatted text.
+- **[PyYAML](https://github.com/yaml/pyyaml)** — YAML configuration loading.
+
+Thanks to everyone who builds, documents, tests, and shares tools for the EverQuest community.
