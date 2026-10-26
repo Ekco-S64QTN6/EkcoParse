@@ -4,6 +4,7 @@ import unittest
 from datetime import datetime
 
 from ekco_parse.config import load_config
+from ekco_parse.spawn_timers import get_zone_respawn_seconds
 from ekco_parse.ui.main_app import EkcoParseApp
 
 
@@ -26,6 +27,33 @@ class TestMainAppEventRouting(unittest.TestCase):
         self.assertEqual(self.app.timer_engine.get_sorted_buffs(), [])
         self.assertTrue(self.app.timer_engine.recent_alerts)
         self.assertIn("died", self.app.timer_engine.recent_alerts[0]["text"].lower())
+
+    def test_zone_respawn_defaults_match_p99_reference_times(self):
+        expected_seconds = {
+            "Skyshrine": 30 * 60,
+            "Kael Drakkal": 28 * 60,
+            "Thurgadin": 7 * 60,
+            "Cobalt Scar": 20 * 60,
+            "Plane of Fear": 8 * 60 * 60,
+            "Plane of Growth": 12 * 60 * 60,
+            "Temple of Veeshan": 72 * 60,
+            "Plane of Mischief": 70 * 60 + 10,
+        }
+
+        for zone, expected in expected_seconds.items():
+            with self.subTest(zone=zone):
+                self.assertEqual(get_zone_respawn_seconds(zone), expected)
+
+    def test_skyshrine_respawn_timer_uses_30_minutes_and_death_log_time(self):
+        self.app.active_zone = "Skyshrine"
+        death_time = datetime(2026, 10, 26, 12, 0, 0)
+
+        self.app._process_log_line(log_line("You have slain a sentry!"))
+
+        timer = self.app.timer_engine.active_timers["respawn_a sentry"]
+        self.assertEqual(timer.total_seconds, 1800.0)
+        self.assertEqual(timer.created_at, death_time)
+        self.assertEqual(timer.remaining_seconds, 1800.0)
 
     def test_coin_loot_events_update_denomination_totals(self):
         self.app._process_log_line(

@@ -108,8 +108,13 @@ class TimerEngine:
         # article ("a hill giant" vs "the hill giant").
         return re.sub(r"^(?:a|an|the)\s+", "", normalized)
 
-    def on_mob_slain(self, mob_name: str, zone: str = "") -> None:
-        """Clear every timer attached to a slain mob and start its respawn timer."""
+    def on_mob_slain(
+        self,
+        mob_name: str,
+        zone: str = "",
+        timestamp: Optional[datetime] = None,
+    ) -> None:
+        """Clear timers for a slain mob and start its respawn timer at the log time."""
         clean_mob = self._normalize_mob_name(mob_name)
         to_delete = []
         for timer_id, timer in self.active_timers.items():
@@ -126,7 +131,7 @@ class TimerEngine:
 
         # Add/refresh the respawn timer based on zone.
         if mob_name.strip():
-            self.add_respawn_timer(mob_name.strip(), zone)
+            self.add_respawn_timer(mob_name.strip(), zone, created_at=timestamp)
 
     def on_player_death(self, play_sound: bool = True) -> None:
         """Clear buffs after death and optionally sound an alert.
@@ -152,7 +157,12 @@ class TimerEngine:
         if self.audio_enabled and play_sound:
             self.beep()
 
-    def add_respawn_timer(self, mob_name: str, zone: str = "") -> None:
+    def add_respawn_timer(
+        self,
+        mob_name: str,
+        zone: str = "",
+        created_at: Optional[datetime] = None,
+    ) -> None:
         """Start a respawn countdown for a slain mob based on zone spawn timer."""
         respawn_sec = get_zone_respawn_seconds(zone)
         normalized_mob = self._normalize_mob_name(mob_name)
@@ -178,7 +188,7 @@ class TimerEngine:
             color="#FFC857",
             sound=True,
             target=zone or "Unknown",
-            created_at=datetime.now(),
+            created_at=created_at or datetime.now(),
         )
         self.active_timers[timer_id] = timer
 
