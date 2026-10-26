@@ -37,34 +37,48 @@ class DotClockWidget(Static):
             return
 
         self.border_title = f"DoT ROTATIONS ({count})"
+        # content_size excludes borders and padding, so this aligns the rightmost
+        # status column with the panel's actual inner edge.
+        content_width = max(1, self.content_size.width or (self.size.width - 4) or 80)
+        status_width = 11  # "RECAST SOON" / "RECAST NOW!"
         lines = []
 
         for timer in sorted_dots:
             rem = max(0.0, timer.remaining_seconds)
-            clock_str = self.format_clock(rem)
+            clock_plain = self.format_clock(rem)
             total = timer.total_seconds
-            p_bar = render_progress_bar(rem, total, width=8, color=timer.color)
 
             spell_name = timer.name
             target_str = f"({timer.target})" if timer.target and timer.target != "Self" else ""
             label = f"{spell_name} {target_str}".strip()
-            if len(label) > 18:
-                label = label[:16] + ".."
-            label_padded = f"{label:<18}"
 
             if timer.remaining_seconds <= 0:
-                status_tag = f"[bold {COLOR_RED}]RECAST NOW![/]"
-                clock_str = f"[bold {COLOR_RED}]{clock_str}[/]"
+                status_text, status_color = "RECAST NOW!", COLOR_RED
+                clock_str = f"[bold {COLOR_RED}]{clock_plain}[/]"
             elif rem <= 10.0:
-                status_tag = f"[bold {COLOR_RED}]RECAST SOON[/]"
-                clock_str = f"[bold {COLOR_RED}]{clock_str}[/]"
+                status_text, status_color = "RECAST SOON", COLOR_RED
+                clock_str = f"[bold {COLOR_RED}]{clock_plain}[/]"
             elif rem <= 20.0:
-                status_tag = f"[bold {COLOR_AMBER}]LOW[/]"
-                clock_str = f"[bold {COLOR_AMBER}]{clock_str}[/]"
+                status_text, status_color = "LOW", COLOR_AMBER
+                clock_str = f"[bold {COLOR_AMBER}]{clock_plain}[/]"
             else:
-                status_tag = f"[bold {COLOR_GREEN}]ACTIVE[/]"
-                clock_str = f"[bold white]{clock_str}[/]"
+                status_text, status_color = "ACTIVE", COLOR_GREEN
+                clock_str = f"[bold white]{clock_plain}[/]"
 
-            lines.append(f"[bold white]{label_padded}[/] {clock_str} {p_bar} {status_tag}")
+            # Give the spell + target all available space. Shrink the progress bar
+            # first on narrower windows; the status stays pinned to the right edge.
+            bar_width = max(
+                0,
+                min(8, content_width - len(label) - 1 - len(clock_plain) - 1 - 1 - status_width),
+            )
+            p_bar = render_progress_bar(rem, total, width=bar_width, color=timer.color) if bar_width else ""
+            gap_width = max(
+                1,
+                content_width - (len(label) + 1 + len(clock_plain) + 1 + bar_width + status_width),
+            )
+            status_tag = f"[bold {status_color}]{status_text:>{status_width}}[/]"
+            lines.append(
+                f"[bold white]{escape(label)}[/] {clock_str} {p_bar}{' ' * gap_width}{status_tag}"
+            )
 
         self.update("\n".join(lines))
