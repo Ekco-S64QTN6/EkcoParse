@@ -75,7 +75,7 @@ class TestTimerEngine(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as spell_dir:
             Path(spell_dir, "spells_us.txt").write_text(
-                "^".join(fields) + "\\n",
+                "^".join(fields) + "\n",
                 encoding="latin-1",
             )
             database = SpellDatabase(eq_dir=spell_dir)
