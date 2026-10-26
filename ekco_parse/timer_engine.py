@@ -296,7 +296,10 @@ class TimerEngine:
 
         if not matched_spell:
             res_other = SPELL_DB.lookup_by_cast_on_other(message)
-            if res_other:
+            # Pet-buff landing text can come from any player's pet during startup
+            # log replay. Only count it through the pending-cast path above, which
+            # proves that this character actually cast that pet buff.
+            if res_other and res_other[0].category != "pet_buff":
                 landed_sdef, landed_target = res_other
 
                 # spells_us.txt can have overlapping or imperfect landing text for
