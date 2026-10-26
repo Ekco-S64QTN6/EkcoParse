@@ -280,20 +280,45 @@ class TimerEngine:
         if not matched_spell:
             res_other = SPELL_DB.lookup_by_cast_on_other(message)
             if res_other:
-                matched_spell, target_name = res_other
+                landed_sdef, landed_target = res_other
+
+                # spells_us.txt can have overlapping or imperfect landing text for
+                # related spells. When a target landing occurs during our pending
+                # cast and belongs to the same effect family, trust the explicit cast
+                # name instead of adding the generic spell matched from the text.
+                offensive_categories = ("dot", "snare", "root", "mez", "debuff")
+                use_pending_cast = False
+                if (
+                    pending_sdef
+                    and self.pending_cast_time
+                    and pending_sdef.category in offensive_categories
+                    and landed_sdef.category == pending_sdef.category
+                ):
+                    elapsed = (timestamp - self.pending_cast_time).total_seconds()
+                    min_elapsed = max(0.0, pending_sdef.cast_time_sec - 1.5)
+                    max_elapsed = pending_sdef.cast_time_sec + 3.0
+                    use_pending_cast = min_elapsed <= elapsed <= max_elapsed
+
+                if use_pending_cast:
+                    matched_spell = pending_sdef
+                    self.pending_cast_spell = None
+                    self.pending_cast_time = None
+                else:
+                    matched_spell = landed_sdef
+
+                target_name = landed_target
                 self.current_target = target_name
 
         # If a pending spell was casting and finishes without interrupt/resist
         if not matched_spell and self.pending_cast_spell:
-            sdef = SPELL_DB.lookup_by_name(self.pending_cast_spell)
-            if sdef:
-                if self.pending_cast_time:
-                    elapsed = (timestamp - self.pending_cast_time).total_seconds()
-                    if elapsed >= (sdef.cast_time_sec - 0.5):
-                        matched_spell = sdef
-                        target_name = "Self" if sdef.category == "buff" else self.current_target
-                        self.pending_cast_spell = None
-                        self.pending_cast_time = None
+            sdef = pending_sdef or SPELL_DB.lookup_by_name(self.pending_cast_spell)
+            if sdef and self.pending_cast_time:
+                elapsed = (timestamp - self.pending_cast_time).total_seconds()
+                if elapsed >= (sdef.cast_time_sec - 0.5):
+                    matched_spell = sdef
+                    target_name = "Self" if sdef.category == "buff" else self.current_target
+                    self.pending_cast_spell = None
+                    self.pending_cast_time = None
 
         if matched_spell:
             timer = self._add_spell_timer(matched_spell, target_name, timestamp)
