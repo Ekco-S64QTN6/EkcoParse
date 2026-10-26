@@ -779,7 +779,9 @@ class SpellDatabase:
 
                     # ── Determine category using beneficial flag + name heuristics ──
                     name_low = name.lower()
-                    target_type = parts[9] if len(parts) > 9 else ""
+                    # spells_us.txt field 9 is range, not target type.
+                    # The target type field is near the end of the legacy spell row.
+                    target_type = parts[98] if len(parts) > 98 else ""
                     if target_type == "14" or "augmentation of death" in name_low or "savage spirit" in name_low:
                         category = "pet_buff"
                         color = "#FFC857"
