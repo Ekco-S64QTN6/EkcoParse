@@ -4,7 +4,6 @@ import unittest
 from datetime import datetime
 
 from ekco_parse.config import load_config
-from ekco_parse.models import Timer
 from ekco_parse.spells import SPELL_DB
 from ekco_parse.spawn_timers import get_zone_respawn_seconds
 from ekco_parse.ui.main_app import EkcoParseApp
