@@ -82,7 +82,7 @@ class EkcoParseApp(App):
 
     #dps-panel {{
         height: auto;
-        max-height: 6;
+        max-height: 8;
         border: round {COLOR_CYAN};
         background: ansi_default;
     }}
