@@ -34,24 +34,36 @@ class DpsWidget(Static):
 
         self.border_title = f"FIGHT: {encounter.target} ({enc_dps:.1f} DPS)"
 
-        rows = []
+        rows = [
+            f"[{COLOR_MUTED}]{'PLAYER':<10} {'DPS':>5} {'DAMAGE':>6} {'SHARE':>5} {'ACC':>4} {'CRIT':>4} {'MAX':>4}[/]"
+        ]
         ranked = sorted(
             encounter.combatants.values(),
             key=lambda c: c.damage_dealt,
             reverse=True,
         )
 
-        for c in ranked[:5]:
+        for c in ranked[:4]:
             c_name = c.name
-            if len(c_name) > 12:
-                c_name = c_name[:10] + ".."
-            c_padded = f"{c_name:<12}"
+            if len(c_name) > 10:
+                c_name = c_name[:8] + ".."
+            c_padded = f"{c_name:<10}"
 
-            dmg_str = f"{c.damage_dealt:,}"
-            dps_val = c.damage_dealt / duration
-            p_bar = render_progress_bar(c.damage_dealt, total_dmg, width=6, color=COLOR_CYAN if c.name == "You" else COLOR_MAGENTA)
+            dps_val = c.damage_dealt / duration if duration > 0 else 0.0
+            share_pct = (c.damage_dealt / total_dmg * 100.0) if total_dmg > 0 else 0.0
+            damage_str = f"{c.damage_dealt:>6,}"
+            accuracy_str = f"{c.accuracy:>3.0f}%"
+            crit_str = f"{c.crit_rate:>3.0f}%"
 
-            row = f"[bold white]{c_padded}[/] [bold {COLOR_GREEN}]{dps_val:>5.1f}[/] {p_bar} [{COLOR_MUTED}]{dmg_str}[/]"
+            row = (
+                f"[bold white]{c_padded}[/] "
+                f"[bold {COLOR_GREEN}]{dps_val:>5.1f}[/] "
+                f"[{COLOR_MUTED}]{damage_str}[/] "
+                f"[bold {COLOR_CYAN}]{share_pct:>4.1f}%[/] "
+                f"[bold {COLOR_GREEN}]{accuracy_str}[/] "
+                f"[bold {COLOR_AMBER}]{crit_str}[/] "
+                f"[bold white]{c.max_hit:>4}[/]"
+            )
             rows.append(row)
 
         self.update("\n".join(rows))
