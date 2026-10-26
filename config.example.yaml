@@ -1,0 +1,47 @@
+# Ekco Parse - Example Configuration Reference
+character:
+  name: "Ekco"
+  server: "green"
+  class: "Shadowknight"
+
+log_tailer:
+  log_dir: "/home/ekco/Games/Project1999/Logs"
+  filename_pattern: "eqlog_{character}_{server}.txt"
+  poll_interval_sec: 0.1
+  start_at_end: true
+  fallback_simulator: false
+
+display:
+  theme: "antfarm_dark"
+  borderless_mode: true
+  fps: 20
+  tick_interval_sec: 0.25
+
+combat:
+  encounter_timeout_sec: 12.0
+  history_limit: 50
+  dps_window_sec: 1.0
+
+map:
+  default_zone: "East Commonlands"
+  auto_switch_zone: true
+  max_breadcrumbs: 60
+  grid_width: 58
+  grid_height: 24
+
+triggers:
+  - name: "Mob Enraged"
+    pattern: "^(?P<mob>.+?) (?:looks very angry!|has become ENRAGED\\.)"
+    timer_seconds: 10
+    alert_text: "URGENT: {mob} is ENRAGED! STOP MELEE!"
+    category: "raid"
+    color: "#FF4040"
+    sound: true
+
+  - name: "Dragon Roar (AE Fear)"
+    pattern: "^A dragon roars\\."
+    timer_seconds: 30
+    alert_text: "DRAGON ROAR! AE Fear in 30s!"
+    category: "raid"
+    color: "#FFC857"
+    sound: true
