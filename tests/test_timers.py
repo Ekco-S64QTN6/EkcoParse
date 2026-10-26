@@ -2,8 +2,9 @@
 
 import unittest
 from datetime import datetime, timedelta
+from unittest.mock import patch
 
-from ekco_parse.spells import SPELL_DB
+from ekco_parse.spells import SPELL_DB, SpellDef
 from ekco_parse.timer_engine import TimerEngine
 
 
@@ -77,6 +78,55 @@ class TestTimerEngine(unittest.TestCase):
                 # A later unrelated log line must not resurrect the failed cast.
                 engine.process_line("You say, 'still no landing'.", t0 + timedelta(seconds=15))
                 self.assertEqual(engine.active_timers, {})
+
+    def test_pending_invoke_fear_wins_over_generic_inspire_fear_landing(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        invoke_fear = SpellDef(
+            name="Invoke Fear",
+            duration_ticks=25,
+            duration_seconds=150.0,
+            category="mez",
+            dot_type=None,
+            cast_time_sec=3.0,
+            cast_on_other=" is overcome by supernatural terror.",
+        )
+        inspire_fear = SpellDef(
+            name="Inspire Fear",
+            duration_ticks=25,
+            duration_seconds=150.0,
+            category="mez",
+            dot_type=None,
+            cast_time_sec=3.0,
+            cast_on_other=" cowers in terror.",
+        )
+
+        # Model local spells_us.txt data where the generic landing lookup maps
+        # the target's message to Inspire Fear, even though we cast Invoke Fear.
+        with patch.dict(
+            SPELL_DB.spells_by_name,
+            {"invoke fear": invoke_fear, "inspire fear": inspire_fear},
+        ), patch.dict(
+            SPELL_DB.spells_by_on_other,
+            {inspire_fear.cast_on_other.lower(): inspire_fear},
+        ):
+            engine = TimerEngine()
+            engine.handle_spell_cast_start("You", "Invoke Fear", t0)
+
+            created = engine.process_line(
+                "a spectre cowers in terror.",
+                t0 + timedelta(seconds=2.5),
+            )
+            self.assertEqual([timer.name for timer in created], ["Invoke Fear"])
+            self.assertEqual([timer.name for timer in engine.get_sorted_dots()], ["Invoke Fear"])
+            self.assertEqual(engine.get_sorted_dots()[0].target, "a spectre")
+            self.assertIsNone(engine.pending_cast_spell)
+            self.assertIsNone(engine.pending_cast_time)
+
+            # A later line must not trigger the elapsed-cast fallback and add a
+            # second timer for the original cast.
+            engine.process_line("You say, 'still tracking'.", t0 + timedelta(seconds=8))
+            self.assertEqual([timer.name for timer in engine.get_sorted_dots()], ["Invoke Fear"])
+            self.assertEqual(len(engine.active_timers), 1)
 
     def test_recast_refreshes_same_spell_target_even_if_target_case_changes(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
