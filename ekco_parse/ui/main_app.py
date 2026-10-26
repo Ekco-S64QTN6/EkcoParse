@@ -98,6 +98,42 @@ class EkcoParseApp(App):
         height: 1fr;
         border: round {COLOR_GREEN};
         background: transparent;
+        overflow-y: auto;
+    }}
+
+    TabbedContent, TabPane {{
+        background: transparent;
+    }}
+
+    #dashboard-tabs {{
+        height: 1fr;
+    }}
+
+    #tab-live, #tab-defense, #tab-ledger {{
+        height: 1fr;
+        padding: 0;
+        background: transparent;
+    }}
+
+    #mitigation-panel {{
+        height: auto;
+        max-height: 12;
+        border: round {COLOR_CYAN};
+        background: transparent;
+    }}
+
+    #loot-panel {{
+        height: 1fr;
+        border: round {COLOR_MAGENTA};
+        background: transparent;
+        overflow-y: auto;
+    }}
+
+    #respawn-panel {{
+        height: auto;
+        max-height: 8;
+        border: round {COLOR_AMBER};
+        background: transparent;
     }}
     """
 
