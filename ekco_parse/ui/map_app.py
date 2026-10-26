@@ -71,7 +71,7 @@ class MapCanvasWidget(Static):
     """ASCII / Braille 2D radar grid display."""
 
     def on_mount(self) -> None:
-        self.border_title = "ZONE RADAR (100% P99 COMPLIANT LOG-DRIVEN)"
+        self.border_title = "ZONE RADAR (LOG-DRIVEN)"
 
     def update_radar(self, radar_rows: list[str]) -> None:
         self.update("\n".join(radar_rows))
