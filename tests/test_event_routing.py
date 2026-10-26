@@ -48,8 +48,6 @@ class TestMainAppEventRouting(unittest.TestCase):
             self.assertLess(time.time() - self.app._last_log_received, 5.0)
 
     def test_spell_and_respawn_countdowns_advance_when_log_is_idle(self):
-        from ekco_parse.models import Timer
-
         now = time.time()
         self.app._last_tick_time = now - 5.0
         self.app._last_log_received = now - 120.0
