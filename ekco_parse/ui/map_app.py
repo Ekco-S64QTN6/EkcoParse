@@ -121,6 +121,8 @@ class EkcoMapApp(App):
 
     # First valid /loc fix should open a useful player-centered view immediately.
     AUTO_ZOOM_LEVEL = 4.0
+    # Allow substantially closer views for navigating tight areas and landmarks.
+    MAX_ZOOM_LEVEL = 12.0
 
     CSS = f"""
     Screen {{
@@ -299,7 +301,7 @@ class EkcoMapApp(App):
         self.query_one("#poi-panel", PoiRadarWidget).update_pois(nearby)
 
     def action_zoom_in(self) -> None:
-        self.zoom = min(4.0, self.zoom + 0.5)
+        self.zoom = min(self.MAX_ZOOM_LEVEL, self.zoom + 0.5)
 
     def action_zoom_out(self) -> None:
         self.zoom = max(1.0, self.zoom - 0.5)

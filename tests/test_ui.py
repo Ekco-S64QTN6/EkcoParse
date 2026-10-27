@@ -35,8 +35,9 @@ class TestTextualUI(unittest.IsolatedAsyncioTestCase):
             buff_panel = app.query_one("#buff-panel")
             self.assertIsNotNone(buff_panel)
 
-            ticker = app.query_one("#ticker-panel")
-            self.assertIsNotNone(ticker)
+            # The live overlay should contain only the four requested panels.
+            self.assertEqual(len(app.query("#ticker-panel")), 0)
+            self.assertIsNotNone(app.query_one("#respawn-live-panel"))
 
             # Panels that were previously implemented but not part of the main UI
             # should now be mounted and wired to the shared engines.
@@ -103,6 +104,17 @@ class TestTextualUI(unittest.IsolatedAsyncioTestCase):
             "[Mon Oct 26 12:00:05 2026] Your Location is -120.0, -1580.0, 3.75"
         )
         self.assertEqual(app.zoom, 2.0)
+
+        # Manual zoom should continue past the old 4x ceiling and stop at the
+        # new limit without unbounded zooming or allowing values below 1x.
+        for _ in range(40):
+            app.action_zoom_in()
+        self.assertEqual(app.zoom, app.MAX_ZOOM_LEVEL)
+        self.assertGreater(app.zoom, 4.0)
+
+        for _ in range(40):
+            app.action_zoom_out()
+        self.assertEqual(app.zoom, 1.0)
 
 
 if __name__ == "__main__":
