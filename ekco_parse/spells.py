@@ -940,6 +940,21 @@ class SpellDatabase:
         return best[0]
 
     def lookup_by_cast_on_you(self, message: str) -> Optional[SpellDef]:
+        msg_low = message.strip().casefold()
+
+        # Curated self-buff landing text is authoritative. Local spells_us.txt
+        # can contain multiple definitions with the same flavor message, but
+        # known entries such as "Your feet feel quick." must still create the
+        # expected personal timer rather than disappearing as ambiguous.
+        known_matches = [
+            (pattern, sdef)
+            for pattern, sdef in KNOWN_BUFF_LANDINGS.items()
+            if pattern in msg_low
+        ]
+        if known_matches:
+            _, known_sdef = max(known_matches, key=lambda item: len(item[0]))
+            return known_sdef
+
         match = self._lookup_landing_pattern(
             message, self.spells_by_on_you, "cast_on_you"
         )

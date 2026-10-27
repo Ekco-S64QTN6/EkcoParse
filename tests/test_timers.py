@@ -159,6 +159,37 @@ class TestTimerEngine(unittest.TestCase):
         self.assertEqual(buffs[0].category, "pet_buff")
         self.assertEqual(engine.get_sorted_dots(), [])
 
+    def test_jboots_known_landing_survives_local_catalog_collision(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        duplicate_landing = SpellDef(
+            name="Conflicting Local Spell",
+            duration_ticks=10,
+            duration_seconds=60.0,
+            category="buff",
+            dot_type=None,
+            cast_time_sec=0.0,
+            cast_on_you="Your feet feel quick.",
+            wear_off="Your conflicting spell fades.",
+        )
+
+        # A local spells_us.txt definition can share the JBoots message. The
+        # curated known buff should remain authoritative instead of being
+        # discarded as ambiguous and leaving the buff list empty.
+        with patch.dict(
+            SPELL_DB.spells_by_name,
+            {"conflicting local spell": duplicate_landing},
+        ):
+            created = self.engine.process_line("Your feet feel quick.", t0)
+
+        self.assertEqual([timer.name for timer in created], ["JourneymanBoots"])
+        self.assertEqual(created[0].target, "Self")
+        self.assertEqual(created[0].category, "buff")
+        self.assertEqual(created[0].total_seconds, 1080.0)
+        self.assertEqual(
+            [timer.name for timer in self.engine.get_sorted_buffs()],
+            ["JourneymanBoots"],
+        )
+
     def test_buffs_separate_list(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
         # Cast Arch Lich (1230s)
