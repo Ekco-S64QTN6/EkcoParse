@@ -914,11 +914,29 @@ class SpellDatabase:
             candidates.setdefault(sdef.name.casefold(), sdef)
             for definition in self.spells_by_name.values():
                 landing = getattr(definition, attribute, None)
-                if landing and landing.strip().casefold() == pattern:
+                if landing and landing.strip().casefold() == pattern.strip().casefold():
                     candidates.setdefault(definition.name.casefold(), definition)
 
-        if len(candidates) != 1:
-            return None
+        if len(candidates) > 1:
+            definitions = list(candidates.values())
+            first = definitions[0]
+            # Arch Lich and Demi Lich have the same landing line but identical
+            # personal-buff timing/slot behavior. Preserve this safe fallback;
+            # do not apply it to hostile effects such as fear or darkness spells.
+            equivalent_personal_buff = (
+                first.category in ("buff", "cooldown", "util")
+                and bool(first.buff_slot)
+                and all(
+                    definition.category == first.category
+                    and definition.buff_slot == first.buff_slot
+                    and definition.duration_seconds == first.duration_seconds
+                    and (definition.wear_off or "").casefold()
+                    == (first.wear_off or "").casefold()
+                    for definition in definitions
+                )
+            )
+            if not equivalent_personal_buff:
+                return None
         return best[0]
 
     def lookup_by_cast_on_you(self, message: str) -> Optional[SpellDef]:
