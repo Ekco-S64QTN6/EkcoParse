@@ -33,7 +33,6 @@ from ekco_parse.ui.theme import (
 from ekco_parse.ui.widgets.buff_panel import BuffClockWidget
 from ekco_parse.ui.widgets.dot_panel import DotClockWidget
 from ekco_parse.ui.widgets.dps_panel import DpsWidget
-from ekco_parse.ui.widgets.ticker import TickerWidget
 from ekco_parse.ui.widgets.mitigation_panel import MitigationWidget
 from ekco_parse.ui.widgets.loot_panel import LootWidget
 from ekco_parse.ui.widgets.respawn_panel import RespawnWidget
@@ -74,13 +73,6 @@ class EkcoParseApp(App):
         height: auto;
         max-height: 8;
         border: round {COLOR_CYAN};
-        background: ansi_default;
-    }}
-
-    #ticker-panel {{
-        height: auto;
-        max-height: 2;
-        border: round {COLOR_PURPLE};
         background: ansi_default;
     }}
 
@@ -164,7 +156,6 @@ class EkcoParseApp(App):
 
         self.tailer: Optional[LogTailer] = None
         self.active_zone: str = self.config.default_zone
-        self.last_log_line: str = ""
         self.is_tailing: bool = False
         self._last_tick_time = time.time()
         self._last_log_timestamp: Optional[datetime] = None  # Last EQ log timestamp seen
@@ -177,7 +168,6 @@ class EkcoParseApp(App):
                 with TabPane("Live", id="tab-live"):
                     yield DotClockWidget(id="dot-panel", classes="panel")
                     yield DpsWidget(id="dps-panel", classes="panel")
-                    yield TickerWidget(id="ticker-panel", classes="panel")
                     yield BuffClockWidget(id="buff-panel", classes="panel")
                     # Keep the monster countdown visible on the main overlay.
                     yield RespawnWidget(id="respawn-live-panel", classes="panel")
@@ -271,7 +261,6 @@ class EkcoParseApp(App):
         if self.tailer:
             lines = self.tailer.read_available_lines()
             for line in lines:
-                self.last_log_line = line
                 self._process_log_line(line, update_recent=True)
 
         self._update_ui()
@@ -356,10 +345,6 @@ class EkcoParseApp(App):
             encounter=enc,
             session_total_dmg=self.dps_engine.session_total_damage,
         )
-
-        # Update Ticker
-        alerts = list(self.timer_engine.recent_alerts)
-        self.query_one("#ticker-panel", TickerWidget).update_alerts(alerts, self.last_log_line)
 
         # Defense details are available on their own tab so the compact live
         # overlay remains readable while still exposing the existing engine.
