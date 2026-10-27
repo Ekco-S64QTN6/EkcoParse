@@ -946,10 +946,14 @@ class SpellDatabase:
         # can contain multiple definitions with the same flavor message, but
         # known entries such as "Your feet feel quick." must still create the
         # expected personal timer rather than disappearing as ambiguous.
+        # Some log sources omit the final punctuation. Normalize only the
+        # trailing sentence punctuation so known self-buff landings still match
+        # while preserving the phrase itself and avoiding broad fuzzy matching.
+        normalized_message = msg_low.rstrip(" .!?")
         known_matches = [
             (pattern, sdef)
             for pattern, sdef in KNOWN_BUFF_LANDINGS.items()
-            if pattern in msg_low
+            if pattern.strip().casefold().rstrip(" .!?") in normalized_message
         ]
         if known_matches:
             _, known_sdef = max(known_matches, key=lambda item: len(item[0]))
