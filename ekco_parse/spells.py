@@ -872,29 +872,76 @@ class SpellDatabase:
     def lookup_by_name(self, name: str) -> Optional[SpellDef]:
         return self.spells_by_name.get(name.strip().lower())
 
+    def _lookup_landing_pattern(
+        self,
+        message: str,
+        landing_map: Dict[str, SpellDef],
+        attribute: str,
+        *,
+        skip_bond_of_death: bool = False,
+    ) -> Optional[Tuple[str, SpellDef]]:
+        """Find the most-specific landing pattern without guessing on collisions.
+
+        Some P99 spells intentionally share identical landing text. The generic
+        lookup maps retain one entry per message for compatibility, so consult
+        the name-indexed catalog as well: if different spells own the same best
+        pattern, only a pending cast can safely tell us which one landed.
+        """
+        msg_low = message.strip().casefold()
+        matches = [
+            (pattern, sdef)
+            for pattern, sdef in landing_map.items()
+            if pattern in msg_low
+            and not (
+                skip_bond_of_death
+                and sdef.name.casefold() == "bond of death"
+            )
+        ]
+        if not matches:
+            return None
+
+        # Prefer a longer phrase over a generic substring; only equal-length
+        # best matches can make this line ambiguous.
+        longest = max(len(pattern) for pattern, _ in matches)
+        best = [
+            (pattern, sdef)
+            for pattern, sdef in matches
+            if len(pattern) == longest
+        ]
+
+        candidates: Dict[str, SpellDef] = {}
+        for pattern, sdef in best:
+            candidates.setdefault(sdef.name.casefold(), sdef)
+            for definition in self.spells_by_name.values():
+                landing = getattr(definition, attribute, None)
+                if landing and landing.strip().casefold() == pattern:
+                    candidates.setdefault(definition.name.casefold(), definition)
+
+        if len(candidates) != 1:
+            return None
+        return best[0]
+
     def lookup_by_cast_on_you(self, message: str) -> Optional[SpellDef]:
-        msg_low = message.strip().lower()
-        if msg_low in self.spells_by_on_you:
-            return self.spells_by_on_you[msg_low]
-        for pattern, sdef in self.spells_by_on_you.items():
-            if pattern in msg_low:
-                return sdef
-        return None
+        match = self._lookup_landing_pattern(
+            message, self.spells_by_on_you, "cast_on_you"
+        )
+        return match[1] if match else None
 
     def lookup_by_cast_on_other(self, message: str) -> Optional[Tuple[SpellDef, str]]:
-        msg_low = message.strip().lower()
-        for pattern, sdef in self.spells_by_on_other.items():
-            # Bond of Death's landing text is only "staggers.", which can also
-            # appear as ordinary melee/pet combat feedback. The timer engine can
-            # safely recognize it through the pending-cast path, where the spell
-            # identity is known, but not from this generic text-only lookup.
-            if sdef.name.casefold() == "bond of death":
-                continue
-            if pattern in msg_low:
-                idx = msg_low.find(pattern)
-                target = message[:idx].strip() if idx > 0 else "Target"
-                return sdef, target
-        return None
+        match = self._lookup_landing_pattern(
+            message,
+            self.spells_by_on_other,
+            "cast_on_other",
+            skip_bond_of_death=True,
+        )
+        if not match:
+            return None
+
+        pattern, sdef = match
+        msg_low = message.casefold()
+        idx = msg_low.find(pattern)
+        target = message[:idx].strip() if idx > 0 else "Target"
+        return sdef, target
 
     def lookup_wear_off(self, message: str) -> Optional[str]:
         msg_low = message.strip().lower()
