@@ -24,7 +24,6 @@ from ekco_parse.timer_engine import TimerEngine
 from ekco_parse.ui.theme import (
     COLOR_CYAN,
     COLOR_MAGENTA,
-    COLOR_PURPLE,
     COLOR_GREEN,
     COLOR_AMBER,
     COLOR_RED,
