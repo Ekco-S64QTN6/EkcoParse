@@ -190,6 +190,39 @@ class TestTimerEngine(unittest.TestCase):
             ["JourneymanBoots"],
         )
 
+    def test_dead_man_floating_landing_with_catalog_collision_and_no_period(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        conflicting_spell = SpellDef(
+            name="Conflicting Local Spell",
+            duration_ticks=10,
+            duration_seconds=60.0,
+            category="buff",
+            dot_type=None,
+            cast_time_sec=0.0,
+            cast_on_you="You become like the dead.",
+            wear_off="Your conflicting spell fades.",
+        )
+
+        # Local spells_us.txt may reuse this landing phrase. Even if the final
+        # punctuation is missing, the curated Dead Man Floating buff must win.
+        with patch.dict(
+            SPELL_DB.spells_by_name,
+            {"conflicting local spell": conflicting_spell},
+        ):
+            created = self.engine.process_line(
+                "You become like the dead",
+                t0,
+            )
+
+        self.assertEqual([timer.name for timer in created], ["Dead Man Floating"])
+        self.assertEqual(created[0].target, "Self")
+        self.assertEqual(created[0].category, "buff")
+        self.assertEqual(created[0].total_seconds, 4320.0)
+        self.assertEqual(
+            [timer.name for timer in self.engine.get_sorted_buffs()],
+            ["Dead Man Floating"],
+        )
+
     def test_buffs_separate_list(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
         # Cast Arch Lich (1230s)
