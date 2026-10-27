@@ -51,6 +51,23 @@ class TestMainAppEventRouting(unittest.TestCase):
         self.assertAlmostEqual(spell_timer.remaining_seconds, spell_before - 5.0, delta=0.2)
         self.assertAlmostEqual(respawn_timer.remaining_seconds, respawn_before - 5.0, delta=0.2)
 
+    def test_on_mount_resets_tick_clock_after_log_catchup(self):
+        from unittest.mock import patch
+
+        self.app._last_tick_time = 10.0
+        with (
+            patch.object(self.app, "_set_always_on_top"),
+            patch.object(self.app, "catchup_from_log") as catchup,
+            patch("ekco_parse.ui.main_app.LogTailer"),
+            patch.object(self.app, "set_interval"),
+            patch.object(self.app, "_update_ui"),
+            patch("ekco_parse.ui.main_app.time.time", return_value=1234.5),
+        ):
+            self.app.on_mount()
+
+        catchup.assert_called_once()
+        self.assertEqual(self.app._last_tick_time, 1234.5)
+
     def test_zone_respawn_defaults_match_p99_reference_times(self):
         expected_seconds = {
             "Skyshrine": 30 * 60,
