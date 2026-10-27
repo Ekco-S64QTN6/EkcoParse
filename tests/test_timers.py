@@ -198,6 +198,117 @@ class TestTimerEngine(unittest.TestCase):
                 engine.process_line("You say, 'still no landing'.", t0 + timedelta(seconds=15))
                 self.assertEqual(engine.active_timers, {})
 
+    def test_failed_cast_outcomes_clear_pending_spell(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        for message in ("Your spell did not take hold.", "Your spell fizzles!"):
+            with self.subTest(message=message):
+                engine = TimerEngine()
+                engine.current_target = "a hill giant"
+                engine.handle_spell_cast_start("You", "Dooming Darkness", t0)
+
+                created = engine.process_line(message, t0 + timedelta(seconds=4))
+
+                self.assertEqual(created, [])
+                self.assertEqual(engine.active_timers, {})
+                self.assertIsNone(engine.pending_cast_spell)
+                self.assertIsNone(engine.pending_cast_time)
+
+    def test_real_fear_landing_uses_pending_cast_when_messages_are_shared(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        invoke_fear = SpellDef(
+            name="Invoke Fear",
+            duration_ticks=25,
+            duration_seconds=150.0,
+            category="mez",
+            dot_type=None,
+            cast_time_sec=3.0,
+            cast_on_you="Your mind fills with fear.",
+            cast_on_other=" looks very afraid.",
+        )
+        inspire_fear = SpellDef(
+            name="Inspire Fear",
+            duration_ticks=25,
+            duration_seconds=150.0,
+            category="mez",
+            dot_type=None,
+            cast_time_sec=3.0,
+            cast_on_you="Your mind fills with fear.",
+            cast_on_other=" looks very afraid.",
+        )
+
+        # These are the literal style of landing messages in the attached log.
+        # Even when generic lookup points at Inspire Fear, the explicit cast wins.
+        with patch.dict(
+            SPELL_DB.spells_by_name,
+            {"invoke fear": invoke_fear, "inspire fear": inspire_fear},
+        ), patch.dict(
+            SPELL_DB.spells_by_on_other,
+            {" looks very afraid.": inspire_fear},
+        ), patch.dict(
+            SPELL_DB.spells_by_on_you,
+            {"your mind fills with fear.": inspire_fear},
+        ):
+            engine = TimerEngine()
+            engine.handle_spell_cast_start("You", "Invoke Fear", t0)
+
+            created = engine.process_line(
+                "Jaelk looks very afraid.",
+                t0 + timedelta(seconds=3),
+            )
+
+            self.assertEqual([timer.name for timer in created], ["Invoke Fear"])
+            self.assertEqual([timer.target for timer in created], ["Jaelk"])
+            self.assertIsNone(engine.pending_cast_spell)
+            self.assertIsNone(engine.pending_cast_time)
+
+    def test_ambiguous_landing_is_not_guessed_without_pending_cast(self):
+        t0 = datetime(2026, 10, 26, 12, 0, 0)
+        invoke_fear = SpellDef(
+            name="Invoke Fear",
+            duration_ticks=25,
+            duration_seconds=150.0,
+            category="mez",
+            dot_type=None,
+            cast_time_sec=3.0,
+            cast_on_you="Your mind fills with fear.",
+            cast_on_other=" looks very afraid.",
+        )
+        inspire_fear = SpellDef(
+            name="Inspire Fear",
+            duration_ticks=25,
+            duration_seconds=150.0,
+            category="mez",
+            dot_type=None,
+            cast_time_sec=3.0,
+            cast_on_you="Your mind fills with fear.",
+            cast_on_other=" looks very afraid.",
+        )
+
+        with patch.dict(
+            SPELL_DB.spells_by_name,
+            {"invoke fear": invoke_fear, "inspire fear": inspire_fear},
+        ), patch.dict(
+            SPELL_DB.spells_by_on_other,
+            {" looks very afraid.": inspire_fear},
+        ), patch.dict(
+            SPELL_DB.spells_by_on_you,
+            {"your mind fills with fear.": inspire_fear},
+        ):
+            self.assertIsNone(
+                SPELL_DB.lookup_by_cast_on_you("Your mind fills with fear.")
+            )
+            self.assertIsNone(
+                SPELL_DB.lookup_by_cast_on_other("Jaelk looks very afraid.")
+            )
+
+            engine = TimerEngine()
+            created = engine.process_line(
+                "Jaelk looks very afraid.",
+                t0,
+            )
+            self.assertEqual(created, [])
+            self.assertEqual(engine.active_timers, {})
+
     def test_pending_invoke_fear_wins_over_generic_inspire_fear_landing(self):
         t0 = datetime(2026, 10, 26, 12, 0, 0)
         invoke_fear = SpellDef(
