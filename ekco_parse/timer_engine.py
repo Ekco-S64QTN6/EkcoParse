@@ -206,13 +206,19 @@ class TimerEngine:
         # Clear failed casts before the elapsed-cast fallback can mistake the resist
         # message for a successful landing. This is important when replaying logs too.
         if (
-            re.match(r"^Your spell is interrupted\.$", message, re.IGNORECASE)
+            re.match(
+                r"^Your spell (?:is interrupted|did not take hold|fizzles)[.!]*$",
+                message,
+                re.IGNORECASE,
+            )
             or re.search(
                 r"\bresisted\s+(?:your|the)\s+.+?\s+spell\.$",
                 message,
                 re.IGNORECASE,
             )
         ):
+            # Failed outcomes are not landings. Clear the pending cast before
+            # this line (or a later unrelated line) can be mistaken for success.
             self.handle_spell_resist()
             return []
 
