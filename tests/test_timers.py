@@ -227,8 +227,8 @@ class TestTimerEngine(unittest.TestCase):
         )
         inspire_fear = SpellDef(
             name="Inspire Fear",
-            duration_ticks=25,
-            duration_seconds=150.0,
+            duration_ticks=20,
+            duration_seconds=120.0,
             category="mez",
             dot_type=None,
             cast_time_sec=3.0,
@@ -275,8 +275,8 @@ class TestTimerEngine(unittest.TestCase):
         )
         inspire_fear = SpellDef(
             name="Inspire Fear",
-            duration_ticks=25,
-            duration_seconds=150.0,
+            duration_ticks=20,
+            duration_seconds=120.0,
             category="mez",
             dot_type=None,
             cast_time_sec=3.0,
