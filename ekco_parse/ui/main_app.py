@@ -194,6 +194,11 @@ class EkcoParseApp(App):
         target_log = self.config.resolve_log_path()
         self.catchup_from_log(target_log)
 
+        # Startup replay can take longer than a normal tick. Begin wall-clock
+        # delta accounting after replay so its processing time is not charged to
+        # every active timer on the first interval.
+        self._last_tick_time = time.time()
+
         self.tailer = LogTailer(
             filepath=target_log,
             start_at_end=True,
