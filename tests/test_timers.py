@@ -22,9 +22,16 @@ class TestTimerEngine(unittest.TestCase):
         # P99 Wiki durations: Splurt 102s, Cascading Darkness 96s, Bond of Death 54s.
         self.engine.process_line("a hill giant's body begins to splurt.", t0)
         self.engine.process_line("a hill giant is enveloped in a funeral pyre.", t0)
-        self.engine.process_line("a hill giant is engulfed in darkness.", t0)
-        self.engine.handle_spell_cast_start("You", "Bond of Death", t0)
-        self.engine.process_line("a hill giant staggers.", t0 + timedelta(seconds=7))
+        # Darkness spells share a landing phrase; cast context identifies which
+        # spell landed instead of relying on the catalog's first matching name.
+        self.engine.handle_spell_cast_start("You", "Dooming Darkness", t0)
+        self.engine.process_line(
+            "a hill giant is engulfed in darkness.", t0 + timedelta(seconds=4)
+        )
+        self.engine.handle_spell_cast_start(
+            "You", "Bond of Death", t0 + timedelta(seconds=4)
+        )
+        self.engine.process_line("a hill giant staggers.", t0 + timedelta(seconds=11))
 
         # Get sorted DoTs
         sorted_dots = self.engine.get_sorted_dots()
