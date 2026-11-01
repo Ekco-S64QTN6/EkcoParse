@@ -13,7 +13,9 @@ PY="$VENV_DIR/bin/python"
 if [ ! -f "$PY" ]; then
     echo "[Ekco Parse] Initializing virtual environment with uv..."
     if command -v uv >/dev/null 2>&1; then
-        uv venv "$VENV_DIR"
+        # Prefer Python >= 3.12 (immortal None; see requirements.txt). uv picks the
+        # system interpreter when it qualifies instead of downloading one.
+        uv venv --python ">=3.12" "$VENV_DIR" || uv venv "$VENV_DIR"
         uv pip install -r requirements.txt --python "$PY"
     else
         python3 -m venv "$VENV_DIR"
