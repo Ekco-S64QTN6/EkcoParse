@@ -118,6 +118,8 @@ class DpsEngine:
                     player_tank.blocks += 1
                 elif m_type == "miss":
                     player_tank.enemy_misses += 1
+                elif m_type == "rune":
+                    player_tank.rune_absorbs += 1
 
     def process_heal(self, heal: HealAction) -> None:
         """Process healing cast or received."""

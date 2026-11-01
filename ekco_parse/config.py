@@ -54,6 +54,11 @@ class Config:
         self.character_name: str = char.get("name", "Ekco")
         self.server: str = char.get("server", "green")
         self.character_class: str = char.get("class", "Shadowknight")
+        # Optional; otherwise learned from /who and level-up lines. Buff durations
+        # for level-scaled spells depend on it.
+        self.character_level: Optional[int] = (
+            int(char["level"]) if str(char.get("level", "")).isdigit() else None
+        )
 
         # Log Tailer
         tailer = config_dict.get("log_tailer", {})
@@ -64,6 +69,8 @@ class Config:
         self.poll_interval_sec: float = float(tailer.get("poll_interval_sec", 0.1))
         self.start_at_end: bool = bool(tailer.get("start_at_end", True))
         self.fallback_simulator: bool = bool(tailer.get("fallback_simulator", False))
+        # Switch to whichever character's log is being written (alt switching).
+        self.follow_active_log: bool = bool(tailer.get("follow_active_log", True))
 
         # Display
         display = config_dict.get("display", {})
@@ -102,6 +109,12 @@ class Config:
         if target_file.exists():
             return target_file
 
+        # P99 always names logs eqlog_<Name>_project1999.txt whatever the
+        # server/box, so try that before guessing from the newest file.
+        p99_file = self.log_dir / f"eqlog_{self.character_name}_project1999.txt"
+        if p99_file.exists():
+            return p99_file
+
         # Case-insensitive search or match any eqlog in directory
         if self.log_dir.exists():
             # Try lowercase / capitalized variations
@@ -119,6 +132,25 @@ class Config:
                 return eqlogs[0]
 
         return target_file
+
+
+def character_from_log(path: Path) -> Optional[str]:
+    """'eqlog_Ekco_project1999.txt' -> 'Ekco'."""
+    name = Path(path).name
+    if name.startswith("eqlog_") and name.endswith(".txt"):
+        parts = name[len("eqlog_"):-len(".txt")].split("_")
+        if parts and parts[0]:
+            return parts[0]
+    return None
+
+
+def newest_log(log_dir: Path) -> Optional[Path]:
+    """Most recently written eqlog_*.txt in log_dir."""
+    try:
+        logs = [p for p in Path(log_dir).glob("eqlog_*.txt") if p.is_file()]
+        return max(logs, key=lambda p: p.stat().st_mtime) if logs else None
+    except OSError:
+        return None
 
 
 def load_config(path: Optional[str or Path] = None) -> Config:

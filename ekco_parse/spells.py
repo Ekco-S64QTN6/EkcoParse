@@ -1,5 +1,6 @@
 """Comprehensive Project 1999 EverQuest spell database with special focus on Level 60 Necromancer."""
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -19,6 +20,116 @@ class SpellDef:
     wear_off: Optional[str] = None
     color: str = "#FF2D95"
     recast_warning_seconds: float = 10.0
+    # Raw spells_us.txt duration inputs. When set, the real duration depends on the
+    # caster's level; duration_seconds holds the level-60 value for compatibility.
+    duration_formula: Optional[int] = None
+    duration_value: int = 0
+    # Spell recast (reuse) time from spells_us.txt field 15, e.g. Harvest = 600 s.
+    recast_seconds: float = 0.0
+
+    def duration_at(self, level: int) -> float:
+        """Duration in seconds when cast by a character of the given level."""
+        if self.duration_formula is None:
+            return self.duration_seconds
+        ticks = buff_duration_ticks(self.duration_formula, self.duration_value, level)
+        return max(6.0, ticks * 6.0)
+
+
+def buff_duration_ticks(formula: int, value: int, level: int) -> int:
+    """Buff duration in 6-second ticks for a caster of ``level``.
+
+    These are the same per-formula rules the loader always used; the only change
+    is that ``level`` is the caster's real level instead of a hard-coded 60, so
+    level-scaled buffs (formulas 1/6-11) are correct for characters below 60.
+    At level 60 every result is identical to the previous behaviour, which was
+    cross-checked against landing->fade pairs measured in real P99 logs.
+    Formulas 2-5, 12 and >=200 keep their prior fixed handling until they can be
+    verified the same way.
+    """
+    if formula == 0:
+        return value
+    if formula in (1, 6):
+        return min((level + 1) // 2, value) if value > 0 else (level + 1) // 2
+    if formula == 2:
+        return value if value > 0 else level
+    if formula == 3:
+        return value
+    if formula == 4:
+        return min(50, level)
+    if formula == 5:
+        return 3 if value <= 0 else value
+    if formula == 7:
+        return min(level, value) if value > 0 else level
+    if formula == 8:
+        return min(level + 10, value) if value > 0 else level + 10
+    if formula == 9:
+        return min(level * 2 + 10, value) if value > 0 else level * 2 + 10
+    if formula == 10:
+        return min(level * 3 + 10, value) if value > 0 else level * 3 + 10
+    if formula == 11:
+        return min(level * 30 + 90, value) if value > 0 else level * 30 + 90
+    if formula == 12:
+        return value if value > 0 else 9999
+    if formula == 50:
+        return 72000
+    return value if value > 0 else 10
+
+
+_TOKEN_RE = re.compile(r"[a-z0-9`']+")
+
+
+class _SubstringIndex:
+    """Find which keys of a pattern dict occur as substrings of a message, fast.
+
+    Exactly equivalent to ``[p for p in d if p in msg]`` (in dict order), but
+    instead of testing all ~4,000 spell phrases on every log line it only tests
+    phrases whose rarest *interior* word appears in the message. An interior word
+    is bounded by non-word characters inside the phrase, so it must also appear
+    as a whole word in any message containing the phrase. Phrases with no
+    interior word are always tested. The index rebuilds when the dict changes
+    size, which keeps it correct when tests patch the dict in place.
+    """
+
+    def __init__(self, mapping: Dict[str, object]):
+        self._mapping = mapping
+        self._built_len = -1
+        self._by_token: Dict[str, List[str]] = {}
+        self._always: List[str] = []
+        self._order: Dict[str, int] = {}
+
+    def _build(self) -> None:
+        keys = list(self._mapping.keys())
+        interior: Dict[str, List[str]] = {}
+        freq: Dict[str, int] = {}
+        for key in keys:
+            toks = [
+                m.group(0)
+                for m in _TOKEN_RE.finditer(key)
+                if m.start() > 0 and m.end() < len(key)
+            ]
+            interior[key] = toks
+            for t in set(toks):
+                freq[t] = freq.get(t, 0) + 1
+        self._by_token = {}
+        self._always = []
+        for key, toks in interior.items():
+            if toks:
+                rarest = min(toks, key=lambda t: (freq[t], -len(t)))
+                self._by_token.setdefault(rarest, []).append(key)
+            else:
+                self._always.append(key)
+        self._order = {k: i for i, k in enumerate(keys)}
+        self._built_len = len(keys)
+
+    def matches(self, msg_low: str) -> List[str]:
+        if self._built_len != len(self._mapping):
+            self._build()
+        cands = set(self._always)
+        for tok in set(_TOKEN_RE.findall(msg_low)):
+            cands.update(self._by_token.get(tok, ()))
+        hits = [k for k in cands if k in self._mapping and k in msg_low]
+        hits.sort(key=lambda k: self._order.get(k, 1 << 30))
+        return hits
 
 
 # P99 spell durations are curated against individual Project 1999 Wiki spell pages.
@@ -652,6 +763,10 @@ KNOWN_BUFF_LANDINGS: Dict[str, SpellDef] = {
 }
 
 
+# Recasts at least this long get their own cooldown timer (Harvest = 600 s).
+RECAST_TIMER_MIN_SEC = 60.0
+
+
 class SpellDatabase:
     """Universal Project 1999 spell catalog, reading spells_us.txt with full fallback."""
 
@@ -664,6 +779,14 @@ class SpellDatabase:
         self.spells_by_on_you: Dict[str, SpellDef] = dict(KNOWN_BUFF_LANDINGS)
         self.spells_by_wear_off: Dict[str, str] = {}
         self.spells_by_on_other: Dict[str, SpellDef] = {}
+        # Spells whose recast is long enough to deserve a cooldown timer.
+        self.recast_spells: Dict[str, SpellDef] = {}
+        self._on_you_index = _SubstringIndex(self.spells_by_on_you)
+        self._on_other_index = _SubstringIndex(self.spells_by_on_other)
+        self._wear_off_index = _SubstringIndex(self.spells_by_wear_off)
+        self._known_landings = [
+            (p, p.strip().casefold().rstrip(" .!?"), s) for p, s in KNOWN_BUFF_LANDINGS.items()
+        ]
 
         for sdef in NECRO_SPELLS.values():
             if sdef.cast_on_other:
@@ -728,53 +851,28 @@ class SpellDatabase:
                         dur_formula = 0
                         dur_val = 0
 
+                    # ── Recast / reuse time (field 15, milliseconds) ──
+                    try:
+                        recast_sec = int(parts[15]) / 1000.0
+                    except (ValueError, IndexError):
+                        recast_sec = 0.0
+
                     if dur_val <= 0 and dur_formula == 0:
+                        # No buff duration. Keep it only as a cooldown source
+                        # (e.g. Harvest: 10-minute recast, instant effect).
+                        if recast_sec >= RECAST_TIMER_MIN_SEC and name.casefold() not in self.recast_spells:
+                            self.recast_spells[name.casefold()] = SpellDef(
+                                name=name, duration_ticks=0, duration_seconds=0.0,
+                                category="cooldown", dot_type=None,
+                                cast_time_sec=cast_time_sec,
+                                cast_on_you=on_you or None, cast_on_other=on_other or None,
+                                color="#FFC857", recast_seconds=recast_sec,
+                            )
                         continue
 
-                    level = 60
-                    ticks = dur_val
-
-                    if dur_formula == 0:
-                        ticks = dur_val
-                    elif dur_formula in (1, 6):
-                        # min(ceil(level/2), value)
-                        ticks = min((level + 1) // 2, dur_val) if dur_val > 0 else (level + 1) // 2
-                    elif dur_formula == 2:
-                        # (value/5*3) or scaled: typically just dur_val
-                        ticks = dur_val if dur_val > 0 else level
-                    elif dur_formula == 3:
-                        # Fixed duration: value ticks exactly
-                        ticks = dur_val
-                    elif dur_formula == 4:
-                        # min(50, level)
-                        ticks = min(50, level)
-                    elif dur_formula == 5:
-                        # 3 ticks (18 seconds — stun/mezzes)
-                        ticks = 3 if dur_val <= 0 else dur_val
-                    elif dur_formula == 7:
-                        # min(level, value)
-                        ticks = min(level, dur_val) if dur_val > 0 else level
-                    elif dur_formula == 8:
-                        # min(level + 10, value)
-                        ticks = min(level + 10, dur_val) if dur_val > 0 else level + 10
-                    elif dur_formula == 9:
-                        # min(level*2 + 10, value)
-                        ticks = min(level * 2 + 10, dur_val) if dur_val > 0 else level * 2 + 10
-                    elif dur_formula == 10:
-                        # min(level*3 + 10, value)  — long-duration buffs like Demi Lich
-                        ticks = min(level * 3 + 10, dur_val) if dur_val > 0 else level * 3 + 10
-                    elif dur_formula == 11:
-                        # min(level*30 + 90, value) — very long buffs
-                        ticks = min(level * 30 + 90, dur_val) if dur_val > 0 else level * 30 + 90
-                    elif dur_formula == 12:
-                        # Permanent until cancelled
-                        ticks = dur_val if dur_val > 0 else 9999
-                    elif dur_formula == 50:
-                        # Permanent
-                        ticks = 72000
-                    else:
-                        ticks = dur_val if dur_val > 0 else 10
-
+                    # Level-60 value for the legacy duration_seconds field; the
+                    # timer engine calls duration_at(caster_level) for the real one.
+                    ticks = buff_duration_ticks(dur_formula, dur_val, 60)
                     dur_seconds = max(6.0, ticks * 6.0)
 
                     # ── Determine category using beneficial flag + name heuristics ──
@@ -855,7 +953,12 @@ class SpellDatabase:
                         cast_on_other=on_other if on_other else None,
                         wear_off=wear_off if wear_off else None,
                         color=color,
+                        duration_formula=dur_formula,
+                        duration_value=dur_val,
+                        recast_seconds=recast_sec,
                     )
+                    if recast_sec >= RECAST_TIMER_MIN_SEC and name.casefold() not in self.recast_spells:
+                        self.recast_spells[name.casefold()] = sdef
 
                     # Hardcoded NECRO_SPELLS and KNOWN_BUFF_LANDINGS take priority
                     if name.lower() not in self.spells_by_name:
@@ -887,36 +990,12 @@ class SpellDatabase:
         the name-indexed catalog as well: if different spells own the same best
         pattern, only a pending cast can safely tell us which one landed.
         """
-        msg_low = message.strip().casefold()
-        matches = [
-            (pattern, sdef)
-            for pattern, sdef in landing_map.items()
-            if pattern in msg_low
-            and not (
-                skip_bond_of_death
-                and sdef.name.casefold() == "bond of death"
-            )
-        ]
-        if not matches:
+        found = self._landing_candidates(
+            message, landing_map, attribute, skip_bond_of_death=skip_bond_of_death
+        )
+        if not found:
             return None
-
-        # Prefer a longer phrase over a generic substring; only equal-length
-        # best matches can make this line ambiguous.
-        longest = max(len(pattern) for pattern, _ in matches)
-        best = [
-            (pattern, sdef)
-            for pattern, sdef in matches
-            if len(pattern) == longest
-        ]
-
-        candidates: Dict[str, SpellDef] = {}
-        for pattern, sdef in best:
-            candidates.setdefault(sdef.name.casefold(), sdef)
-            for definition in self.spells_by_name.values():
-                landing = getattr(definition, attribute, None)
-                if landing and landing.strip().casefold() == pattern.strip().casefold():
-                    candidates.setdefault(definition.name.casefold(), definition)
-
+        best, candidates = found
         if len(candidates) > 1:
             definitions = list(candidates.values())
             first = definitions[0]
@@ -939,6 +1018,62 @@ class SpellDatabase:
                 return None
         return best[0]
 
+    def landing_candidates_on_other(self, message: str) -> List[SpellDef]:
+        """Every spell whose best-matching cast_on_other phrase occurs in message.
+
+        Unlike lookup_by_cast_on_other this does not give up on shared landing
+        text, so the timer engine can pick the spell that was actually cast.
+        """
+        found = self._landing_candidates(
+            message, self.spells_by_on_other, "cast_on_other", skip_bond_of_death=True
+        )
+        return list(found[1].values()) if found else []
+
+    def _index_for(self, landing_map: Dict[str, SpellDef]) -> "_SubstringIndex":
+        if landing_map is self.spells_by_on_you:
+            return self._on_you_index
+        if landing_map is self.spells_by_on_other:
+            return self._on_other_index
+        return _SubstringIndex(landing_map)
+
+    def _landing_candidates(
+        self,
+        message: str,
+        landing_map: Dict[str, SpellDef],
+        attribute: str,
+        *,
+        skip_bond_of_death: bool = False,
+    ) -> Optional[Tuple[List[Tuple[str, SpellDef]], Dict[str, SpellDef]]]:
+        msg_low = message.strip().casefold()
+        matches = [
+            (pattern, landing_map[pattern])
+            for pattern in self._index_for(landing_map).matches(msg_low)
+            if not (
+                skip_bond_of_death
+                and landing_map[pattern].name.casefold() == "bond of death"
+            )
+        ]
+        if not matches:
+            return None
+
+        # Prefer a longer phrase over a generic substring; only equal-length
+        # best matches can make this line ambiguous.
+        longest = max(len(pattern) for pattern, _ in matches)
+        best = [
+            (pattern, sdef)
+            for pattern, sdef in matches
+            if len(pattern) == longest
+        ]
+
+        candidates: Dict[str, SpellDef] = {}
+        for pattern, sdef in best:
+            candidates.setdefault(sdef.name.casefold(), sdef)
+            for definition in self.spells_by_name.values():
+                landing = getattr(definition, attribute, None)
+                if landing and landing.strip().casefold() == pattern.strip().casefold():
+                    candidates.setdefault(definition.name.casefold(), definition)
+        return best, candidates
+
     def lookup_by_cast_on_you(self, message: str) -> Optional[SpellDef]:
         msg_low = message.strip().casefold()
 
@@ -952,8 +1087,8 @@ class SpellDatabase:
         normalized_message = msg_low.rstrip(" .!?")
         known_matches = [
             (pattern, sdef)
-            for pattern, sdef in KNOWN_BUFF_LANDINGS.items()
-            if pattern.strip().casefold().rstrip(" .!?") in normalized_message
+            for pattern, norm, sdef in self._known_landings
+            if norm in normalized_message
         ]
         if known_matches:
             _, known_sdef = max(known_matches, key=lambda item: len(item[0]))
@@ -984,10 +1119,14 @@ class SpellDatabase:
         msg_low = message.strip().lower()
         if msg_low in self.spells_by_wear_off:
             return self.spells_by_wear_off[msg_low]
-        for pattern, sname in self.spells_by_wear_off.items():
-            if pattern in msg_low:
-                return sname
-        return None
+        hits = self._wear_off_index.matches(msg_low)
+        return self.spells_by_wear_off[hits[0]] if hits else None
+
+    def lookup_recast(self, name: Optional[str]) -> Optional[SpellDef]:
+        """Spell definition if its recast is long enough for a cooldown timer."""
+        if not name:
+            return None
+        return self.recast_spells.get(name.strip().casefold())
 
 
 # Global singleton instance

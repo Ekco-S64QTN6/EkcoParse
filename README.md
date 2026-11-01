@@ -106,6 +106,25 @@ In the map window:
 | `b` | Clear the breadcrumb trail |
 | `l` | Add a test location step |
 
+## Click-through HUD
+
+`./run.sh --hud` opens a display-only Qt overlay — fight DPS with the top
+combatants, DoT/debuff timers (soonest first), buffs, spell cooldowns and
+respawns — that **never intercepts the mouse**: it has an empty input region,
+so clicks land on the game underneath, like a Windows game overlay. Kitty
+cannot do this, which is why the terminal dashboard blocked clicks.
+
+- Hides itself whenever `eqgame.exe` is not running.
+- On Wayland a window cannot place itself or stay on top; use a KWin rule
+  matching window class `ekco-hud` (Position: Force, Keep above: Force,
+  No titlebar and frame: Force, skip taskbar/switcher).
+- Optional `hud:` section in `config.yaml`: `width`, `row_height`,
+  `font_family`, `font_size`, `background_opacity`, `max_rows`, `show_dps`,
+  `dps_rows`, `show_respawns`, `hide_when_game_closed`.
+- Needs `PySide6-Essentials` (in `requirements.txt`); the terminal dashboard does not.
+
+The Defense and Ledger tabs remain in the terminal dashboard (`./run.sh`).
+
 ## Overlay transparency
 
 The default launcher starts the dashboard in Kitty with `background_opacity=0.0` (fully transparent). The dashboard runs Textual in ANSI-color mode and uses the terminal's **default background** for the screen and every panel. This is important because Kitty only applies `background_opacity` to cells that use the terminal's default background; ordinary RGB/theme background colors can still paint opaque rectangles.

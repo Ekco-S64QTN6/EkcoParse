@@ -50,6 +50,7 @@ class MitigationWidget(Static):
             f"[bold white]Parries:[/] [bold {COLOR_GREEN}]{p.parries}[/]  |  "
             f"[bold white]Blocks:[/] [bold {COLOR_GREEN}]{p.blocks}[/]  |  "
             f"[bold white]Ripostes:[/] [bold {COLOR_GREEN}]{p.ripostes}[/]\n"
-            f"  [bold white]Enemy Misses:[/] [bold {COLOR_GREEN}]{p.enemy_misses}[/]"
+            f"  [bold white]Enemy Misses:[/] [bold {COLOR_GREEN}]{p.enemy_misses}[/]  |  "
+            f"[bold white]Rune Absorbs:[/] [bold {COLOR_GREEN}]{p.rune_absorbs}[/]"
         )
         self.update(content)

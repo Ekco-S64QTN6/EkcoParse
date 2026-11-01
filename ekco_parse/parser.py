@@ -63,6 +63,16 @@ RE_DEFENSE_OTHER = re.compile(
     r"^(?P<actor>.+?)\s+tries to\s+(?P<verb>\w+)\s+(?P<target>.+?),\s+but\s+(?P<defender>.+?)\s+(?P<defense>dodges|parries|blocks|ripostes)!$"
 )
 RE_GENERAL_MISS = re.compile(r"^(?P<actor>.+?)\s+tries to\s+(?P<verb>\w+)\s+(?P<target>.+?),\s+but misses!$")
+# Rune / magical-skin absorb: "a goblin tries to hit YOU, but YOUR magical skin absorbs the blow!"
+RE_RUNE_ON_YOU = re.compile(
+    r"^(?P<actor>.+?)\s+tries to\s+(?P<verb>\w+)\s+YOU,\s+but YOUR magical skin absorbs the blow!$"
+)
+
+# Session / character state
+RE_LOGIN = re.compile(r"^Welcome to EverQuest!$")
+RE_LEVEL_UP = re.compile(r"^You have gained a level! Welcome to level (?P<level>\d+)!$")
+# /who row: "[60 Sorcerer] Ekco (High Elf) <Guild>"  ([ANONYMOUS] rows carry no level)
+RE_WHO_ROW = re.compile(r"^\[(?P<level>\d+) (?P<cls>[A-Za-z ]+?)\] (?P<name>[A-Za-z]+) \(")
 
 # Heals
 RE_HEAL_ON_YOU = re.compile(r"^You have been healed for\s+(?P<amount>\d+)\s+points? of damage\.$")
@@ -143,7 +153,8 @@ class LogParser:
         # 2. Zone change (via entering zone or /who command)
         m = RE_ZONE.match(msg)
         if m:
-            return {"type": "zone_change", "zone": m.group("zone").strip()}
+            # "entered" marks a real zone-in; /who results below only report it.
+            return {"type": "zone_change", "zone": m.group("zone").strip(), "entered": True}
 
         m = RE_WHO_ZONE.match(msg)
         if m:
@@ -230,6 +241,18 @@ class LogParser:
             )
 
         # 7. Misses & Defenses
+        m = RE_RUNE_ON_YOU.match(msg)
+        if m:
+            return CombatAction(
+                actor=m.group("actor").strip(),
+                target="YOU",
+                verb=m.group("verb"),
+                damage=0,
+                is_miss=True,
+                miss_type="rune",
+                timestamp=dt,
+            )
+
         m = RE_YOU_MISS.match(msg)
         if m:
             return CombatAction(
@@ -378,6 +401,18 @@ class LogParser:
         m = RE_YOU_DIED_ALT.match(msg)
         if m:
             return {"type": "player_death", "killer": "Unknown"}
+
+        if RE_LOGIN.match(msg):
+            return {"type": "login"}
+
+        m = RE_LEVEL_UP.match(msg)
+        if m:
+            return {"type": "level", "level": int(m.group("level")), "name": self.character_name}
+
+        m = RE_WHO_ROW.match(msg)
+        if m:
+            return {"type": "who_row", "level": int(m.group("level")),
+                    "class": m.group("cls"), "name": m.group("name")}
 
         # Loading screen (zone transition / character switch)
         m = RE_LOADING.match(msg)

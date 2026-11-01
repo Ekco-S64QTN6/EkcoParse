@@ -48,6 +48,7 @@ def main():
     parser.add_argument("--all", "-a", action="store_true", help="Launch both dashboard and standalone map window in separate terminals")
     parser.add_argument("--simulate", "-s", action="store_true", help="Run with simulated P99 combat/DoT/loc log stream")
     parser.add_argument("--zone", "-z", type=str, default=None, help="Initial zone name for map")
+    parser.add_argument("--hud", action="store_true", help="Launch the click-through game HUD (Qt)")
 
     args = parser.parse_args()
     config = load_config(args.config)
@@ -64,6 +65,12 @@ def main():
         sim_thread.start()
         print(f"[Simulator] Writing simulated P99 log events to {sim_log}")
         time.sleep(0.5)
+
+    if args.hud:
+        # Imported here so the terminal dashboard does not require Qt.
+        from ekco_parse.ui.hud import main as hud_main
+        hud_argv = [sys.argv[0]] + (["--config", args.config] if args.config else [])
+        sys.exit(hud_main(hud_argv))
 
     if args.all:
         py_bin = sys.executable

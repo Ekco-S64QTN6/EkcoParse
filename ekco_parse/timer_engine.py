@@ -4,7 +4,7 @@ import re
 import sys
 import uuid
 from collections import deque
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, Callable, Deque, Dict, List, Optional, Tuple
 
 from ekco_parse.models import Timer
@@ -57,6 +57,11 @@ class TimerEngine:
         self.current_target: str = "Unknown Target"
         self.pending_cast_spell: Optional[str] = None
         self.pending_cast_time: Optional[datetime] = None
+        # Level-scaled buff formulas need the caster's level. Updated from the
+        # config, /who output and "Welcome to level N!" lines.
+        self.caster_level: int = 60
+        self.last_cast_spell: Optional[str] = None
+        self.last_cast_time: Optional[datetime] = None
 
         if triggers_config:
             self.load_triggers(triggers_config)
@@ -90,6 +95,10 @@ class TimerEngine:
         if caster.lower() == "you":
             self.pending_cast_spell = spell_name.strip()
             self.pending_cast_time = timestamp
+            # Kept through interrupts: Harvest stuns you on completion, so P99
+            # prints "Your spell is interrupted." before its landing line.
+            self.last_cast_spell = spell_name.strip()
+            self.last_cast_time = timestamp
 
     def handle_spell_interrupt(self) -> None:
         """Cancel pending cast if interrupted."""
@@ -141,6 +150,55 @@ class TimerEngine:
         # Add/refresh the respawn timer based on zone.
         if mob_name.strip():
             self.add_respawn_timer(mob_name.strip(), zone, created_at=timestamp)
+
+    HOSTILE_CATEGORIES = ("dot", "snare", "root", "mez", "debuff")
+
+    def on_zone_change(self) -> None:
+        """Zoning leaves every mob behind: drop DoT/CC/debuff timers on them.
+
+        Buffs, cooldowns and respawn timers carry across zones.
+        """
+        for tid in [t for t, tm in self.active_timers.items() if tm.category in self.HOSTILE_CATEGORIES]:
+            self.active_timers.pop(tid, None)
+        self.current_target = "Unknown Target"
+        self.handle_spell_interrupt()
+
+    def on_login(self, offline_seconds: float, adjust_remaining: bool = True) -> None:
+        """Buffs and cooldowns are frozen while camped; give the offline time back.
+
+        Shifting created_at keeps startup catch-up (which recomputes remaining
+        time from created_at) and live ticking (which decremented remaining_seconds
+        through the gap) consistent.
+        """
+        self.on_zone_change()
+        if offline_seconds <= 0:
+            return
+        for t in self.active_timers.values():
+            if t.category in ("buff", "cooldown", "util", "pet_buff"):
+                t.created_at = t.created_at + timedelta(seconds=offline_seconds)
+                if adjust_remaining:
+                    t.remaining_seconds += offline_seconds
+
+    def set_caster_level(self, level: int) -> None:
+        if 1 <= level <= 65:
+            self.caster_level = level
+
+    def _add_cooldown_timer(self, sdef: SpellDef, timestamp: datetime) -> Timer:
+        timer_id = f"cooldown:{sdef.name.strip().casefold()}"
+        timer = Timer(
+            id=timer_id,
+            name=f"{sdef.name} recast",
+            alert_text=f"{sdef.name} ready",
+            total_seconds=sdef.recast_seconds,
+            remaining_seconds=sdef.recast_seconds,
+            category="cooldown",
+            color="#FFC857",
+            sound=True,
+            target="Self",
+            created_at=timestamp,
+        )
+        self.active_timers[timer_id] = timer
+        return timer
 
     def on_player_death(self, play_sound: bool = True) -> None:
         """Clear buffs after death and optionally sound an alert.
@@ -223,7 +281,6 @@ class TimerEngine:
             return []
 
         new_timers: List[Timer] = []
-
         # 1. Wear-off checks
         to_remove = []
         for timer_id, timer in self.active_timers.items():
@@ -374,6 +431,29 @@ class TimerEngine:
                 target_name = landed_target
                 self.current_target = target_name
 
+        # Shared landing text (e.g. three Darkness snares print the same line):
+        # the generic lookup refuses to guess, but if we are mid-cast of a hostile
+        # spell of the same category inside its landing window, it is our spell.
+        if not matched_spell and pending_sdef and self.pending_cast_time and (
+            pending_sdef.category in offensive_categories
+        ):
+            shared = [
+                c for c in SPELL_DB.landing_candidates_on_other(message)
+                if c.category == pending_sdef.category and c.cast_on_other
+            ]
+            elapsed = (timestamp - self.pending_cast_time).total_seconds()
+            if shared and (
+                max(0.0, pending_sdef.cast_time_sec - 1.5)
+                <= elapsed
+                <= pending_sdef.cast_time_sec + 3.0
+            ):
+                idx = message_lower.find(shared[0].cast_on_other.casefold())
+                target_name = message[:idx].strip() if idx > 0 else self.current_target
+                self.current_target = target_name
+                matched_spell = pending_sdef
+                self.pending_cast_spell = None
+                self.pending_cast_time = None
+
         # If a pending spell was casting and finishes without interrupt/resist
         if not matched_spell and self.pending_cast_spell:
             sdef = pending_sdef or SPELL_DB.lookup_by_name(self.pending_cast_spell)
@@ -414,6 +494,27 @@ class TimerEngine:
             timer = self._add_spell_timer(matched_spell, target_name, timestamp)
             if timer:
                 new_timers.append(timer)
+
+        # Cooldown for a long-recast spell we just cast, once its landing text
+        # shows up inside the spell's cast-time window.
+        recast_def = SPELL_DB.lookup_recast(self.last_cast_spell)
+        if recast_def and self.last_cast_time:
+            elapsed = (timestamp - self.last_cast_time).total_seconds()
+            in_window = (
+                max(0.0, recast_def.cast_time_sec - 1.5)
+                <= elapsed
+                <= recast_def.cast_time_sec + 3.0
+            )
+            if in_window and any(
+                text and text.strip().casefold().rstrip(" .!") in message_lower
+                for text in (recast_def.cast_on_you, recast_def.cast_on_other)
+            ):
+                new_timers.append(self._add_cooldown_timer(recast_def, timestamp))
+                if self.pending_cast_spell == self.last_cast_spell:
+                    self.pending_cast_spell = None
+                    self.pending_cast_time = None
+                self.last_cast_spell = None
+                self.last_cast_time = None
 
         # 3. Custom / Configured Triggers
         for trig in self.triggers:
@@ -515,12 +616,13 @@ class TimerEngine:
         alert_msg = f"{sdef.name} on {target}" if target != "Self" else f"{sdef.name} Active"
 
         wear_off_pat = sdef.wear_off or f"Your {sdef.name} spell has worn off\\."
+        duration = sdef.duration_at(self.caster_level)
         timer = Timer(
             id=timer_id,
             name=sdef.name,
             alert_text=alert_msg,
-            total_seconds=sdef.duration_seconds,
-            remaining_seconds=sdef.duration_seconds,
+            total_seconds=duration,
+            remaining_seconds=duration,
             category=sdef.category,
             color=sdef.color,
             sound=(sdef.category in ("root", "mez", "snare")),

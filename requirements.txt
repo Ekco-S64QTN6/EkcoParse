@@ -1,3 +1,5 @@
 textual>=0.70.0
 rich>=13.7.0
 pyyaml>=6.0.1
+# Click-through HUD (./run.sh --hud). The terminal dashboard does not need it.
+PySide6-Essentials>=6.7

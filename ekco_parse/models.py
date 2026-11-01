@@ -58,6 +58,7 @@ class CombatantStats:
     ripostes: int = 0
     blocks: int = 0
     enemy_misses: int = 0
+    rune_absorbs: int = 0        # hits eaten by a rune / magical skin
     max_hit_taken: int = 0
 
     # Healing

@@ -48,6 +48,12 @@ case "$1" in
             exec "$PY" -m ekco_parse.main "${@:2}"
         fi
         ;;
+    --hud|-H)
+        # Click-through overlay: clicks pass through to the game. Placement and
+        # always-on-top come from a KWin rule matching window class "ekco-hud".
+        echo "[Ekco Parse] Starting click-through HUD..."
+        exec "$PY" -m ekco_parse.main --hud "${@:2}"
+        ;;
     --map|-m)
         echo "[Ekco Parse] Starting Standalone Map Window..."
         TERM_EMU=$(detect_terminal)
@@ -82,12 +88,13 @@ case "$1" in
         echo "Ekco Parse Launcher Usage:"
         echo "  ./run.sh           Run companion as transparent overlay (default)"
         echo "  ./run.sh --overlay Launch standalone transparent borderless overlay window"
+        echo "  ./run.sh --hud     Launch click-through HUD over the game (timers, buffs, DPS)"
         echo "  ./run.sh --map     Launch standalone radar vector map window"
         echo "  ./run.sh --all     Launch both companion overlay and radar map in separate windows"
         echo "  ./run.sh --sim     Run with realistic P99 log simulator"
         echo "  ./run.sh --test    Run automated unit test suite"
         echo ""
-        echo "Window management: App auto-sets always-on-top via xdotool."
+        echo "Window management: on Wayland use KWin window rules (xdotool is X11-only)."
         echo "In kitty: transparent bg, no window decorations, no padding."
         echo "Any terminal: remove title bar/frame from your window manager."
         ;;

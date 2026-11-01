@@ -19,6 +19,7 @@ from ekco_parse.dps_engine import DpsEngine
 from ekco_parse.loot_engine import LootEngine
 from ekco_parse.models import CombatAction, HealAction, Location, LootRecord
 from ekco_parse.parser import LogParser
+from ekco_parse.session import LogSession
 from ekco_parse.tailer import LogTailer
 from ekco_parse.timer_engine import TimerEngine
 from ekco_parse.ui.theme import (
@@ -143,21 +144,29 @@ class EkcoParseApp(App):
         # opaque Textual theme surface.
         super().__init__(ansi_color=True)
         self.config = config or load_config()
-
-        self.dps_engine = DpsEngine(
-            character_name=self.config.character_name,
-            encounter_timeout_sec=self.config.encounter_timeout_sec,
-            history_limit=self.config.history_limit,
-        )
-        self.timer_engine = TimerEngine(triggers_config=self.config.triggers)
-        self.loot_engine = LootEngine(history_limit=100)
-        self.parser = LogParser(character_name=self.config.character_name)
-
-        self.tailer: Optional[LogTailer] = None
-        self.active_zone: str = self.config.default_zone
-        self.is_tailing: bool = False
+        self.session = LogSession(self.config)
         self._last_tick_time = time.time()
-        self._last_log_timestamp: Optional[datetime] = None  # Last EQ log timestamp seen
+
+    # Engines live in the shared LogSession (also used by the HUD); these keep
+    # the dashboard's established attribute names working.
+    timer_engine = property(lambda self: self.session.timer_engine)
+    dps_engine = property(lambda self: self.session.dps_engine)
+    loot_engine = property(lambda self: self.session.loot_engine)
+    parser = property(lambda self: self.session.parser)
+    tailer = property(lambda self: self.session.tailer)
+    is_tailing = property(lambda self: self.session.is_tailing)
+
+    @property
+    def active_zone(self) -> str:
+        return self.session.active_zone
+
+    @active_zone.setter
+    def active_zone(self, value: str) -> None:
+        self.session.active_zone = value
+
+    @property
+    def _last_log_timestamp(self):
+        return self.session._last_log_timestamp
 
     def compose(self) -> ComposeResult:
         with Container(id="main-container"):
@@ -180,20 +189,12 @@ class EkcoParseApp(App):
         # Request always-on-top via xdotool (non-blocking, best-effort)
         self._set_always_on_top()
 
-        target_log = self.config.resolve_log_path()
-        self.catchup_from_log(target_log)
+        self.session.start(catchup=self.catchup_from_log)
 
         # Startup replay can take longer than a normal tick. Begin wall-clock
         # delta accounting after replay so its processing time is not charged to
         # every active timer on the first interval.
         self._last_tick_time = time.time()
-
-        self.tailer = LogTailer(
-            filepath=target_log,
-            start_at_end=True,
-            poll_interval_sec=self.config.poll_interval_sec,
-        )
-        self.is_tailing = self.tailer.open()
         self.set_interval(self.config.tick_interval_sec, self._tick)
         self._update_ui()
 
@@ -215,111 +216,20 @@ class EkcoParseApp(App):
 
     def catchup_from_log(self, target_log: Path) -> None:
         """Scan recent log history on startup to recover active buffs and correct timers."""
-        if not target_log.exists():
-            return
-
-        try:
-            with open(target_log, "r", encoding="utf-8", errors="replace") as f:
-                f.seek(0, 2)
-                size = f.tell()
-                # Scan last 400KB (~6,000 lines, covering past several hours)
-                f.seek(max(0, size - 400000), 0)
-                lines = f.readlines()
-
-            for line in lines:
-                self._process_log_line(line, update_recent=False)
-
-            # Reconcile remaining durations against last LOG timestamp (not wall clock)
-            # When offline, EQ buffs freeze — so we measure elapsed in-game time only
-            if self._last_log_timestamp:
-                ref_time = self._last_log_timestamp
-            else:
-                ref_time = datetime.now()
-
-            for tid, t in list(self.timer_engine.active_timers.items()):
-                elapsed = (ref_time - t.created_at).total_seconds()
-                t.remaining_seconds = t.total_seconds - elapsed
-                if t.remaining_seconds <= 0:
-                    del self.timer_engine.active_timers[tid]
-        except Exception:
-            pass
+        self.session.catchup_from_log(target_log)
 
     def _tick(self) -> None:
         now = time.time()
         dt = max(0.01, now - self._last_tick_time)
         self._last_tick_time = now
-
-        # Spell durations are real-time. Log silence (for example, no combat/chat
-        # for a while) must not pause buffs or DoT/CC timers, otherwise long buffs
-        # drift by minutes and expired effects remain on screen. Respawn timers are
-        # wall-clock countdowns too, so advance every active timer on every tick.
-        self.timer_engine.tick(dt)
-
-        self.dps_engine.check_inactivity()
-
-        if self.tailer:
-            lines = self.tailer.read_available_lines()
-            for line in lines:
-                self._process_log_line(line, update_recent=True)
-
+        # Spell durations are real-time: advance every timer on every tick (the
+        # session pauses buffs only while you are camped out).
+        self.session.tick(dt)
+        self.session.poll()
         self._update_ui()
 
     def _process_log_line(self, line: str, update_recent: bool = True) -> None:
-        parsed = self.parser.parse_line(line)
-        if not parsed:
-            return
-
-        log_line, event = parsed
-        ts = log_line.timestamp
-
-        # Track last log timestamp for offline detection & timer reconciliation
-        self._last_log_timestamp = ts
-
-        self.timer_engine.process_line(log_line.message, ts)
-
-        if isinstance(event, CombatAction):
-            if update_recent:
-                self.dps_engine.process_combat_action(event)
-            if event.actor.lower() == "you" and event.target.upper() != "YOU":
-                self.timer_engine.set_current_target(event.target)
-            elif event.target.upper() == "YOU" and event.actor:
-                self.timer_engine.set_current_target(event.actor)
-
-        elif isinstance(event, HealAction):
-            if update_recent:
-                self.dps_engine.process_heal(event)
-
-        elif isinstance(event, LootRecord):
-            if update_recent:
-                self.loot_engine.record_loot(event)
-
-        elif isinstance(event, dict):
-            etype = event.get("type")
-            if etype == "spell_cast":
-                self.timer_engine.handle_spell_cast_start(event.get("caster", ""), event.get("spell", ""), ts)
-            elif etype == "spell_interrupt":
-                self.timer_engine.handle_spell_interrupt()
-            elif etype == "spell_resist":
-                self.timer_engine.handle_spell_resist(event.get("spell"))
-            elif etype == "death":
-                mob = event.get("mob", "")
-                slayer = event.get("slayer", "You")
-                if update_recent:
-                    self.dps_engine.on_mob_death(mob, slayer)
-                    self.loot_engine.record_kill(mob, slayer, ts)
-                self.timer_engine.on_mob_slain(mob, self.active_zone, timestamp=ts)
-            elif etype == "player_death":
-                if update_recent:
-                    self.dps_engine.end_active_encounter(reason="player_death")
-                self.timer_engine.on_player_death(play_sound=update_recent)
-            elif etype == "experience":
-                if update_recent:
-                    self.loot_engine.record_exp(ts)
-            elif etype == "coin_loot":
-                if update_recent:
-                    self.loot_engine.record_coin_loot(event.get("money", ""), ts)
-            elif etype == "zone_change":
-                self.active_zone = event.get("zone", self.active_zone)
+        self.session.process_line(line, update_recent=update_recent)
 
     def _update_ui(self) -> None:
         if not self.is_mounted:
