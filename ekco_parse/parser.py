@@ -158,7 +158,12 @@ class LogParser:
 
         m = RE_WHO_ZONE.match(msg)
         if m:
-            return {"type": "zone_change", "zone": m.group("zone").strip()}
+            zone = m.group("zone").strip()
+            # "/who all" ends with "There are N players in EverQuest." That is
+            # the whole server, not the zone you are standing in.
+            if zone.casefold() == "everquest":
+                return None
+            return {"type": "zone_change", "zone": zone}
 
         # 3. Heading check
         m = RE_HEADING.match(msg)

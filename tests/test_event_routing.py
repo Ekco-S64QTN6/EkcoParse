@@ -152,5 +152,62 @@ class TestMainAppEventRouting(unittest.TestCase):
         self.assertEqual(timer.total_seconds, 1680.0)
 
 
+class TestZoneTracking(unittest.TestCase):
+    """Zoning (seen via "You have entered" or /who) drops timers from other zones."""
+
+    def setUp(self):
+        self.app = EkcoParseApp(config=load_config())
+        self.te = self.app.timer_engine
+        self.te.audio_enabled = False
+
+    def _add_dot(self, mob: str) -> None:
+        spell = SPELL_DB.lookup_by_name("Scourge")
+        self.te._add_spell_timer(spell, mob, datetime(2026, 10, 26, 12, 0, 0))
+
+    def test_who_all_is_not_a_zone(self):
+        self.app._process_log_line(log_line("You have entered Skyshrine."))
+        self.app._process_log_line(log_line("There are 2 players in EverQuest.", 1))
+        self.assertEqual(self.app.active_zone, "Skyshrine")
+
+    def test_entering_zone_drops_respawns_from_other_zones(self):
+        self.app._process_log_line(log_line("You have entered Plane of Mischief."))
+        self.te.add_respawn_timer("Popple Dop", "Plane of Mischief")
+        self.app._process_log_line(log_line("You have entered Skyshrine.", 1))
+        self.te.add_respawn_timer("a sentry", "Skyshrine")
+
+        names = [t.name for t in self.te.get_sorted_respawns()]
+        self.assertEqual(names, ["a sentry"])
+
+    def test_who_in_new_zone_clears_previous_zone_timers(self):
+        self.app._process_log_line(log_line("You have entered Plane of Mischief."))
+        self.te.add_respawn_timer("Popple Dop", "Plane of Mischief")
+        self._add_dot("Popple Dop")
+
+        # The zone-in line was missed; /who shows we are elsewhere now.
+        self.app._process_log_line(log_line("There are 3 players in Skyshrine.", 5))
+
+        self.assertEqual(self.app.active_zone, "Skyshrine")
+        self.assertEqual(self.te.get_sorted_respawns(), [])
+        self.assertEqual(self.te.get_sorted_dots(), [])
+
+    def test_who_in_same_zone_keeps_dots_and_local_respawns(self):
+        self.app._process_log_line(log_line("You have entered Skyshrine."))
+        self.te.add_respawn_timer("a sentry", "Skyshrine")
+        self.te.add_respawn_timer("Jaelk", "EverQuest")  # leftover bad tag
+        self._add_dot("a wyvern")
+
+        self.app._process_log_line(log_line("There is 1 player in Skyshrine.", 5))
+
+        self.assertEqual([t.name for t in self.te.get_sorted_respawns()], ["a sentry"])
+        self.assertEqual(len(self.te.get_sorted_dots()), 1)
+
+    def test_first_who_does_not_clear_dots_when_zone_was_only_the_default(self):
+        self.app.session.active_zone = "Somewhere Else"
+        self._add_dot("a wyvern")
+        self.app._process_log_line(log_line("There is 1 player in Skyshrine."))
+        self.assertEqual(len(self.te.get_sorted_dots()), 1)
+        self.assertEqual(self.app.active_zone, "Skyshrine")
+
+
 if __name__ == "__main__":
     unittest.main()

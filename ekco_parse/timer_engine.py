@@ -153,15 +153,27 @@ class TimerEngine:
 
     HOSTILE_CATEGORIES = ("dot", "snare", "root", "mez", "debuff")
 
-    def on_zone_change(self) -> None:
+    def on_zone_change(self, new_zone: Optional[str] = None) -> None:
         """Zoning leaves every mob behind: drop DoT/CC/debuff timers on them.
 
-        Buffs, cooldowns and respawn timers carry across zones.
+        When the new zone is known, respawn timers from other zones go too.
+        Buffs and cooldowns carry across zones.
         """
         for tid in [t for t, tm in self.active_timers.items() if tm.category in self.HOSTILE_CATEGORIES]:
             self.active_timers.pop(tid, None)
         self.current_target = "Unknown Target"
         self.handle_spell_interrupt()
+        if new_zone:
+            self.drop_other_zone_respawns(new_zone)
+
+    def drop_other_zone_respawns(self, zone: str) -> None:
+        """Remove respawn timers that belong to any zone other than ``zone``."""
+        here = zone.strip().casefold()
+        for tid in [
+            t for t, tm in self.active_timers.items()
+            if tm.category == "respawn" and (tm.target or "").strip().casefold() != here
+        ]:
+            self.active_timers.pop(tid, None)
 
     def on_login(self, offline_seconds: float, adjust_remaining: bool = True) -> None:
         """Buffs and cooldowns are frozen while camped; give the offline time back.
@@ -708,8 +720,12 @@ class TimerEngine:
         return self.active_timers.pop(timer_id, None)
 
     def clear_all(self) -> None:
-        """Clear all active timers."""
+        """Clear all active timers and per-character cast/target state."""
         self.active_timers.clear()
+        self.current_target = "Unknown Target"
+        self.handle_spell_interrupt()
+        self.last_cast_spell = None
+        self.last_cast_time = None
 
     def clear_buffs(self) -> None:
         """Clear only buff timers (used on death/zoning)."""

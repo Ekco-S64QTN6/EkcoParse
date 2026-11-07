@@ -41,6 +41,8 @@ class LogSession:
         self.parser = LogParser(character_name=config.character_name)
         self.tailer: Optional[LogTailer] = None
         self.active_zone: str = config.default_zone
+        # False until the log itself names a zone; the config default is a guess.
+        self._zone_known = False
         self.is_tailing = False
         self.log_path: Optional[Path] = None
         self._last_log_timestamp: Optional[datetime] = None
@@ -88,7 +90,7 @@ class LogSession:
 
         ``catchup`` lets a front end interpose its own replay hook.
         """
-        path = Path(path) if path else self.config.resolve_log_path()
+        path = Path(path) if path else self._initial_log()
         self.log_path = path
         name = character_from_log(path)
         self._set_character(name or self.config.character_name)
@@ -98,6 +100,19 @@ class LogSession:
             filepath=path, start_at_end=True, poll_interval_sec=self.config.poll_interval_sec
         )
         self.is_tailing = self.tailer.open()
+
+    def _initial_log(self) -> Path:
+        """The configured character's log, or a newer one if you last played someone else."""
+        path = self.config.resolve_log_path()
+        if not self.config.follow_active_log:
+            return path
+        latest = newest_log(self.config.log_dir)
+        try:
+            if latest and (not path.exists() or latest.stat().st_mtime > path.stat().st_mtime):
+                return latest
+        except OSError:
+            pass
+        return path
 
     def follow_active_log(self) -> bool:
         """Switch logs when another character's log becomes the active one."""
@@ -120,6 +135,8 @@ class LogSession:
             return False
         self.timer_engine.clear_all()
         self.dps_engine.end_active_encounter(reason="character_switch")
+        self.active_zone = self.config.default_zone
+        self._zone_known = False
         self.start(latest, catchup=getattr(self, "_catchup", None))
         return True
 
@@ -230,10 +247,18 @@ class LogSession:
             if update_recent:
                 self.loot_engine.record_coin_loot(event.get("money", ""), ts)
         elif etype == "zone_change":
-            new_zone = event.get("zone", self.active_zone)
-            if event.get("entered") and new_zone != self.active_zone:
-                te.on_zone_change()
+            new_zone = event.get("zone") or self.active_zone
+            moved = new_zone.casefold() != self.active_zone.casefold()
+            # "You have entered" is a real zone-in. A /who naming a different zone
+            # means a zone-in was missed, unless the old zone was only the config
+            # default guess at startup.
+            if moved and (event.get("entered") or self._zone_known):
+                te.on_zone_change(new_zone)
+            else:
+                # Same zone (or first sighting): still drop leftovers from others.
+                te.drop_other_zone_respawns(new_zone)
             self.active_zone = new_zone
+            self._zone_known = True
         elif etype == "login":
             gap = (ts - previous_ts).total_seconds() if previous_ts else 0.0
             # If live ticking was already paused through the camp, only shift
