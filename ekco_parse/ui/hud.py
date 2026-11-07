@@ -95,7 +95,11 @@ class HudWindow(QWidget):
         # window must receive normal mouse events.
         self.setAttribute(Qt.WA_TransparentForMouseEvents, self.click_through)
         self.setFocusPolicy(Qt.NoFocus)
-        self.resize(self.width_px, self.row_h * 4)
+        # Fixed size, rows packed from the top. Resizing per row count made KWin
+        # keep the window's centre, so dropping out of combat (fewer rows) slid
+        # the buffs down the screen. The window is transparent and click-through,
+        # so the unused space below the rows is invisible.
+        self.setFixedSize(self.width_px, self.row_h * self.max_rows + 8)
 
         self.session = LogSession(config)
         self.session.start()
@@ -133,10 +137,6 @@ class HudWindow(QWidget):
                 self.show()
             elif not running and self.isVisible():
                 self.hide()
-        rows = self._rows()
-        want_h = max(self.row_h, self.row_h * len(rows) + 8)
-        if want_h != self.height():
-            self.resize(self.width_px, want_h)
         self.update()
 
     def _rows(self) -> List[tuple]:
