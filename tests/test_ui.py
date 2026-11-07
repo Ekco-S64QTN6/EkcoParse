@@ -1,6 +1,7 @@
 """Headless UI tests verifying Textual app composition and widget mounting."""
 
 import unittest
+from pathlib import Path
 from textual.widgets import TabbedContent
 
 from ekco_parse.config import load_config
@@ -94,7 +95,8 @@ class TestTextualUI(unittest.IsolatedAsyncioTestCase):
         app._process_map_log_line(
             "[Mon Oct 26 12:00:00 2026] Your Location is -130.0, -1580.0, 3.75"
         )
-        self.assertEqual(app.zoom, app.AUTO_ZOOM_LEVEL)
+        self.assertEqual(app.zoom, app.auto_zoom_level())
+        self.assertGreater(app.zoom, 1.0)
         self.assertFalse(app._auto_zoom_pending)
         self.assertIsNotNone(app.map_engine.current_location)
 
@@ -105,17 +107,48 @@ class TestTextualUI(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(app.zoom, 2.0)
 
-        # Manual zoom should continue past the old 4x ceiling and stop at the
-        # new limit without unbounded zooming or allowing values below 1x.
-        for _ in range(40):
+        # Zoom is multiplicative and goes deep enough for tight corridors:
+        # well past the old 12x ceiling, down to well under 100 units across.
+        for _ in range(60):
             app.action_zoom_in()
-        self.assertEqual(app.zoom, app.MAX_ZOOM_LEVEL)
-        self.assertGreater(app.zoom, 4.0)
+        self.assertAlmostEqual(app.zoom, app.max_zoom)
+        self.assertGreater(app.zoom, 50.0)
+        cols, rows = app.DEFAULT_CANVAS
+        self.assertLess(app.map_engine.view_width_units(cols, rows, app.zoom), 100.0)
 
-        for _ in range(40):
+        for _ in range(60):
             app.action_zoom_out()
         self.assertEqual(app.zoom, 1.0)
 
+    async def test_map_follows_the_character_being_played(self):
+        import os
+        import tempfile
+        import time as _time
+        from ekco_parse.config import Config
+
+        with tempfile.TemporaryDirectory() as d:
+            stale = Path(d) / "eqlog_Tpow_project1999.txt"
+            live = Path(d) / "eqlog_Oshieh_project1999.txt"
+            stale.write_text("[Mon Oct 26 11:00:00 2026] You have entered East Commonlands.\n")
+            live.write_text("[Mon Oct 26 12:00:00 2026] You have entered Plane of Mischief.\n")
+            old = _time.time() - 3600
+            os.utime(stale, (old, old))
+            config = Config({
+                "character": {"name": "Tpow", "server": "blue"},
+                "log_tailer": {"log_dir": d},
+            })
+            app = EkcoMapApp(config=config)
+            async with app.run_test() as pilot:
+                self.assertEqual(app.log_path, live)
+                self.assertEqual(app.parser.character_name, "Oshieh")
+                self.assertEqual(app.map_engine.active_zone_name, "Plane Of Mischief")
+
+                with open(live, "a") as f:
+                    f.write("[Mon Oct 26 12:00:05 2026] Your Location is 100.0, -200.0, 3.0\n")
+                await pilot.pause(0.3)
+                loc = app.map_engine.current_location
+                self.assertIsNotNone(loc)
+                self.assertEqual((loc.y, loc.x), (100.0, -200.0))
 
 if __name__ == "__main__":
     unittest.main()

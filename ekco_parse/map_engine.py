@@ -438,9 +438,7 @@ class MapEngine:
 
     def get_nearby_pois(self, limit: int = 10) -> List[Tuple[MapPoint, float, str]]:
         """Return POIs sorted by distance to player with bearing."""
-        zone = self.zones_cache.get(
-            ZONE_ALIASES.get(self.active_zone_name.lower(), self.active_zone_name.lower()),
-        )
+        zone = self._active_zone_data()
         if not zone or not zone.points:
             return []
 
@@ -474,6 +472,32 @@ class MapEngine:
                 return name
         return "N"
 
+    # Closest allowed view: this many world units per Braille dot. At 0.5 a
+    # 56-column radar is ~56 units across — tight enough for dungeon corridors.
+    MIN_UNITS_PER_DOT = 0.5
+
+    def _active_zone_data(self) -> Optional[ZoneData]:
+        return self.zones_cache.get(
+            ZONE_ALIASES.get(self.active_zone_name.lower(), self.active_zone_name.lower()),
+        )
+
+    def fit_units_per_dot(self, cols: int, rows: int) -> float:
+        """World units per Braille dot when the whole zone fits the radar (zoom 1x)."""
+        zone = self._active_zone_data()
+        if not zone:
+            return 10.0
+        sub_w, sub_h = max(2, cols * 2), max(4, rows * 4)
+        # Braille dots are roughly square (2x4 per ~1:2 cell), so one uniform
+        # scale keeps the zone's true shape instead of stretching each axis.
+        return max(zone.width_x / (sub_w - 1), zone.height_y / (sub_h - 1))
+
+    def max_zoom(self, cols: int, rows: int) -> float:
+        return max(1.0, self.fit_units_per_dot(cols, rows) / self.MIN_UNITS_PER_DOT)
+
+    def view_width_units(self, cols: int, rows: int, zoom: float) -> float:
+        """How many world units the radar spans left-to-right at this zoom."""
+        return self.fit_units_per_dot(cols, rows) / max(1.0, zoom) * cols * 2
+
     def render_vector_wireframe(
         self,
         cols: int = 60,
@@ -481,12 +505,12 @@ class MapEngine:
         zoom: float = 1.0,
     ) -> List[str]:
         """
-        Renders true vector wireframe structural map using subpixel Braille dots.
-        Eliminates solid white raster backgrounds entirely for a dark vector look.
+        Renders the zone as a vector wireframe using subpixel Braille dots.
+
+        North is up and east is right, like the in-game map. Zoom 1x fits the
+        whole zone; above that the view is centred on the player.
         """
-        zone = self.zones_cache.get(
-            ZONE_ALIASES.get(self.active_zone_name.lower(), self.active_zone_name.lower()),
-        )
+        zone = self._active_zone_data()
         if not zone:
             return ["[grey37]No vector geometry loaded for this zone.[/]"]
 
@@ -494,86 +518,111 @@ class MapEngine:
         sub_w = canvas.sub_w
         sub_h = canvas.sub_h
 
-        min_y, max_y = zone.min_y, zone.max_y
-        min_x, max_x = zone.min_x, zone.max_x
+        zoom = min(max(1.0, zoom), self.max_zoom(cols, rows))
+        upd = self.fit_units_per_dot(cols, rows) / zoom  # world units per dot
 
-        # Zoom centering on player
         if self.current_location and zoom > 1.0:
-            span_y = (max_y - min_y) / zoom
-            span_x = (max_x - min_x) / zoom
             center_y, center_x = self.current_location.y, self.current_location.x
-            min_y = center_y - span_y / 2
-            max_y = center_y + span_y / 2
-            min_x = center_x - span_x / 2
-            max_x = center_x + span_x / 2
+        else:
+            center_y = (zone.min_y + zone.max_y) / 2
+            center_x = (zone.min_x + zone.max_x) / 2
 
-        span_x = max(1.0, max_x - min_x)
-        span_y = max(1.0, max_y - min_y)
+        # /loc X grows to the WEST, so screen-right (east) is decreasing X.
+        left_x = center_x + upd * (sub_w - 1) / 2
+        top_y = center_y + upd * (sub_h - 1) / 2
+        inv = 1.0 / upd
 
-        def to_subpixel(x: float, y: float) -> Tuple[int, int]:
-            # EQ coordinates: +Y is North (top), +X is West (left in in-game map coordinates)
-            # In our loc conversion: loc_x is West, so smaller x is East
-            sx = int(((x - min_x) / span_x) * (sub_w - 1))
-            sy = int(((max_y - y) / span_y) * (sub_h - 1))
-            return sx, sy
+        def to_sub(x: float, y: float) -> Tuple[float, float]:
+            return (left_x - x) * inv, (top_y - y) * inv
 
         def to_char_cell(x: float, y: float) -> Optional[Tuple[int, int]]:
-            c = int(((x - min_x) / span_x) * (cols - 1))
-            r = int(((max_y - y) / span_y) * (rows - 1))
-            if 0 <= r < rows and 0 <= c < cols:
+            fx, fy = to_sub(x, y)
+            c, r = int(round(fx)) // 2, int(round(fy)) // 4
+            if 0 <= r < rows and 0 <= c < cols and fx >= -0.5 and fy >= -0.5:
                 return r, c
             return None
 
-        # 1. Rasterize vector line segments (walls, coliseum, tunnels, perimeters)
+        max_x, max_y = sub_w - 1, sub_h - 1
+
+        # 1. Rasterize vector line segments, clipped to the view so zoomed-in
+        #    renders never walk thousands of off-screen dots.
         for ml in zone.lines:
-            sx1, sy1 = to_subpixel(ml.x1, ml.y1)
-            sx2, sy2 = to_subpixel(ml.x2, ml.y2)
-            canvas.draw_line(sx1, sy1, sx2, sy2)
+            x0, y0 = to_sub(ml.x1, ml.y1)
+            x1, y1 = to_sub(ml.x2, ml.y2)
+            clipped = _clip_segment(x0, y0, x1, y1, max_x, max_y)
+            if clipped:
+                a, b, c, d = clipped
+                canvas.draw_line(int(round(a)), int(round(b)), int(round(c)), int(round(d)))
 
         # 2. Draw breadcrumb subpixels
         for by, bx, _ in self.breadcrumbs:
-            bsx, bsy = to_subpixel(bx, by)
-            canvas.set_pixel(bsx, bsy)
+            fx, fy = to_sub(bx, by)
+            canvas.set_pixel(int(round(fx)), int(round(fy)))
 
         # 3. Locate character-cell overlays for POIs and Player
         overlays: Dict[Tuple[int, int], str] = {}
 
-        # POI markers
-        for idx, pt in enumerate(zone.points):
+        for pt in zone.points:
             coords = to_char_cell(pt.x, pt.y)
             if coords:
-                r, c = coords
                 if pt.category == "zoneline":
-                    overlays[(r, c)] = f"[bold {COLOR_CYAN}]Z[/]"
+                    overlays[coords] = f"[bold {COLOR_CYAN}]Z[/]"
                 elif pt.category == "merchant":
-                    overlays[(r, c)] = f"[bold {COLOR_AMBER}]M[/]"
+                    overlays[coords] = f"[bold {COLOR_AMBER}]M[/]"
                 elif pt.category == "bank":
-                    overlays[(r, c)] = f"[bold {COLOR_GREEN}]B[/]"
+                    overlays[coords] = f"[bold {COLOR_GREEN}]B[/]"
                 elif pt.category == "succor":
-                    overlays[(r, c)] = f"[bold {COLOR_PURPLE}]S[/]"
+                    overlays[coords] = f"[bold {COLOR_PURPLE}]S[/]"
                 else:
-                    overlays[(r, c)] = f"[bold {COLOR_MAGENTA}]●[/]"
+                    overlays[coords] = f"[bold {COLOR_MAGENTA}]●[/]"
 
-        # Player location marker
         if self.current_location:
             coords = to_char_cell(self.current_location.x, self.current_location.y)
             if coords:
                 overlays[coords] = f"[bold {COLOR_GREEN} on #05070D]@[/]"
 
-        # 4. Convert Braille subpixel grid to Rich markup rows
+        # 4. Convert the Braille grid to Rich markup, one tag per run of
+        #    wireframe glyphs rather than one per character.
         rendered_rows = []
         for r in range(rows):
-            row_items = []
+            parts: List[str] = []
+            run: List[str] = []
+            grid_row = canvas.grid[r]
             for c in range(cols):
-                if (r, c) in overlays:
-                    row_items.append(overlays[(r, c)])
-                else:
-                    bits = canvas.grid[r][c]
-                    if bits > 0:
-                        ch = chr(0x2800 + bits)
-                        row_items.append(f"[bold {COLOR_CYAN}]{ch}[/]")
-                    else:
-                        row_items.append(" ")
-            rendered_rows.append("".join(row_items))
+                ov = overlays.get((r, c))
+                bits = grid_row[c]
+                if ov is None and bits:
+                    run.append(chr(0x2800 + bits))
+                    continue
+                if run:
+                    parts.append(f"[bold {COLOR_CYAN}]{''.join(run)}[/]")
+                    run = []
+                parts.append(ov if ov is not None else " ")
+            if run:
+                parts.append(f"[bold {COLOR_CYAN}]{''.join(run)}[/]")
+            rendered_rows.append("".join(parts))
 
         return rendered_rows
+
+
+def _clip_segment(
+    x0: float, y0: float, x1: float, y1: float, max_x: float, max_y: float
+) -> Optional[Tuple[float, float, float, float]]:
+    """Liang–Barsky clip of a segment to the rectangle [0, max_x] x [0, max_y]."""
+    dx, dy = x1 - x0, y1 - y0
+    t0, t1 = 0.0, 1.0
+    for p, q in ((-dx, x0), (dx, max_x - x0), (-dy, y0), (dy, max_y - y0)):
+        if p == 0:
+            if q < 0:
+                return None
+            continue
+        t = q / p
+        if p < 0:
+            if t > t1:
+                return None
+            t0 = max(t0, t)
+        else:
+            if t < t0:
+                return None
+            t1 = min(t1, t)
+    return x0 + t0 * dx, y0 + t0 * dy, x0 + t1 * dx, y0 + t1 * dy

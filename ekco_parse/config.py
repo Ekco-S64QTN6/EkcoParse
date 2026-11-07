@@ -1,6 +1,7 @@
 """Configuration loader and schema validator for Ekco Parse."""
 
 import os
+import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 import yaml
@@ -151,6 +152,41 @@ def newest_log(log_dir: Path) -> Optional[Path]:
         return max(logs, key=lambda p: p.stat().st_mtime) if logs else None
     except OSError:
         return None
+
+
+def initial_log(config: Config) -> Path:
+    """The configured character's log, or a newer one if you last played someone else."""
+    path = config.resolve_log_path()
+    if not config.follow_active_log:
+        return path
+    latest = newest_log(config.log_dir)
+    try:
+        if latest and (not path.exists() or latest.stat().st_mtime > path.stat().st_mtime):
+            return latest
+    except OSError:
+        pass
+    return path
+
+
+def active_log_switch(config: Config, current: Optional[Path]) -> Optional[Path]:
+    """Return another character's log if it is the one being written now, else None.
+
+    Only a log written in the last 30s and clearly newer than ``current`` counts,
+    so an idle alt's log never steals focus.
+    """
+    if not config.follow_active_log or not current:
+        return None
+    latest = newest_log(config.log_dir)
+    if not latest or latest == current:
+        return None
+    try:
+        latest_m = latest.stat().st_mtime
+        current_m = current.stat().st_mtime if current.exists() else 0
+    except OSError:
+        return None
+    if time.time() - latest_m > 30 or latest_m - current_m < 2:
+        return None
+    return latest
 
 
 def load_config(path: Optional[str or Path] = None) -> Config:

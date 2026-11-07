@@ -77,5 +77,54 @@ class TestMapEngine(unittest.TestCase):
         self.assertIn("@", rendered_text)
 
 
+    def _cell_of(self, rows, needle):
+        import re
+        for r, row in enumerate(rows):
+            plain = re.sub(r"\[[^\]]*\]", "", row)
+            c = plain.find(needle)
+            if c >= 0:
+                return r, c
+        return None
+
+    def test_east_is_right_and_north_is_up(self):
+        """/loc X grows westward, so a point with smaller X must draw further right."""
+        from ekco_parse.map_engine import MapLine, ZoneData
+        zone = ZoneData(name="Test", short_name="test", min_y=-500, max_y=500, min_x=-500, max_x=500,
+                        lines=[MapLine(-500, -500, 0, 500, 500, 0)])
+        self.engine.zones_cache["test"] = zone
+        self.engine.active_zone_name = "test"
+        # Player to the east (x=-400) and north (y=+400) of centre.
+        self.engine.update_location(Location(y=400.0, x=-400.0, z=0.0))
+        r, c = self._cell_of(self.engine.render_vector_wireframe(cols=40, rows=20), "@")
+        self.assertGreater(c, 20)
+        self.assertLess(r, 10)
+
+    def test_render_keeps_true_proportions(self):
+        """A square zone must not be stretched to fill a wide radar."""
+        from ekco_parse.map_engine import ZoneData, MapLine
+        zone = ZoneData(name="Sq", short_name="sq", min_y=0, max_y=1000, min_x=0, max_x=1000,
+                        lines=[MapLine(0, 0, 0, 0, 1000, 0), MapLine(1000, 0, 0, 1000, 1000, 0)])
+        self.engine.zones_cache["sq"] = zone
+        self.engine.active_zone_name = "sq"
+        rows = self.engine.render_vector_wireframe(cols=60, rows=15)
+        import re
+        plain = [re.sub(r"\[[^\]]*\]", "", row) for row in rows]
+        cols_with_ink = [c for c in range(60) if any(p[c] != " " for p in plain)]
+        # 1000x1000 in a 120x60-dot canvas spans ~60 dots = ~30 cells, not 60.
+        self.assertLess(max(cols_with_ink) - min(cols_with_ink), 35)
+
+    def test_deep_zoom_is_fast_and_clipped(self):
+        import time
+        self.engine.load_active_zone("East Commonlands")
+        self.engine.update_location(Location(y=-130.0, x=-1580.0, z=3.75))
+        zoom = self.engine.max_zoom(56, 22)
+        self.assertGreater(zoom, 50)
+        t = time.perf_counter()
+        rows = self.engine.render_vector_wireframe(cols=56, rows=22, zoom=zoom)
+        self.assertLess(time.perf_counter() - t, 0.05)
+        self.assertEqual(len(rows), 22)
+        self.assertIn("@", "".join(rows))
+
+
 if __name__ == "__main__":
     unittest.main()

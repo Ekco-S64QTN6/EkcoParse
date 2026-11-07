@@ -24,7 +24,7 @@ The map uses the coordinates printed by `/loc` and compatible zone-map files. Ek
 | --- | --- |
 | **Spell and buff timers** | Separate DoT/CC and buff lists, countdowns, progress bars, fade/recast states, and configurable log triggers. Spell coverage and ready-to-use trigger presets are still evolving. |
 | **Combat and defense** | Live encounter damage/DPS with per-combatant contributions. The Defense tab exposes incoming damage, max hit taken, heals received, and avoidance statistics. More detailed combat reporting and broader multi-target validation remain in progress. |
-| **Standalone map and GPS** | Log-driven `/loc` coordinates, zone geometry, a player marker, breadcrumb trail, heading and speed display, nearby points of interest, distances, and bearings. The first valid location centers the map and opens a 4× view; zoom can then be adjusted manually. |
+| **Standalone map and GPS** | Log-driven `/loc` coordinates, zone geometry, a player marker, breadcrumb trail, heading and speed display, nearby points of interest, distances, and bearings. The map follows whichever character's log is being written, keeps true zone proportions with north up and east right, and the first `/loc` in a zone opens a ~700-unit player-centred view; zoom can then be adjusted manually. |
 | **Kills, experience, loot, and respawns** | The Ledger tab exposes the kill/XP summary, recent item drops, and respawn countdowns. Coin tracking, zone-specific respawn validation, and richer ledger workflows remain in progress. |
 | **Alerts** | A compact ticker shows recent trigger alerts and recent log activity. Custom triggers can define patterns, timers, messages, colors, and sound behavior. |
 
@@ -78,6 +78,7 @@ If the dashboard does not find your log, double-check the filename, character/se
 | `./run.sh` | Start the main dashboard/overlay. |
 | `./run.sh --overlay` | Explicitly launch the dashboard overlay. |
 | `./run.sh --map` | Launch the standalone map window. |
+| `./run.sh --map-toggle` | Open the map, or close it if already open. Bind this to a global shortcut to use it while the click-through HUD is up (the HUD cannot take keys). |
 | `./run.sh --all` | Launch the dashboard and map in separate windows where supported. |
 | `./run.sh --sim` | Run with a simulated log stream for offline demonstration. |
 | `./run.sh --test` | Run the automated test suite. |
@@ -100,9 +101,11 @@ In the map window:
 
 | Key | Action |
 | --- | --- |
-| `q` | Quit |
+| `q` / `Esc` | Quit |
 | `z` | Cycle through supported zones |
-| `+` / `-` | Zoom in / out |
+| `+` / `=` / `]` / `i` / scroll up | Zoom in (×1.5 per step, down to ~50 units across) |
+| `-` / `[` / `o` / scroll down | Zoom out |
+| `0` | Show the whole zone |
 | `b` | Clear the breadcrumb trail |
 | `l` | Add a test location step |
 

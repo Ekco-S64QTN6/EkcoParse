@@ -56,11 +56,28 @@ case "$1" in
         echo "[Ekco Parse] Starting click-through HUD..."
         exec "$PY" -m ekco_parse.main --hud "${@:2}"
         ;;
+    --map-toggle)
+        # Hotkey target: the click-through HUD cannot take keyboard input, so
+        # bind this to a global shortcut. Opens the map, or closes it if open.
+        # The map writes its PID here; only signal it if that PID is still
+        # really the map (PIDs get reused), never pattern-match command lines.
+        PIDFILE="${XDG_RUNTIME_DIR:-/tmp}/ekco-map.pid"
+        if [ -f "$PIDFILE" ]; then
+            MAP_PID=$(cat "$PIDFILE" 2>/dev/null)
+            if [ -n "$MAP_PID" ] && tr '\0' ' ' < "/proc/$MAP_PID/cmdline" 2>/dev/null | grep -q -- "-m ekco_parse.main --map"; then
+                kill "$MAP_PID"
+                exit 0
+            fi
+            rm -f "$PIDFILE"
+        fi
+        exec "$0" --map "${@:2}"
+        ;;
     --map|-m)
         echo "[Ekco Parse] Starting Standalone Map Window..."
         TERM_EMU=$(detect_terminal)
         if [ "$TERM_EMU" = "kitty" ]; then
-            exec kitty --title "Ekco Map GPS" -- "$PY" -m ekco_parse.main --map "${@:2}"
+            # --class sets the Wayland app id so a KWin rule can keep it on top.
+            exec kitty --class ekco-map --title "Ekco Map GPS" -- "$PY" -m ekco_parse.main --map "${@:2}"
         else
             exec "$PY" -m ekco_parse.main --map "${@:2}"
         fi
@@ -92,6 +109,7 @@ case "$1" in
         echo "  ./run.sh --overlay Launch standalone transparent borderless overlay window"
         echo "  ./run.sh --hud     Launch click-through HUD over the game (timers, buffs, DPS)"
         echo "  ./run.sh --map     Launch standalone radar vector map window"
+        echo "  ./run.sh --map-toggle  Open the map, or close it if open (bind to a hotkey)"
         echo "  ./run.sh --all     Launch both companion overlay and radar map in separate windows"
         echo "  ./run.sh --sim     Run with realistic P99 log simulator"
         echo "  ./run.sh --test    Run automated unit test suite"

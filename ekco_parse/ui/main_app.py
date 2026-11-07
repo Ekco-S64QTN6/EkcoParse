@@ -1,6 +1,7 @@
 """Main Companion Application for Ekco Parse - Transparent High-Density Overlay."""
 
 import os
+import shlex
 import shutil
 import subprocess
 import sys
@@ -289,13 +290,17 @@ class EkcoParseApp(App):
 
     def action_spawn_map(self) -> None:
         try:
-            cmd = f"'{sys.executable}' -m ekco_parse.main --map --zone '{self.active_zone}'"
+            cmd = " ".join(shlex.quote(a) for a in (
+                sys.executable, "-m", "ekco_parse.main", "--map", "--zone", self.active_zone,
+            ))
             if shutil.which("kitty"):
-                subprocess.Popen(["kitty", "--title", "Ekco Map GPS", "--", "bash", "-lc", cmd])
+                subprocess.Popen(["kitty", "--class", "ekco-map", "--title", "Ekco Map GPS",
+                                  "--", "bash", "-lc", cmd], start_new_session=True)
             elif shutil.which("xterm"):
-                subprocess.Popen(["xterm", "-title", "Ekco Map GPS", "-e", "bash", "-lc", cmd])
+                subprocess.Popen(["xterm", "-title", "Ekco Map GPS", "-e", "bash", "-lc", cmd],
+                                 start_new_session=True)
             else:
-                subprocess.Popen(["bash", "-lc", cmd])
+                subprocess.Popen(["bash", "-lc", cmd], start_new_session=True)
         except Exception:
             pass
 

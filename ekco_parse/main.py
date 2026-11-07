@@ -13,7 +13,7 @@ from typing import Optional
 from ekco_parse.config import load_config
 from ekco_parse.simulator import LogSimulator
 from ekco_parse.ui.main_app import EkcoParseApp
-from ekco_parse.ui.map_app import EkcoMapApp
+from ekco_parse.ui.map_app import EkcoMapApp, run_map
 
 
 def detect_terminal() -> Optional[str]:
@@ -82,8 +82,7 @@ def main():
         return
 
     if args.map:
-        app = EkcoMapApp(config=config, zone=args.zone)
-        app.run()
+        run_map(EkcoMapApp(config=config, zone=args.zone))
         return
 
     # Default: Run Main Companion Dashboard

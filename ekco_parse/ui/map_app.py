@@ -1,17 +1,21 @@
 """Standalone Map Overlay Application for Project 1999 EverQuest."""
 
+import asyncio
 import os
+import signal
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
 from textual.app import App, ComposeResult
 from textual.containers import Container, Grid, Horizontal, Vertical
-from textual.widgets import Input, Static
+from textual import events
+from textual.widgets import Static
 from rich.markup import escape
 
-from ekco_parse.config import Config, load_config
+from ekco_parse.config import Config, active_log_switch, character_from_log, initial_log, load_config
 from ekco_parse.map_engine import MapEngine
 from ekco_parse.models import Location
 from ekco_parse.parser import LogParser
@@ -29,6 +33,12 @@ from ekco_parse.ui.theme import (
 )
 
 
+def map_pidfile() -> Path:
+    """Where a running map records its PID, so ``run.sh --map-toggle`` can close it."""
+    runtime = os.environ.get("XDG_RUNTIME_DIR") or "/tmp"
+    return Path(runtime) / "ekco-map.pid"
+
+
 class MapHeaderWidget(Static):
     """Clean, bannerless telemetry header for standalone map window."""
 
@@ -40,6 +50,8 @@ class MapHeaderWidget(Static):
         speed: float,
         is_tailing: bool,
         zoom: float,
+        view_units: float = 0.0,
+        character: str = "",
     ) -> None:
         tail_status = (
             f"[bold {COLOR_GREEN}]● LIVE GPS[/]" if is_tailing
@@ -59,10 +71,12 @@ class MapHeaderWidget(Static):
             f"[bold {COLOR_CYAN}]ZONE:[/] [bold white]{escape(zone)}[/]  |  "
             f"[bold {COLOR_CYAN}]HEADING:[/] [bold {COLOR_AMBER}]{heading}[/]  |  "
             f"[bold {COLOR_CYAN}]SPEED:[/] [bold white]{speed} u/s[/]  |  "
-            f"[bold {COLOR_CYAN}]ZOOM:[/] [bold {COLOR_PURPLE}]{zoom:.1f}x[/]  |  "
+            f"[bold {COLOR_CYAN}]ZOOM:[/] [bold {COLOR_PURPLE}]{zoom:.1f}x[/]"
+            f" [{COLOR_MUTED}]({view_units:,.0f}u wide)[/]  |  "
             f"{tail_status}"
         )
-        line2 = f"[bold {COLOR_CYAN}]COORDINATES:[/] {coords_str}"
+        who = f"[bold {COLOR_CYAN}]{escape(character)}[/]  " if character else ""
+        line2 = f"{who}[bold {COLOR_CYAN}]COORDINATES:[/] {coords_str}"
 
         self.update(f"{line1}\n{line2}\n───────────────────────────────────────────────────────────────────────────────")
 
@@ -119,10 +133,14 @@ class PoiRadarWidget(Static):
 class EkcoMapApp(App):
     """Standalone EverQuest Map Companion Window."""
 
-    # First valid /loc fix should open a useful player-centered view immediately.
-    AUTO_ZOOM_LEVEL = 4.0
-    # Allow substantially closer views for navigating tight areas and landmarks.
-    MAX_ZOOM_LEVEL = 12.0
+    # The first /loc fix in a zone opens a player-centred view about this many
+    # world units across (or the whole zone, if it is smaller than that).
+    AUTO_VIEW_UNITS = 700.0
+    # Each zoom step multiplies/divides the scale, so deep zoom is a few presses.
+    ZOOM_STEP = 1.5
+    # Fallback radar size before the first layout pass reports the real one.
+    DEFAULT_CANVAS = (56, 22)
+    FOLLOW_CHECK_SEC = 2.0
 
     CSS = f"""
     Screen {{
@@ -171,9 +189,11 @@ class EkcoMapApp(App):
 
     BINDINGS = [
         ("q", "quit", "Quit Map"),
+        ("escape", "quit", "Quit Map"),
         ("z", "cycle_zone", "Cycle Zone"),
-        ("plus", "zoom_in", "Zoom In"),
-        ("minus", "zoom_out", "Zoom Out"),
+        ("plus,equals_sign,right_square_bracket,i", "zoom_in", "Zoom In"),
+        ("minus,underscore,left_square_bracket,o", "zoom_out", "Zoom Out"),
+        ("0", "zoom_fit", "Whole Zone"),
         ("b", "clear_breadcrumbs", "Clear Trail"),
         ("l", "manual_loc", "Enter /loc"),
     ]
@@ -189,9 +209,13 @@ class EkcoMapApp(App):
         )
         self.parser = LogParser(character_name=self.config.character_name)
         self.tailer: Optional[LogTailer] = None
+        self.log_path: Optional[Path] = None
         self.zoom: float = 1.0
         self.is_tailing: bool = False
         self._auto_zoom_pending = True
+        self._dirty = True
+        self._last_follow_check = 0.0
+        self._last_canvas: Optional[tuple] = None
 
     def compose(self) -> ComposeResult:
         yield Container(
@@ -205,17 +229,47 @@ class EkcoMapApp(App):
         )
 
     def on_mount(self) -> None:
-        target_log = self.config.resolve_log_path()
-        self.catchup_zone(target_log)
+        # The toggle hotkey closes the map with SIGTERM: exit through Textual so
+        # the terminal is restored and run_map() removes its pidfile.
+        try:
+            asyncio.get_running_loop().add_signal_handler(signal.SIGTERM, self.exit)
+        except (NotImplementedError, RuntimeError, ValueError):
+            pass
+        # Same log the HUD/dashboard picks: whoever you are playing right now,
+        # not just the character named in config.yaml.
+        self._open_log(initial_log(self.config))
+        # Poll fast and repaint only when something changed, so a /loc shows
+        # up within ~50ms without burning CPU while you stand still.
+        poll = min(0.1, max(0.03, float(self.config.poll_interval_sec or 0.05)))
+        self.set_interval(poll, self._tick)
+        self._refresh_ui()
 
+    def _open_log(self, path: Path) -> None:
+        self.log_path = Path(path)
+        name = character_from_log(self.log_path)
+        if name:
+            self.parser.character_name = name
+        self.catchup_zone(self.log_path)
+        if self.tailer:
+            self.tailer.close()
         self.tailer = LogTailer(
-            filepath=target_log,
+            filepath=self.log_path,
             start_at_end=True,
             poll_interval_sec=self.config.poll_interval_sec,
         )
         self.is_tailing = self.tailer.open()
-        self.set_interval(0.25, self._tick)
-        self._refresh_ui()
+        self._dirty = True
+
+    def _follow_active_log(self) -> None:
+        now = time.monotonic()
+        if now - self._last_follow_check < self.FOLLOW_CHECK_SEC:
+            return
+        self._last_follow_check = now
+        latest = active_log_switch(self.config, self.log_path)
+        if latest:
+            self.map_engine.current_location = None
+            self.map_engine.breadcrumbs.clear()
+            self._open_log(latest)
 
     def on_unmount(self) -> None:
         try:
@@ -249,13 +303,37 @@ class EkcoMapApp(App):
         if isinstance(event, Location):
             self.map_engine.update_location(event)
             if self._auto_zoom_pending:
-                self.zoom = self.AUTO_ZOOM_LEVEL
+                self.zoom = self.auto_zoom_level()
                 self._auto_zoom_pending = False
+            self._dirty = True
         elif isinstance(event, dict):
             if event.get("type") == "zone_change":
                 self._switch_zone(event["zone"])
+                self._dirty = True
             elif event.get("type") == "heading":
                 self.map_engine.update_heading(event["heading"])
+                self._dirty = True
+
+    # ── zoom ─────────────────────────────────────────────────────────────
+    def _canvas_size(self) -> tuple:
+        """Radar size in character cells, taken from the panel's real size."""
+        try:
+            size = self.query_one("#radar-panel", MapCanvasWidget).content_size
+            if size.width >= 10 and size.height >= 5:
+                return size.width, size.height
+        except Exception:
+            pass
+        return self.DEFAULT_CANVAS
+
+    @property
+    def max_zoom(self) -> float:
+        cols, rows = self._canvas_size()
+        return self.map_engine.max_zoom(cols, rows)
+
+    def auto_zoom_level(self) -> float:
+        cols, rows = self._canvas_size()
+        fit_width = self.map_engine.view_width_units(cols, rows, 1.0)
+        return min(self.max_zoom, max(1.0, fit_width / self.AUTO_VIEW_UNITS))
 
     def _switch_zone(self, zone_name: str) -> None:
         """Switch zones without carrying stale coordinates into the new zone."""
@@ -265,18 +343,28 @@ class EkcoMapApp(App):
         self.map_engine.current_speed = 0.0
         self.zoom = 1.0
         self._auto_zoom_pending = True
+        self._dirty = True
 
     def _tick(self) -> None:
-        """Poll new log lines and refresh map display."""
+        """Poll new log lines; repaint only if something changed."""
+        self._follow_active_log()
         if self.tailer:
             for line in self.tailer.read_available_lines():
                 self._process_map_log_line(line)
+            active = bool(self.tailer._is_active)
+            if active != self.is_tailing:
+                self.is_tailing = active
+                self._dirty = True
 
-        self._refresh_ui()
+        if self._dirty or self._canvas_size() != self._last_canvas:
+            self._refresh_ui()
 
     def _refresh_ui(self) -> None:
-        if not self.is_mounted:
+        if not self.is_mounted or not self.is_running:
             return
+        self._dirty = False
+        cols, rows = self._last_canvas = self._canvas_size()
+        self.zoom = min(self.zoom, self.map_engine.max_zoom(cols, rows))
 
         # Update Header
         self.query_one("#map-header", MapHeaderWidget).update_info(
@@ -286,12 +374,14 @@ class EkcoMapApp(App):
             speed=self.map_engine.current_speed,
             is_tailing=bool(self.tailer and self.tailer._is_active),
             zoom=self.zoom,
+            view_units=self.map_engine.view_width_units(cols, rows, self.zoom),
+            character=self.parser.character_name,
         )
 
         # Update Radar Grid with Vector Wireframe
         radar_rows = self.map_engine.render_vector_wireframe(
-            cols=56,
-            rows=22,
+            cols=cols,
+            rows=rows,
             zoom=self.zoom,
         )
         self.query_one("#radar-panel", MapCanvasWidget).update_radar(radar_rows)
@@ -301,13 +391,29 @@ class EkcoMapApp(App):
         self.query_one("#poi-panel", PoiRadarWidget).update_pois(nearby)
 
     def action_zoom_in(self) -> None:
-        self.zoom = min(self.MAX_ZOOM_LEVEL, self.zoom + 0.5)
+        self.zoom = min(self.max_zoom, self.zoom * self.ZOOM_STEP)
+        self._auto_zoom_pending = False
+        self._refresh_ui()
 
     def action_zoom_out(self) -> None:
-        self.zoom = max(1.0, self.zoom - 0.5)
+        self.zoom = max(1.0, self.zoom / self.ZOOM_STEP)
+        self._auto_zoom_pending = False
+        self._refresh_ui()
+
+    def action_zoom_fit(self) -> None:
+        self.zoom = 1.0
+        self._auto_zoom_pending = False
+        self._refresh_ui()
+
+    def on_mouse_scroll_up(self, event: events.MouseScrollUp) -> None:
+        self.action_zoom_in()
+
+    def on_mouse_scroll_down(self, event: events.MouseScrollDown) -> None:
+        self.action_zoom_out()
 
     def action_clear_breadcrumbs(self) -> None:
         self.map_engine.breadcrumbs.clear()
+        self._refresh_ui()
 
     def action_cycle_zone(self) -> None:
         zones = [
@@ -328,6 +434,7 @@ class EkcoMapApp(App):
         except ValueError:
             next_idx = 0
         self._switch_zone(zones[next_idx])
+        self._refresh_ui()
 
     def action_manual_loc(self) -> None:
         # Step through simulated test coordinate
@@ -340,12 +447,29 @@ class EkcoMapApp(App):
             new_x = -1580.0
             new_z = 3.75
         self.map_engine.update_location(Location(y=new_y, x=new_x, z=new_z, timestamp=datetime.now()))
+        self._refresh_ui()
+
+
+def run_map(app: "EkcoMapApp") -> None:
+    """Run the map, advertising its PID for the toggle hotkey while it is open."""
+    pidfile = map_pidfile()
+    try:
+        pidfile.write_text(str(os.getpid()))
+    except OSError:
+        pidfile = None
+    try:
+        app.run()
+    finally:
+        try:
+            if pidfile and pidfile.read_text().strip() == str(os.getpid()):
+                pidfile.unlink()
+        except OSError:
+            pass
 
 
 def main():
     config = load_config()
-    app = EkcoMapApp(config=config)
-    app.run()
+    run_map(EkcoMapApp(config=config))
 
 
 if __name__ == "__main__":

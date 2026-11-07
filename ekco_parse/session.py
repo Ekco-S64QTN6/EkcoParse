@@ -12,7 +12,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from ekco_parse.config import Config, character_from_log, newest_log
+from ekco_parse.config import Config, active_log_switch, character_from_log, initial_log
 from ekco_parse.dps_engine import DpsEngine
 from ekco_parse.loot_engine import LootEngine
 from ekco_parse.models import CombatAction, HealAction, LootRecord
@@ -103,16 +103,7 @@ class LogSession:
 
     def _initial_log(self) -> Path:
         """The configured character's log, or a newer one if you last played someone else."""
-        path = self.config.resolve_log_path()
-        if not self.config.follow_active_log:
-            return path
-        latest = newest_log(self.config.log_dir)
-        try:
-            if latest and (not path.exists() or latest.stat().st_mtime > path.stat().st_mtime):
-                return latest
-        except OSError:
-            pass
-        return path
+        return initial_log(self.config)
 
     def follow_active_log(self) -> bool:
         """Switch logs when another character's log becomes the active one."""
@@ -122,16 +113,8 @@ class LogSession:
         if now - self._last_follow_check < FOLLOW_CHECK_SEC:
             return False
         self._last_follow_check = now
-        latest = newest_log(self.config.log_dir)
-        if not latest or latest == self.log_path:
-            return False
-        try:
-            latest_m = latest.stat().st_mtime
-            current_m = self.log_path.stat().st_mtime if self.log_path.exists() else 0
-        except OSError:
-            return False
-        # Only follow a log that is being written right now and is clearly newer.
-        if time.time() - latest_m > 30 or latest_m - current_m < 2:
+        latest = active_log_switch(self.config, self.log_path)
+        if not latest:
             return False
         self.timer_engine.clear_all()
         self.dps_engine.end_active_encounter(reason="character_switch")
