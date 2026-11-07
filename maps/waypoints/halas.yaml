@@ -1,0 +1,22 @@
+# Halas waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Halas
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Halas"
+waypoints:
+  - {key: "1", name: "Pit of Doom (Warrior Guild)", y: 556, x: -464}
+  - {key: "2", name: "Bags and Boxes", y: 399, x: 151}
+  - {key: "3", name: "Shaman Guild, alchemy", y: 327, x: 351}
+  - {key: "4", name: "Dok's Cigars (food, pottery)", y: 238, x: 299}
+  - {key: "5", name: "The Golden Torc", y: 159, x: 391}
+  - {key: "6", name: "Rogue Guild", y: 290, x: 173}
+  - {key: "7", name: "Bank, rogue trainers", y: 164, x: 150}
+  - {key: "8", name: "Mac's Kilts (armor, sewing)", y: 305, x: -189}
+  - {key: "9", name: "McDaniels Smokes and Spirits", y: 338, x: -304}
+  - {key: "10", name: "Hetie McDonald (food, ale)", y: 229, x: -149}
+  - {key: "11", name: "McPherson's Bloody Blades", y: 201, x: -316}
+  - {key: "12", name: "McQuaid's Dark Stout (bar)", y: 94, x: -216}
+  - {key: "13", name: "Yee Magik (blunt, potions)", y: 120, x: -360}
+  - {key: "14", name: "The Bound Mermaid (fishing)", y: 0, x: 89}
+  - {key: "15", name: "Food, cooking, pottery patterns", y: -4, x: -60}
+  - {key: "16", name: "Empty buildings, sled dogs", y: 622, x: 284}
+  - {key: "Z", name: "to Everfrost Peaks", y: -678, x: -57}

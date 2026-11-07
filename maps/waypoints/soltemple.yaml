@@ -1,0 +1,9 @@
+# Temple of Solusek Ro waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Temple_of_Solusek_Ro
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Temple of Solusek Ro"
+waypoints:
+  - {key: "1", name: "Library", y: 359, x: 79}
+  - {key: "2", name: "Spells (Terblyn)", y: 444, x: -73}
+  - {key: "3", name: "Lord Searfire", y: 481, x: 87}
+  - {key: "Z", name: "to The Lavastorm Mountains", y: 252, x: 56}

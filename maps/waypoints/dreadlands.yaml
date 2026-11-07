@@ -1,0 +1,24 @@
+# Dreadlands waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Dreadlands
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Dreadlands"
+waypoints:
+  - {key: "1", name: "Tundra Yeti Caves", y: 2098, x: 5050}
+  - {key: "2", name: "Mountain Giant Hut", y: 1918, x: 3890}
+  - {key: "3", name: "Mountain Giant Hut", y: 1811, x: 953}
+  - {key: "4", name: "Drachnid Widow Web", y: 1766, x: -5009}
+  - {key: "5", name: "Haunted Ruins", y: 1368, x: -5417}
+  - {key: "6", name: "Empty Ruins", y: 581, x: -4375}
+  - {key: "7", name: "Glacier Yeti Caves", y: -283, x: 3156}
+  - {key: "8", name: "Giant Outpost (Warrior epic monocle)", y: -507, x: 1818}
+  - {key: "9", name: "Tundra Yeti Caves", y: -2346, x: 3502}
+  - {key: "10", name: "Mountain Giant Hut", y: -2144, x: -126}
+  - {key: "11", name: "Drachnid Widow Web", y: -2238, x: -2877}
+  - {key: "12", name: "Drachnid Widow Web", y: -1420, x: -4874}
+  - {key: "1", name: "Lost Valley: Wizard Spires", y: 3018, x: 9657}
+  - {key: "2", name: "Lost Valley: Druid Ring", y: 2497, x: 7698}
+  - {key: "3", name: "Lost Valley: Combine Outpost", y: 789, x: 9179}
+  - {key: "Z", name: "to The Burning Woods", y: 3361, x: -831}
+  - {key: "Z", name: "to Frontier Mountains", y: 2292, x: -3512}
+  - {key: "Z", name: "to Firiona Vie", y: 313, x: -6132}
+  - {key: "Z", name: "to Karnor`s Castle", y: 502, x: -1970}

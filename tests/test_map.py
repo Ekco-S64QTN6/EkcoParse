@@ -126,5 +126,57 @@ class TestMapEngine(unittest.TestCase):
         self.assertIn("@", "".join(rows))
 
 
+class TestMapCleanup(unittest.TestCase):
+    """Map packs carry legends, credits and ground spawns; only real waypoints should show."""
+
+    def test_curated_waypoints_replace_map_labels(self):
+        engine = MapEngine(default_zone="The Wakening Land")
+        zone = engine.load_active_zone("The Wakening Land")
+        names = [p.name for p in zone.points]
+        self.assertFalse([n for n in names if n.startswith("GS")], "ground spawns leaked")
+        self.assertIn("Unicorn Valley", names)
+        keys = {p.key for p in zone.points if p.category != "zoneline"}
+        self.assertEqual(keys, {str(n) for n in range(1, 10)})
+
+    def test_legend_layer_does_not_stretch_the_map(self):
+        # The Brewall legend sat ~2000 units south of The Wakening Land's walls.
+        engine = MapEngine(default_zone="The Wakening Land")
+        zone = engine.load_active_zone("The Wakening Land")
+        self.assertGreater(zone.min_y, -4500)
+        self.assertFalse([p for p in zone.points if "eqmaps" in p.name.lower()])
+
+    def test_legend_and_junk_labels_are_recognised(self):
+        from ekco_parse.map_engine import MapPoint, _is_junk_label, _is_legend_layer
+        for junk in ("GS: Yew Leaf", "http://www.eqmaps.info", "Forge", "TRAP: Pit",
+                     "to The Plane of Knowledge (Click Book)", "Priest of Discord"):
+            self.assertTrue(_is_junk_label(junk), junk)
+        for keep in ("to Skyshrine", "Druid Ring", "Bank of Erudin", "Lady Vox"):
+            self.assertFalse(_is_junk_label(keep), keep)
+        self.assertTrue(_is_legend_layer([MapPoint("Revised Map: Brewall Rainsinger", 0, 0)]))
+        self.assertFalse(_is_legend_layer([MapPoint("to Skyshrine", 0, 0)]))
+
+    def test_every_waypoint_file_loads_and_stays_on_the_map(self):
+        from ekco_parse.map_engine import WAYPOINTS_DIR, load_waypoints
+        engine = MapEngine(default_zone="Arena")
+        files = sorted(WAYPOINTS_DIR.glob("*.yaml"))
+        self.assertGreater(len(files), 100)
+        for path in files:
+            short = path.stem
+            curated = load_waypoints(short)
+            self.assertIsNotNone(curated, short)
+            zone = engine._load_brewall_zone(short, short)
+            self.assertIsNotNone(zone, short)
+            # Anything outside the walls is dropped by the loader; none should be.
+            self.assertEqual(len(zone.points), len(curated), short)
+
+    def test_radar_draws_the_map_key_numbers(self):
+        import re
+        engine = MapEngine(default_zone="The Wakening Land")
+        rows = engine.render_vector_wireframe(cols=70, rows=28)
+        plain = "".join(re.sub(r"\[[^\]]*\]", "", r) for r in rows)
+        for key in "123456789":
+            self.assertIn(key, plain)
+
+
 if __name__ == "__main__":
     unittest.main()

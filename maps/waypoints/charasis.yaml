@@ -1,0 +1,10 @@
+# Howling Stones waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Howling_Stones
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Howling Stones"
+waypoints:
+  - {key: "P", name: "Portal to zone-in", y: -76, x: 685}
+  - {key: "P", name: "Portal to zone-in", y: 640, x: 10}
+  - {key: "D", name: "Locked door", y: 163, x: 0}
+  - {key: "Z", name: "to The Overthere", y: -765, x: -95}
+  - {key: "Z", name: "to The Overthere", y: 3, x: -726}

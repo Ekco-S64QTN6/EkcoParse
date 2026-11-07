@@ -1,0 +1,18 @@
+# Neriak Third Gate waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Neriak_Third_Gate
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Neriak Third Gate"
+waypoints:
+  - {key: "1", name: "Temple of Innoruuk (Clerics)", y: 518, x: -811}
+  - {key: "2", name: "Necro & SK Guild (Lodge of the Dead)", y: 1177, x: -1254}
+  - {key: "3", name: "Library (spells)", y: 859, x: -1316}
+  - {key: "4", name: "Furrier Royale (leather)", y: 765, x: -1321}
+  - {key: "5", name: "Rogue Guild Hall", y: 653, x: -1312}
+  - {key: "6", name: "The Maiden's Fancy (bar)", y: 880, x: -1448}
+  - {key: "7", name: "The Bauble (gems)", y: 823, x: -1423}
+  - {key: "8", name: "Cuisine Excelsior", y: 749, x: -1446}
+  - {key: "9", name: "The Rack (wine)", y: 775, x: -1516}
+  - {key: "10", name: "Plate & shield molds, forge", y: 848, x: -1508}
+  - {key: "11", name: "X'Lottl Private Mansion", y: 1187, x: -1613}
+  - {key: "12", name: "J'Narus Private Mansion", y: 707, x: -1655}
+  - {key: "Z", name: "to Neriak - Commons", y: 211, x: -853}

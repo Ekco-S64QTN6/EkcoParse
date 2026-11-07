@@ -1,0 +1,20 @@
+# Paineel waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Paineel
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Paineel"
+waypoints:
+  - {key: "1", name: "Darkglow Palace", y: 1096, x: 687}
+  - {key: "2", name: "Athenaeum Necromantia (library)", y: 1146, x: 866}
+  - {key: "3", name: "Fortunes' Fancy (jewelry)", y: 1061, x: 724}
+  - {key: "4", name: "Tabernacle of Terror (Clerics)", y: 1147, x: 508}
+  - {key: "7", name: "False Idols (pottery, ore)", y: 994, x: 774}
+  - {key: "8", name: "The Final Reckoning (Bank)", y: 1035, x: 716}
+  - {key: "10", name: "Superior Supplies (Hole key)", y: 916, x: 756}
+  - {key: "11", name: "Sinfully Handsome (cloth, leather)", y: 972, x: 649}
+  - {key: "12", name: "Good Iva's Tasty Treats", y: 970, x: 649}
+  - {key: "13", name: "The Abbatoir (Necromancers)", y: 762, x: 835}
+  - {key: "14", name: "The Fell Blade (Shadow Knights)", y: 874, x: 504}
+  - {key: "15", name: "Plate armor, Erud Forge", y: 923, x: 426}
+  - {key: "16", name: "PvP Area", y: 763, x: 432}
+  - {key: "Z", name: "to The Hole", y: 606, x: -942}
+  - {key: "Z", name: "to Toxullia Forest", y: 883, x: 98}

@@ -1,0 +1,26 @@
+# The Feerrott waypoints, following the Map Location Key at
+# https://p99.funcamp.net/The_Feerrott
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "The Feerrott"
+waypoints:
+  - {key: "1", name: "Lizard Man Camp", y: 611, x: 1877}
+  - {key: "1", name: "Lizard Man Camp", y: -396, x: 2060}
+  - {key: "1", name: "Lizard Man Camp", y: -267, x: 861}
+  - {key: "1", name: "Lizard Man Camp", y: 314, x: 286}
+  - {key: "1", name: "Lizard Man Camp", y: 908, x: -902}
+  - {key: "1", name: "Lizard Man Camp", y: 56, x: -2566}
+  - {key: "1", name: "Lizard Man Camp", y: -873, x: -1183}
+  - {key: "1", name: "Lizard Man Camp", y: -357, x: -424}
+  - {key: "2", name: "Innkeep Gub: food, goods", y: 1144, x: 1444}
+  - {key: "3", name: "Bowyer & smithing merchants", y: 1005, x: 1234}
+  - {key: "4", name: "Half Moon Altar", y: 1230, x: 322}
+  - {key: "5", name: "Cooking Supplies", y: 1182, x: 117}
+  - {key: "6", name: "Sewing Kit, Tailoring", y: 1129, x: -138}
+  - {key: "7", name: "Druid Ring (spiders)", y: 393, x: -1836}
+  - {key: "8", name: "Roror (Cazic-Thule high priest)", y: -654, x: 1424}
+  - {key: "9", name: "Cyndreela's lair, Plane of Fear", y: -2363, x: 2604}
+  - {key: "Z", name: "to Oggok", y: 1668, x: 809}
+  - {key: "Z", name: "to The Rathe Mountains", y: 359, x: 3439}
+  - {key: "Z", name: "to The Plane of Fear", y: -2386, x: 2602}
+  - {key: "Z", name: "to Temple of Cazic-Thule", y: -1462, x: -106}
+  - {key: "Z", name: "to Innothule Swamp", y: -1134, x: -3122}

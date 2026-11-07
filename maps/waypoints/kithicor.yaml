@@ -1,0 +1,22 @@
+# Kithicor Forest waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Kithicor_Forest
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Kithicor Forest"
+waypoints:
+  - {key: "1", name: "Boxes, boots, lightstones", y: 1433, x: -839}
+  - {key: "2", name: "Food", y: 1092, x: -683}
+  - {key: "3", name: "Closed Hut", y: 449, x: -238}
+  - {key: "4", name: "Ruined Hut", y: 216, x: -396}
+  - {key: "5", name: "Closed Hut", y: 1339, x: 700}
+  - {key: "6", name: "Haunted Stone Ring", y: -6, x: 1224}
+  - {key: "7", name: "Ranger camp (Morin Shadowbane)", y: 1446, x: 2324}
+  - {key: "8", name: "Closed Hut (Thumper)", y: -552, x: 1933}
+  - {key: "9", name: "Ruined Hut", y: 1612, x: 956}
+  - {key: "9", name: "Ruined Hut", y: 348, x: 2721}
+  - {key: "10", name: "Compass, food, alchemy leaves", y: -769, x: 3083}
+  - {key: "11", name: "Food, arrows, spell components", y: -334, x: 3882}
+  - {key: "12", name: "Gan'Shralok orcs", y: -866, x: 4436}
+  - {key: "13", name: "Ruined Hut (general spawns)", y: 823, x: 2137}
+  - {key: "Z", name: "to Rivervale", y: 2021, x: 3825}
+  - {key: "Z", name: "to Highpass Hold", y: 557, x: 4890}
+  - {key: "Z", name: "to The Commonlands", y: 1450, x: -1087}

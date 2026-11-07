@@ -1,0 +1,18 @@
+# Eastern Plains of Karana waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Eastern_Plains_of_Karana
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Eastern Plains of Karana"
+waypoints:
+  - {key: "1", name: "Druid Ring (druid, treant)", y: 1356, x: 395}
+  - {key: "2", name: "Bandit Camp (Tallus Holton)", y: 1451, x: -674}
+  - {key: "3", name: "Shops: weapons, food, cloth", y: 1529, x: -2677}
+  - {key: "4", name: "Sir Morgan (walks the road)", y: -151, x: 467}
+  - {key: "5", name: "Shops: archery, food; guards", y: -856, x: -99}
+  - {key: "6", name: "Gnolls", y: -403, x: -2267}
+  - {key: "7", name: "Haunted Obelisk", y: -3195, x: -270}
+  - {key: "8", name: "Farm", y: -2443, x: -1272}
+  - {key: "9", name: "Farm", y: -2701, x: -2061}
+  - {key: "10", name: "Barbarian Fishing Village", y: -3697, x: -2316}
+  - {key: "Z", name: "to The Northern Plains of Karana", y: 7, x: 1100}
+  - {key: "Z", name: "to The Gorge of King Xorbb", y: 3627, x: -2018}
+  - {key: "Z", name: "to Highpass Hold", y: -3079, x: -8334}

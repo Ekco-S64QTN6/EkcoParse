@@ -1,0 +1,18 @@
+# Plane of Fear waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Plane_of_Fear
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Plane of Fear"
+waypoints:
+  - {key: "1", name: "Temple of Fear (Cazic-Thule)", y: 611, x: 411}
+  - {key: "2", name: "Dread Temple", y: -683, x: -301}
+  - {key: "3", name: "Fright Temple", y: 166, x: -350}
+  - {key: "4", name: "Terror Temple", y: -692, x: -1152}
+  - {key: "5", name: "Boogeyman House", y: -1026, x: 460}
+  - {key: "6", name: "Fiend House", y: -163, x: 1326}
+  - {key: "7", name: "Fright Finger House", y: -375, x: -1047}
+  - {key: "8", name: "Gorgon Ruins", y: -337, x: -607}
+  - {key: "9", name: "Graveyard", y: 117, x: 339}
+  - {key: "10", name: "Worry Wraith Tower", y: -1305, x: 288}
+  - {key: "11", name: "Broken Golem Tower", y: -737, x: 6}
+  - {key: "Z", name: "Zone In", y: -784, x: 1030}
+  - {key: "Z", name: "to The Feerrott", y: 857, x: 482}

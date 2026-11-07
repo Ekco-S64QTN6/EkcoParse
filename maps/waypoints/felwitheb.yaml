@@ -1,0 +1,11 @@
+# Southern Felwithe waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Southern_Felwithe
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Southern Felwithe"
+waypoints:
+  - {key: "1", name: "Teleporter room to guild halls", y: 301, x: -586}
+  - {key: "2", name: "Wizard Guild", y: 502, x: -472}
+  - {key: "3", name: "Magician Guild", y: 631, x: -580}
+  - {key: "4", name: "Enchanter Guild", y: 554, x: -777}
+  - {key: "5", name: "Cloth, gems, spells, potions, loom", y: 451, x: -820}
+  - {key: "Z", name: "to Northern Felwithe", y: 244, x: -834}

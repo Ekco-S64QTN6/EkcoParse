@@ -1,0 +1,15 @@
+# Iceclad Ocean waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Iceclad_Ocean
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Iceclad Ocean"
+waypoints:
+  - {key: "1", name: "Icebreaker dock, melee bind", y: 5325, x: 370}
+  - {key: "2", name: "Gnome Pirate Outpost (merchants)", y: 4566, x: 1307}
+  - {key: "3", name: "Camp of Balix Misteyes", y: 2911, x: 3230}
+  - {key: "4", name: "Icepaw Gnoll Camp", y: 1172, x: 2870}
+  - {key: "5", name: "Dragon Ring: druid/wiz port-in", y: -603, x: 4878}
+  - {key: "6", name: "Icebreaker dock (to dock 1)", y: 4089, x: -19346}
+  - {key: "7", name: "Raft from North Ro", y: 3765, x: -20380}
+  - {key: "Z", name: "to Eastern Wastes", y: -4500, x: 10558}
+  - {key: "Z", name: "to North Desert of Ro", y: 4623, x: -21429}
+  - {key: "Z", name: "to The Tower of Frozen Shadow", y: 1717, x: 2861}

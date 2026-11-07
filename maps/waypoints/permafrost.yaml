@@ -1,0 +1,16 @@
+# Permafrost Keep waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Permafrost_Keep
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Permafrost Keep"
+waypoints:
+  - {key: "1", name: "Lair of Lady Vox", y: 856, x: -262}
+  - {key: "2", name: "Ice Giant Diplomat", y: 742, x: -46}
+  - {key: "3", name: "King's Room (Thex`Ka, Zaharn)", y: 667, x: -278}
+  - {key: "4", name: "Goblin Archeologist", y: 430, x: 185}
+  - {key: "5", name: "Well down to the sub-caverns", y: 336, x: 119}
+  - {key: "6", name: "Goblin Preacher", y: 225, x: 261}
+  - {key: "7", name: "\"Flag Room\"", y: 146, x: -82}
+  - {key: "8", name: "Goblin Alchemist", y: 302, x: -373}
+  - {key: "9", name: "Goblin Jail Master", y: 125, x: -327}
+  - {key: "10", name: "Goblin Scryer", y: 189, x: -585}
+  - {key: "Z", name: "to Everfrost Peaks", y: -69, x: 119}

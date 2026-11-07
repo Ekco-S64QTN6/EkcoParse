@@ -1,0 +1,18 @@
+# Befallen waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Befallen
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Befallen"
+waypoints:
+  - {key: "A", name: "Locked door (Splintered Wooden Key)", y: -273, x: -80}
+  - {key: "B", name: "Locked door (Charred Bone Key)", y: -567, x: 53}
+  - {key: "C", name: "Locked door (Smoked Glass Key)", y: -625, x: -174}
+  - {key: "1", name: "DE Shadow Knight (Splintered Key)", y: -324, x: 180}
+  - {key: "2", name: "Skeleton Lrodd, pit to level 3", y: -370, x: 96}
+  - {key: "3", name: "Pit trap: Human SK (Charred Key)", y: -560, x: -59}
+  - {key: "4", name: "Ogre Shadow Knight (Smoked Key)", y: -519, x: 153}
+  - {key: "5", name: "The Broken Stair", y: -594, x: -179}
+  - {key: "2", name: "Lvl 3: Thaumaturgist, Priest Amiaz", y: -483, x: 87}
+  - {key: "3", name: "Lvl 3: Troll Shadow Knight (keys)", y: -372, x: -106}
+  - {key: "5", name: "Lvl 3: Elf Skeleton (Thex Mallet)", y: -667, x: -183}
+  - {key: "6", name: "Lvl 3: DE Female SK (keys)", y: -979, x: -202}
+  - {key: "Z", name: "to The Commonlands", y: -72, x: 33}

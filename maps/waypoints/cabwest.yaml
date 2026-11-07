@@ -1,0 +1,18 @@
+# Cabilis West waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Cabilis_West
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Cabilis West"
+waypoints:
+  - {key: "1", name: "Tower of Death (Necro Guild)", y: 304, x: 795}
+  - {key: "2", name: "Ivory Weapons", y: 421, x: 589}
+  - {key: "3", name: "Rhinohide Armor, Arrows, Alchemy", y: 389, x: 548}
+  - {key: "4", name: "Food & Goods", y: 278, x: 536}
+  - {key: "5", name: "Cloth Armor, Sewing Kit", y: 168, x: 536}
+  - {key: "6", name: "Mortician, Necro spells", y: 177, x: 649}
+  - {key: "7", name: "Alchemy, Potions, Crystals", y: -35, x: 498}
+  - {key: "8", name: "Necro spells (tunnel below)", y: -417, x: 252}
+  - {key: "9", name: "The Gauntlet (PvP)", y: -544, x: 384}
+  - {key: "10", name: "an Iksar Hermit", y: -749, x: 517}
+  - {key: "Z", name: "to Cabilis East", y: -75, x: 322}
+  - {key: "Z", name: "to The Warsliks Woods", y: 667, x: 1311}
+  - {key: "Z", name: "to Lake of Ill Omen", y: -783, x: 767}

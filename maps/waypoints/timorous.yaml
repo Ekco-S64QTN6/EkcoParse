@@ -1,0 +1,24 @@
+# Timorous Deep waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Timorous_Deep
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Timorous Deep"
+waypoints:
+  - {key: "1", name: "Ogre Camp (Great Oowomp)", y: 5724, x: 2904}
+  - {key: "2", name: "Spiroc Aviary", y: 5843, x: 1104}
+  - {key: "3", name: "Bandit Camp, Fallen Iksar", y: 5915, x: -1691}
+  - {key: "4", name: "Bandit Camp", y: 5820, x: -4237}
+  - {key: "5", name: "Ship Graveyard (bandits)", y: -639, x: 2034}
+  - {key: "6", name: "Underwater Ruins", y: 188, x: -46}
+  - {key: "7", name: "Ruins (Xiblin Fizzlebik)", y: -5635, x: 3214}
+  - {key: "8", name: "Chessboard (Alrik Farsight)", y: -6377, x: 2773}
+  - {key: "9", name: "Elven Outpost (merchants)", y: -5317, x: -3616}
+  - {key: "10", name: "Abandoned Druid Ring", y: -8976, x: 3431}
+  - {key: "11", name: "Raptor Islands", y: -8900, x: 2850}
+  - {key: "12", name: "Floating Iceberg (Halara)", y: -9638, x: -6112}
+  - {key: "13", name: "Combine teleport towers, firepots", y: -12225, x: 4370}
+  - {key: "14", name: "Inn (Omat Vastsea, Dolgin)", y: -11840, x: -1598}
+  - {key: "Z", name: "to The Overthere", y: -5140, x: -550}
+  - {key: "Z", name: "to Firiona Vie", y: 677, x: -2494}
+  - {key: "Z", name: "to Gukta", y: -12201, x: 4415}
+  - {key: "Z", name: "to South Ro", y: 7921, x: 5318}
+  - {key: "Z", name: "to Butcherblock", y: 5115, x: -7367}

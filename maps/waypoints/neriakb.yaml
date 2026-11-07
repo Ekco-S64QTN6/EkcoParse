@@ -1,0 +1,18 @@
+# Neriak Commons waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Neriak_Commons
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Neriak Commons"
+waypoints:
+  - {key: "2", name: "Neriak Down Under (bank)", y: 85, x: -818}
+  - {key: "3", name: "Smithy: chain, weapons", y: 58, x: -876}
+  - {key: "4", name: "Adamant Armor (plate)", y: 28, x: -888}
+  - {key: "5", name: "Forge House, jewelry upstairs", y: 52, x: -930}
+  - {key: "6", name: "Wiz/Mag/Enc Guild Hall", y: 146, x: -994}
+  - {key: "7", name: "Toadstools (bar, secret way)", y: -128, x: -1020}
+  - {key: "8", name: "The Bleek Fletcher", y: -135, x: -1062}
+  - {key: "9", name: "The House of D'abth (food)", y: -27, x: -1040}
+  - {key: "10", name: "The Dashing Form (cloth, sewing)", y: -4, x: -996}
+  - {key: "11", name: "Warrior Guild Hall", y: -45, x: -1164}
+  - {key: "P", name: "Arena (PvP)", y: -28, x: -1217}
+  - {key: "Z", name: "to Neriak - Third Gate", y: 196, x: -853}
+  - {key: "Z", name: "to Neriak - Foreign Quarter", y: 86, x: -368}

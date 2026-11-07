@@ -1,0 +1,16 @@
+# Cobalt Scar waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Cobalt_Scar
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Cobalt Scar"
+waypoints:
+  - {key: "1", name: "Siren's Cave", y: 1059, x: 1566}
+  - {key: "2", name: "Sunken Ship", y: 372, x: 1042}
+  - {key: "2", name: "Sunken Ship", y: 166, x: -884}
+  - {key: "2", name: "Sunken Ship", y: -888, x: 1476}
+  - {key: "3", name: "Othmir Camp: baking, brewing", y: 229, x: -1493}
+  - {key: "4", name: "Othmir Camp (Chief, pups)", y: -425, x: -1197}
+  - {key: "5", name: "Othmir Camp", y: -844, x: -394}
+  - {key: "6", name: "Bulthar Camp", y: -728, x: 820}
+  - {key: "7", name: "Dragon Portal (druid/wiz port)", y: -1056, x: -1579}
+  - {key: "Z", name: "to Skyshrine", y: -656, x: 890}
+  - {key: "Z", name: "to Siren's Grotto", y: 1585, x: 1626}

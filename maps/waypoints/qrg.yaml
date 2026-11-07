@@ -1,0 +1,14 @@
+# Surefall Glade waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Surefall_Glade
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Surefall Glade"
+waypoints:
+  - {key: "1", name: "Caves (bears, mammoth)", y: 405, x: -172}
+  - {key: "2", name: "Ranger Trainer", y: 271, x: -19}
+  - {key: "3", name: "Archery Range (arrow supplies)", y: 103, x: 122}
+  - {key: "4", name: "Ranger Hall (GM, bard)", y: 175, x: -4}
+  - {key: "5", name: "Shop: bows, spells, weapons, food", y: 134, x: -112}
+  - {key: "6", name: "Basic Smithing Molds", y: -16, x: 12}
+  - {key: "7", name: "Jaggedpine Treefolk (druids)", y: -147, x: -271}
+  - {key: "8", name: "Druid Guildmaster, druid port-in", y: -217, x: -434}
+  - {key: "Z", name: "to Qeynos Hills", y: -613, x: 112}

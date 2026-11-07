@@ -1,0 +1,21 @@
+# The Field of Bone waypoints, following the Map Location Key at
+# https://p99.funcamp.net/The_Field_of_Bone
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "The Field of Bone"
+waypoints:
+  - {key: "1", name: "Island (The Tangrin)", y: 3190, x: 2748}
+  - {key: "2", name: "Pass through the cliffs", y: 1571, x: 1420}
+  - {key: "3", name: "Kurn's Tower", y: 460, x: 997}
+  - {key: "4", name: "\"The Pit\"", y: -662, x: 1384}
+  - {key: "5", name: "Cabilis Outpost ruins (merchants)", y: -2429, x: 3220}
+  - {key: "6", name: "Kaesora ruins, bind point", y: -1701, x: 64}
+  - {key: "7", name: "Entrance to Kaesora", y: -1893, x: -169}
+  - {key: "A", name: "Marauder's Hideout (Kerosh)", y: 1987, x: 3064}
+  - {key: "B", name: "Undead tunnels (pillar)", y: 2850, x: -450}
+  - {key: "S", name: "Sythrax's Temple (Gharg Oberbord)", y: 2035, x: -20}
+  - {key: "C", name: "Abandoned Crypt", y: 210, x: 2500}
+  - {key: "D", name: "Bonebinder Warrens", y: -294, x: 2665}
+  - {key: "Z", name: "to Cabilis East", y: -2649, x: 3601}
+  - {key: "Z", name: "to The Warsliks Woods", y: 1409, x: 4017}
+  - {key: "Z", name: "to The Swamp of No Hope", y: -3224, x: 1130}
+  - {key: "Z", name: "to The Emerald Jungle", y: -2046, x: -1067}

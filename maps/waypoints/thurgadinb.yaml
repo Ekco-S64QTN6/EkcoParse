@@ -1,0 +1,14 @@
+# Icewell Keep waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Icewell_Keep
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Icewell Keep"
+waypoints:
+  - {key: "1", name: "Grizznot's Cave", y: 480, x: 362}
+  - {key: "3", name: "Underwater tunnel (Glucose)", y: -3, x: 594}
+  - {key: "6", name: "Throne Room (Dain, by day)", y: 637, x: 5}
+  - {key: "8", name: "The Pit", y: 600, x: 0}
+  - {key: "9", name: "Councillor Gallery", y: 656, x: 93}
+  - {key: "11", name: "Barracks", y: 745, x: -49}
+  - {key: "13", name: "Hall of Ancestors (Loremaster)", y: 730, x: 248}
+  - {key: "Z", name: "to The City of Thurgadin", y: -762, x: -78}
+  - {key: "Z", name: "to The City of Thurgadin", y: 103, x: 42}

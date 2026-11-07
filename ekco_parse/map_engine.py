@@ -2,11 +2,15 @@
 
 import math
 import os
+import re
 from collections import deque
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Deque, Dict, List, Optional, Set, Tuple
+
+import yaml
+from rich.markup import escape
 
 from ekco_parse.models import Location
 from ekco_parse.ui.theme import (
@@ -29,6 +33,7 @@ class MapPoint:
     z: float = 0.0            # EQ /loc Z coordinate
     category: str = "poi"     # "zoneline", "merchant", "trainer", "bank", "succor", "poi"
     symbol: str = "●"
+    key: str = ""             # wiki map-key marker ("1", "A", "Z"); drawn on the radar
 
 
 @dataclass
@@ -115,7 +120,7 @@ ZONE_ALIASES: Dict[str, str] = {
     "temple of solusek ro": "soltemple", "soltemple": "soltemple",
     "southern plains of karana": "southkarana", "south karana": "southkarana",
     "southern desert of ro": "sro", "south ro": "sro", "sro": "sro",
-    "lair of the splitpaw": "splitpaw", "splitpaw": "splitpaw", "paw": "paw",
+    "lair of the splitpaw": "paw", "splitpaw": "paw", "paw": "paw",
     "upper guk": "guktop", "guktop": "guktop",
     "lower guk": "gukbottom", "gukbottom": "gukbottom",
     # Faydwer
@@ -177,7 +182,7 @@ ZONE_ALIASES: Dict[str, str] = {
     # Velious
     "cobalt scar": "cobaltscar", "cobaltscar": "cobaltscar",
     "crystal caverns": "crystal", "crystal": "crystal",
-    "dragon necropolis": "dragonnec", "dragonnec": "dragonnec", "necropolis": "dragonnec",
+    "dragon necropolis": "necropolis", "dragonnec": "necropolis", "necropolis": "necropolis",
     "eastern wastes": "eastwastes", "eastwastes": "eastwastes",
     "great divide": "greatdivide", "greatdivide": "greatdivide",
     "iceclad ocean": "iceclad", "iceclad": "iceclad",
@@ -307,111 +312,66 @@ class MapEngine:
         return fb
 
     def _load_brewall_zone(self, short_name: str, full_name: str) -> Optional[ZoneData]:
-        """Load and merge all layers: <zone>.txt, <zone>_1.txt, <zone>_2.txt, <zone>_3.txt."""
+        """Load and merge all layers: <zone>.txt, <zone>_1.txt, <zone>_2.txt, <zone>_3.txt.
+
+        Brewall packs ship a legend layer (compass rose, scale bar, credits and
+        a mob list drawn as line-art below the map); that layer is skipped, as
+        are ground-spawn and credit labels. The zone's bounds come from its
+        walls only, so stray labels never shrink the map.
+        """
         points: List[MapPoint] = []
         lines: List[MapLine] = []
-
-        min_y, max_y = 999999.0, -999999.0
-        min_x, max_x = 999999.0, -999999.0
-
         found_any = False
 
         for d in self.search_dirs:
             if not d.exists():
                 continue
 
-            # Look for base file and layers
-            layer_files = [
-                (d / f"{short_name}.txt", 0),
-                (d / f"{short_name}_1.txt", 1),
-                (d / f"{short_name}_2.txt", 2),
-                (d / f"{short_name}_3.txt", 3),
-            ]
-
-            for file_path, layer_num in layer_files:
+            for layer_num, suffix in enumerate(("", "_1", "_2", "_3")):
+                file_path = d / f"{short_name}{suffix}.txt"
                 if not file_path.exists() or file_path.stat().st_size == 0:
                     continue
-
                 found_any = True
                 try:
-                    with open(file_path, "r", encoding="utf-8", errors="replace") as f:
-                        for line in f:
-                            line = line.strip()
-                            if not line:
-                                continue
-
-                            # Line segment: L x1, y1, z1, x2, y2, z2, r, g, b
-                            if line.startswith("L "):
-                                parts = [p.strip() for p in line[2:].split(",")]
-                                if len(parts) >= 6:
-                                    p0, p1 = float(parts[0]), float(parts[1])
-                                    p3, p4 = float(parts[3]), float(parts[4])
-                                    # Convert EQ map coords (-X, -Y) to /loc (X, Y)
-                                    x1, y1 = -p0, -p1
-                                    x2, y2 = -p3, -p4
-
-                                    min_x = min(min_x, x1, x2)
-                                    max_x = max(max_x, x1, x2)
-                                    min_y = min(min_y, y1, y2)
-                                    max_y = max(max_y, y1, y2)
-
-                                    lines.append(MapLine(
-                                        x1=x1, y1=y1, z1=float(parts[2]),
-                                        x2=x2, y2=y2, z2=float(parts[5]),
-                                        layer=layer_num,
-                                    ))
-
-                            # Point of Interest: P x, y, z, r, g, b, size, label
-                            elif line.startswith("P "):
-                                parts = [p.strip() for p in line[2:].split(",")]
-                                if len(parts) >= 8:
-                                    loc_x = -float(parts[0])
-                                    loc_y = -float(parts[1])
-                                    loc_z = float(parts[2])
-                                    label = parts[7].replace("_", " ").strip()
-
-                                    min_x = min(min_x, loc_x)
-                                    max_x = max(max_x, loc_x)
-                                    min_y = min(min_y, loc_y)
-                                    max_y = max(max_y, loc_y)
-
-                                    cat = "poi"
-                                    lbl_low = label.lower()
-                                    if "to " in lbl_low or "zone" in lbl_low or "lake" in lbl_low:
-                                        cat = "zoneline"
-                                    elif "merchant" in lbl_low or "spells" in lbl_low:
-                                        cat = "merchant"
-                                    elif "bank" in lbl_low or "soulbinder" in lbl_low:
-                                        cat = "bank"
-                                    elif "succor" in lbl_low:
-                                        cat = "succor"
-
-                                    points.append(MapPoint(
-                                        name=label,
-                                        y=loc_y,
-                                        x=loc_x,
-                                        z=loc_z,
-                                        category=cat,
-                                    ))
-                except Exception as e:
+                    file_lines, file_points = _parse_map_file(file_path, layer_num)
+                except OSError as e:
                     print(f"[MapEngine] Error reading {file_path}: {e}")
+                    continue
+                if _is_legend_layer(file_points):
+                    continue
+                lines.extend(file_lines)
+                points.extend(p for p in file_points if not _is_junk_label(p.name))
 
             if found_any:
                 break
 
-        if found_any and (lines or points):
-            return ZoneData(
-                name=full_name.title(),
-                short_name=short_name,
-                min_y=min_y if min_y < max_y else -1000,
-                max_y=max_y if min_y < max_y else 1000,
-                min_x=min_x if min_x < max_x else -1000,
-                max_x=max_x if min_x < max_x else 1000,
-                points=points,
-                lines=lines,
-            )
+        curated = load_waypoints(short_name)
+        if curated is not None:
+            points = curated
 
-        return None
+        if not (found_any and (lines or points)):
+            return None
+
+        xs = [v for ml in lines for v in (ml.x1, ml.x2)] or [p.x for p in points]
+        ys = [v for ml in lines for v in (ml.y1, ml.y2)] or [p.y for p in points]
+        min_x, max_x, min_y, max_y = min(xs), max(xs), min(ys), max(ys)
+        if lines:
+            # Drop labels that sit outside the walls (legend lists, credits).
+            pad = 0.05 * max(max_x - min_x, max_y - min_y)
+            points = [
+                p for p in points
+                if min_x - pad <= p.x <= max_x + pad and min_y - pad <= p.y <= max_y + pad
+            ]
+        return ZoneData(
+            name=full_name.title(),
+            short_name=short_name,
+            min_y=min_y if min_y < max_y else -1000,
+            max_y=max_y if min_y < max_y else 1000,
+            min_x=min_x if min_x < max_x else -1000,
+            max_x=max_x if min_x < max_x else 1000,
+            points=points,
+            lines=lines,
+        )
 
     def update_location(self, loc: Location) -> None:
         """Process new /loc coordinate reading."""
@@ -565,7 +525,13 @@ class MapEngine:
         for pt in zone.points:
             coords = to_char_cell(pt.x, pt.y)
             if coords:
-                if pt.category == "zoneline":
+                if pt.key and pt.category != "zoneline":
+                    # Wiki map-key marker; "12" spills into the next cell.
+                    r, c = coords
+                    for i, ch in enumerate(pt.key[:2]):
+                        if c + i < cols:
+                            overlays[(r, c + i)] = f"[bold {COLOR_MAGENTA}]{escape(ch)}[/]"
+                elif pt.category == "zoneline":
                     overlays[coords] = f"[bold {COLOR_CYAN}]Z[/]"
                 elif pt.category == "merchant":
                     overlays[coords] = f"[bold {COLOR_AMBER}]M[/]"
@@ -603,6 +569,104 @@ class MapEngine:
             rendered_rows.append("".join(parts))
 
         return rendered_rows
+
+
+# Curated waypoints, one YAML file per zone, built from the P99 wiki's Map
+# Location Keys. When a zone has one, it replaces the map files' own labels.
+WAYPOINTS_DIR = Path(__file__).resolve().parent.parent / "maps" / "waypoints"
+
+# Labels in community map packs that are never worth a waypoint: ground
+# spawns, map credits, crafting stations, traps and post-Velious content.
+_JUNK_LABEL = re.compile(
+    r"^(gs:|ground spawn)|eqmaps|roteguild|brewall|original map|revised map"
+    r"|height filter|^\W*$|^\d+$|^(lvl|from)$|plane of knowledge|priest of discord"
+    r"|\(research\)|^(forge|oven|kiln|loom|brew(ing)? barrel|pottery wheel)$"
+    r"|^trap\b|fake (wall|floor)",
+    re.IGNORECASE,
+)
+# A legend layer carries the map credits; real layers never do.
+_LEGEND_LABEL = re.compile(r"eqmaps\.info|brewall|original map|revised map|height filter", re.IGNORECASE)
+
+
+def _is_junk_label(name: str) -> bool:
+    return bool(_JUNK_LABEL.search(name.strip()))
+
+
+def _is_legend_layer(points: List[MapPoint]) -> bool:
+    return any(_LEGEND_LABEL.search(p.name) for p in points)
+
+
+def _label_category(label: str) -> str:
+    low = label.lower()
+    if low.startswith("to ") or " zone" in low:
+        return "zoneline"
+    if "bank" in low:
+        return "bank"
+    if "succor" in low:
+        return "succor"
+    return "poi"
+
+
+def _parse_map_file(file_path: Path, layer_num: int) -> Tuple[List[MapLine], List[MapPoint]]:
+    """Parse one Brewall/EQ map file. Map coords are (-/loc X, -/loc Y)."""
+    lines: List[MapLine] = []
+    points: List[MapPoint] = []
+    with open(file_path, "r", encoding="utf-8", errors="replace") as f:
+        for raw in f:
+            raw = raw.strip()
+            try:
+                # Line segment: L x1, y1, z1, x2, y2, z2, r, g, b
+                if raw.startswith("L "):
+                    parts = raw[2:].split(",")
+                    if len(parts) >= 6:
+                        lines.append(MapLine(
+                            x1=-float(parts[0]), y1=-float(parts[1]), z1=float(parts[2]),
+                            x2=-float(parts[3]), y2=-float(parts[4]), z2=float(parts[5]),
+                            layer=layer_num,
+                        ))
+                # Point of Interest: P x, y, z, r, g, b, size, label
+                elif raw.startswith("P "):
+                    parts = raw[2:].split(",", 7)
+                    if len(parts) >= 8:
+                        label = parts[7].replace("_", " ").strip()
+                        points.append(MapPoint(
+                            name=label,
+                            x=-float(parts[0]), y=-float(parts[1]), z=float(parts[2]),
+                            category=_label_category(label),
+                        ))
+            except ValueError:
+                continue
+    return lines, points
+
+
+def load_waypoints(short_name: str, directory: Optional[Path] = None) -> Optional[List[MapPoint]]:
+    """Curated waypoints for a zone, or None if the zone has no waypoint file.
+
+    Each entry is {key, name, y, x} in /loc coordinates; key "Z" marks a zone
+    line, anything else (1, 2, A...) is the wiki map key's marker.
+    """
+    path = (directory or WAYPOINTS_DIR) / f"{short_name}.yaml"
+    if not path.exists():
+        return None
+    try:
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except (OSError, yaml.YAMLError) as e:
+        print(f"[MapEngine] Error reading {path}: {e}")
+        return None
+    points: List[MapPoint] = []
+    for wp in data.get("waypoints") or []:
+        try:
+            key = str(wp.get("key", "")).strip()
+            points.append(MapPoint(
+                name=str(wp["name"]),
+                y=float(wp["y"]),
+                x=float(wp["x"]),
+                category="zoneline" if key == "Z" else "poi",
+                key=key,
+            ))
+        except (KeyError, TypeError, ValueError):
+            continue
+    return points
 
 
 def _clip_segment(

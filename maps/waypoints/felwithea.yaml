@@ -1,0 +1,18 @@
+# Northern Felwithe waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Northern_Felwithe
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Northern Felwithe"
+waypoints:
+  - {key: "1", name: "Paladin Guild, weapons", y: 16, x: -200}
+  - {key: "2", name: "Tovanik's Venom (bar)", y: 81, x: -346}
+  - {key: "3", name: "Traveller's Home (inn)", y: 134, x: -386}
+  - {key: "4", name: "Shop of All Holds", y: 105, x: -405}
+  - {key: "5", name: "Beyond Faydark: food, goods", y: -20, x: -370}
+  - {key: "6", name: "Cleric Guild, blunt weapons", y: 12, x: -474}
+  - {key: "7", name: "Faydark's Bane: swords, fletching", y: -121, x: -318}
+  - {key: "8", name: "Emerald Armor: chain, plate, forge", y: -101, x: -452}
+  - {key: "9", name: "Felwithe Keeper (Bank)", y: -74, x: -454}
+  - {key: "10", name: "Bait and Tackle (fishing)", y: 164, x: -615}
+  - {key: "11", name: "Felwithe Fish House (food, gems)", y: 246, x: -652}
+  - {key: "Z", name: "to The Greater Faydark", y: 40, x: 184}
+  - {key: "Z", name: "to Southern Felwithe", y: 344, x: -720}

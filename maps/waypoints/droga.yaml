@@ -1,0 +1,23 @@
+# Temple of Droga waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Temple_of_Droga
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Temple of Droga"
+waypoints:
+  - {key: "1", name: "Entry Room", y: 1336, x: 300}
+  - {key: "2", name: "Track Halls (three levers)", y: 1200, x: 125}
+  - {key: "3", name: "Track Room (goblins)", y: 328, x: -200}
+  - {key: "4", name: "Store Room", y: 368, x: -285}
+  - {key: "5", name: "Dining Hall (goblin warder)", y: -50, x: -285}
+  - {key: "6", name: "Taskmaster Halls", y: 227, x: -875}
+  - {key: "7", name: "Drop-off from Mines of Nurga", y: -1210, x: -925}
+  - {key: "1", name: "Temple (Soothsayer Dregzak)", y: 726, x: 1962}
+  - {key: "2", name: "Pool Room (goblin fanatic)", y: 513, x: 1950}
+  - {key: "3", name: "Safe Room", y: 513, x: 1665}
+  - {key: "4", name: "Table Room", y: 93, x: 1635}
+  - {key: "5", name: "Gate Room", y: 163, x: 1000}
+  - {key: "6", name: "Jail", y: -120, x: 1258}
+  - {key: "7", name: "Pit trap to the jail", y: -283, x: 1319}
+  - {key: "8", name: "Ledge Room (Chief RokGus)", y: -485, x: 2142}
+  - {key: "Z", name: "to Frontier Mountains", y: 1400, x: 300}
+  - {key: "Z", name: "to The Mines of Nurga", y: -1380, x: 248}
+  - {key: "Z", name: "to The Mines of Nurga", y: -1319, x: -919}

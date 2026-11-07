@@ -1,0 +1,18 @@
+# The Wakening Land waypoints, following the Map Location Key at
+# https://p99.funcamp.net/The_Wakening_Land
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "The Wakening Land"
+waypoints:
+  - {key: "1", name: "Unicorn Valley", y: 1800, x: 1420}
+  - {key: "2", name: "Sifaye Town (Countess Silveana)", y: 1726, x: -39}
+  - {key: "3", name: "Tower: portal to Plane of Growth, druid spells", y: 418, x: -1030}
+  - {key: "4", name: "Ruins (sentient armor)", y: 1720, x: -2200}
+  - {key: "4", name: "Ruins (sentient armor)", y: 1420, x: -2950}
+  - {key: "5", name: "Empty Building", y: 780, x: -3050}
+  - {key: "6", name: "Giant Building Site", y: -620, x: -4080}
+  - {key: "7", name: "Geonid Caverns (Phenocryst)", y: -3200, x: -400}
+  - {key: "8", name: "Dragon Circle (Wuoshi)", y: -3017, x: -2978}
+  - {key: "9", name: "Holgresh Cavern (Grand Vizier)", y: -3394, x: 2044}
+  - {key: "Z", name: "to Kael Drakkel", y: -560, x: -5002}
+  - {key: "Z", name: "to Skyshrine", y: 1546, x: 4756}
+  - {key: "Z", name: "to The Plane of Growth", y: 466, x: -1070}

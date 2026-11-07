@@ -1,0 +1,15 @@
+# Najena waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Najena
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Najena"
+waypoints:
+  - {key: "1", name: "Entry Room (tentacle terrors)", y: -26, x: 364}
+  - {key: "2", name: "Najena's Room", y: 351, x: 105}
+  - {key: "4", name: "Crystal Room", y: 119, x: -157}
+  - {key: "5", name: "Drelzna's Room", y: -38, x: -209}
+  - {key: "7", name: "Trazdon's Room (magician's lair)", y: 357, x: 217}
+  - {key: "8", name: "Bonecracker's Room", y: 250, x: 173}
+  - {key: "9", name: "Ogre Captain's Room", y: 54, x: 188}
+  - {key: "10", name: "Prison (Linara Parlone)", y: -23, x: -98}
+  - {key: "11", name: "Rathyl's Room", y: -154, x: -116}
+  - {key: "Z", name: "to The Lavastorm Mountains", y: -15, x: 856}

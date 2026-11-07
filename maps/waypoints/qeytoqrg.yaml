@@ -1,0 +1,16 @@
+# Qeynos Hills waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Qeynos_Hills
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Qeynos Hills"
+waypoints:
+  - {key: "1", name: "The Millers' Fire", y: 4995, x: 96}
+  - {key: "2", name: "The Haunted Ruins", y: 4683, x: -918}
+  - {key: "3", name: "Hadden (Fishbone Earring)", y: 3801, x: 989}
+  - {key: "4", name: "Hut: smithing books, molds", y: 1381, x: 278}
+  - {key: "5", name: "Guard Tower", y: 1051, x: -852}
+  - {key: "Z", name: "to The Western Plains of Karana", y: 1277, x: -2422}
+  - {key: "Z", name: "to Blackburrow", y: 3430, x: -1148}
+  - {key: "Z", name: "to Surefall Glade", y: 5181, x: 108}
+  - {key: "Z", name: "to North Qeynos", y: -325, x: 250}
+  - {key: "Z", name: "to West Karana", y: 1303, x: -1810}
+  - {key: "Z", name: "to Northern Qeynos", y: -149, x: 92}

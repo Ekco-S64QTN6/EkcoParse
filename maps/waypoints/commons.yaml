@@ -1,0 +1,19 @@
+# West Commonlands waypoints, following the Map Location Key at
+# https://p99.funcamp.net/West_Commonlands
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "West Commonlands"
+waypoints:
+  - {key: "1", name: "Orc Camp", y: 947, x: 2526}
+  - {key: "2", name: "Fishing Supplies shop", y: 434, x: 2474}
+  - {key: "3", name: "Inn: shields, food, ale, cloth", y: -386, x: 2716}
+  - {key: "4", name: "Ancient Pyramid", y: 24, x: 1842}
+  - {key: "5", name: "Stone Rings (druids)", y: 441, x: 1362}
+  - {key: "6", name: "Empty Hut", y: -181, x: 1284}
+  - {key: "7", name: "Cutthroat Dervish Camp", y: 978, x: 1053}
+  - {key: "8", name: "Haunted Tower", y: 978, x: 400}
+  - {key: "9", name: "Toll Booth (guard house)", y: 23, x: 51}
+  - {key: "10", name: "Inn: food, ale, cloth, bags", y: -130, x: 421}
+  - {key: "11", name: "Hut with Metals", y: -745, x: 316}
+  - {key: "Z", name: "to East Commonlands", y: 4, x: -1300}
+  - {key: "Z", name: "to Befallen", y: -1160, x: 596}
+  - {key: "Z", name: "to Kithicor Forest", y: 906, x: 4211}

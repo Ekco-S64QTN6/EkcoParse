@@ -1,0 +1,18 @@
+# Highpass Hold waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Highpass_Hold
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Highpass Hold"
+waypoints:
+  - {key: "1", name: "Gnolls (Grenix, Vexven)", y: 717, x: 98}
+  - {key: "2", name: "The Golden Rooster (bar)", y: 391, x: -187}
+  - {key: "3", name: "Pottery, goods, food", y: 194, x: 461}
+  - {key: "4", name: "Tiger's Roar (bar)", y: -113, x: 466}
+  - {key: "5", name: "Bandit Camp", y: 52, x: 179}
+  - {key: "6", name: "Serpent Supply (forge, tailoring)", y: -250, x: 135}
+  - {key: "7", name: "The Lumberyard", y: -254, x: 74}
+  - {key: "8", name: "Greenbane's Weapons", y: -320, x: -113}
+  - {key: "9", name: "Orcs (Shralok brothers)", y: -759, x: 245}
+  - {key: "S", name: "Smuggler's Den (underwater tunnel)", y: -158, x: 225}
+  - {key: "Z", name: "to High Keep", y: -13, x: -104}
+  - {key: "Z", name: "to Kithicor Forest", y: -973, x: 92}
+  - {key: "Z", name: "to East Karana", y: 841, x: 105}

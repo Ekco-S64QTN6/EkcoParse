@@ -1,0 +1,15 @@
+# City of Mist waypoints, following the Map Location Key at
+# https://p99.funcamp.net/City_of_Mist
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "City of Mist"
+waypoints:
+  - {key: "1", name: "Castle (Lord Ghiosk, Rak`Ashiir)", y: 1, x: 404}
+  - {key: "2", name: "Office (Lhranc)", y: 1, x: 86}
+  - {key: "3", name: "Goo House (PvP arena)", y: -8, x: -167}
+  - {key: "4", name: "Temple", y: 238, x: -539}
+  - {key: "5", name: "Bridge", y: -2, x: -701}
+  - {key: "6", name: "Stables (spectral courier)", y: -188, x: -586}
+  - {key: "7", name: "First Platform", y: 204, x: -329}
+  - {key: "8", name: "Second Platform (locked door)", y: -166, x: -46}
+  - {key: "9", name: "Final Platform (Neh`Ashiir)", y: 145, x: 159}
+  - {key: "Z", name: "to The Emerald Jungle", y: -13, x: -850}

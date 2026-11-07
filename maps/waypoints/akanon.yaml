@@ -1,0 +1,28 @@
+# Ak'Anon waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Ak'Anon
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Ak'Anon"
+waypoints:
+  - {key: "1", name: "Necro & Evil Cleric Guild (Mines)", y: 2082, x: -388}
+  - {key: "2", name: "Evil Warrior Trainer", y: 2108, x: -503}
+  - {key: "3", name: "Evil Rogue Trainer", y: 2069, x: -509}
+  - {key: "4", name: "Tinkering Supplies", y: 1468, x: -190}
+  - {key: "5", name: "Abbey of Deep Musing (Clerics)", y: 1269, x: -549}
+  - {key: "6", name: "The Smithy (weapons)", y: 1325, x: -740}
+  - {key: "7", name: "Blunt Weapons, Forge", y: 1242, x: -696}
+  - {key: "8", name: "Bags, Food, Bard", y: 1265, x: -777}
+  - {key: "9", name: "Shoes", y: 1185, x: -776}
+  - {key: "10", name: "Library Mechanamagica (casters)", y: 1132, x: -1006}
+  - {key: "11", name: "Cloth & Leather Armor, Patterns", y: 943, x: -37}
+  - {key: "12", name: "Food, Fishing, Crystals, Potions", y: 891, x: -301}
+  - {key: "13", name: "Ak'Anon Palace (King Ak'Anon)", y: 849, x: -202}
+  - {key: "14", name: "Warrior Guild", y: 902, x: -470}
+  - {key: "15", name: "Fishing Supplies, Loom", y: 733, x: 153}
+  - {key: "16", name: "Food & Goods", y: 501, x: -100}
+  - {key: "17", name: "Bank of Ak'Anon", y: 1357, x: -870}
+  - {key: "18", name: "Jewelry Supplies", y: 1332, x: -917}
+  - {key: "19", name: "Ak'Anon Zoo", y: 1300, x: -820}
+  - {key: "20", name: "Armor, Food, Weapons, Shields", y: 1297, x: -905}
+  - {key: "21", name: "Fletching Supplies", y: 1250, x: -879}
+  - {key: "22", name: "Bar", y: 1245, x: -945}
+  - {key: "Z", name: "to The Steamfont Mountains", y: 51, x: -78}

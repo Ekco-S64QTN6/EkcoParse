@@ -1,0 +1,14 @@
+# The Emerald Jungle waypoints, following the Map Location Key at
+# https://p99.funcamp.net/The_Emerald_Jungle
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "The Emerald Jungle"
+waypoints:
+  - {key: "1", name: "Iksar Outcast Camp", y: 4195, x: -1443}
+  - {key: "1", name: "Iksar Outcast Camp", y: 2798, x: 2222}
+  - {key: "1", name: "Iksar Outcast Camp", y: 1550, x: 690}
+  - {key: "2", name: "Great Staircase", y: 1659, x: 2568}
+  - {key: "3", name: "Druid port-in (Wind of the South)", y: -3100, x: 3500}
+  - {key: "4", name: "Wizard port-in (Markar's)", y: -1259, x: 3504}
+  - {key: "Z", name: "to The Field of Bone", y: -1918, x: 5213}
+  - {key: "Z", name: "to Trakanon`s Teeth", y: -3383, x: 1510}
+  - {key: "Z", name: "to The City of Mist", y: 301, x: -1912}

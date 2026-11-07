@@ -1,0 +1,18 @@
+# Velketor's Labyrinth waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Velketor's_Labyrinth
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Velketor's Labyrinth"
+waypoints:
+  - {key: "6", name: "Venar Icepaw", y: 218, x: -224}
+  - {key: "8", name: "\"Lord Bob\" (Doljonijiarnimorinar)", y: -31, x: -138}
+  - {key: "9", name: "The Brood Master", y: -37, x: 74}
+  - {key: "10", name: "The Brood Mother", y: 186, x: 73}
+  - {key: "11", name: "Ular Icepaw", y: -231, x: 152}
+  - {key: "12", name: "Up to the castle area", y: -241, x: 2}
+  - {key: "13", name: "Throne room (Velketor)", y: 187, x: 132}
+  - {key: "14", name: "Jail (captured Coldain)", y: 168, x: -90}
+  - {key: "15", name: "Crystal Eyes", y: 478, x: -5}
+  - {key: "16", name: "Frenzied Velium Broodling", y: 407, x: 73}
+  - {key: "17", name: "Frenzied Velium Stalker", y: 486, x: 64}
+  - {key: "19", name: "\"Lower Dogs\" (Khelkar Icepaw)", y: 228, x: -347}
+  - {key: "Z", name: "to The Great Divide", y: 589, x: -72}

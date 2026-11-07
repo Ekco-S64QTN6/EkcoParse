@@ -1,0 +1,10 @@
+# Western Wastes waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Western_Wastes
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Western Wastes"
+waypoints:
+  - {key: "1", name: "Sunken Gnomish Boat (Tocs)", y: 4459, x: 1818}
+  - {key: "2", name: "Wyvern Caves", y: 2656, x: -3484}
+  - {key: "Z", name: "to The Temple of Veeshan", y: 1410, x: 701}
+  - {key: "Z", name: "to Siren`s Grotto", y: -5158, x: -3878}
+  - {key: "Z", name: "to Dragon Necropolis", y: -2869, x: 465}

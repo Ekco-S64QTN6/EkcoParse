@@ -1,0 +1,22 @@
+# Northern Plains of Karana waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Northern_Plains_of_Karana
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Northern Plains of Karana"
+waypoints:
+  - {key: "1", name: "Hut with Alcohol", y: 422, x: 2224}
+  - {key: "2", name: "Fangbreaker patrol area", y: 832, x: 1304}
+  - {key: "3", name: "Obelisk (named treant nearby)", y: 1116, x: 374}
+  - {key: "4", name: "Innkeepers: food, goods", y: 115, x: 1384}
+  - {key: "5", name: "Empty Farm", y: -1256, x: 1140}
+  - {key: "6", name: "Gypsy Camp (bind spot)", y: -648, x: -165}
+  - {key: "7", name: "Guard Tower", y: -1237, x: 128}
+  - {key: "8", name: "Farm", y: -702, x: -2183}
+  - {key: "9", name: "Farm", y: -2150, x: 1920}
+  - {key: "10", name: "Druid Ring, druid trainer & spells", y: -2731, x: -1449}
+  - {key: "11", name: "Wizard Teleportation Ring", y: -3700, x: 1250}
+  - {key: "12", name: "Farm", y: -3712, x: -1062}
+  - {key: "13", name: "Obelisk (undead)", y: -3257, x: -2019}
+  - {key: "14", name: "Raider Camp", y: -4038, x: -1910}
+  - {key: "Z", name: "to The Western Plains of Karana", y: -1535, x: 3030}
+  - {key: "Z", name: "to The Eastern Plains of Karana", y: 12, x: -3071}
+  - {key: "Z", name: "to The Southern Plains of Karana", y: -4356, x: 1211}

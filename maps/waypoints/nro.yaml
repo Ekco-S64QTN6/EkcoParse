@@ -1,0 +1,22 @@
+# Northern Desert of Ro waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Northern_Desert_of_Ro
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Northern Desert of Ro"
+waypoints:
+  - {key: "1", name: "Inn: sewing, food, alcohol", y: 3711, x: 126}
+  - {key: "2", name: "Empty Huts", y: 3226, x: -160}
+  - {key: "3", name: "Fishing Village (alchemy)", y: 2184, x: -753}
+  - {key: "4", name: "Buried Pyramid (wizard spire)", y: 1376, x: 824}
+  - {key: "5", name: "Dervish Camp One (Dorn B`Dynn)", y: 1390, x: -510}
+  - {key: "6", name: "Haunted Ruins", y: 454, x: 168}
+  - {key: "7", name: "Dervish Camp Two", y: 45, x: 146}
+  - {key: "8", name: "Ruins", y: -400, x: -346}
+  - {key: "9", name: "Temple", y: -797, x: -641}
+  - {key: "10", name: "Dervish Camp Three", y: -1183, x: 1075}
+  - {key: "11", name: "Pillar", y: -1534, x: 692}
+  - {key: "12", name: "Pillar", y: -1242, x: 36}
+  - {key: "13", name: "Ruins", y: -1534, x: -619}
+  - {key: "14", name: "Dock: raft to Iceclad", y: 791, x: -926}
+  - {key: "Z", name: "to Oasis of Marr", y: -1705, x: 377}
+  - {key: "Z", name: "to East Freeport", y: 4037, x: 395}
+  - {key: "Z", name: "to East Commonlands", y: 2603, x: 2892}

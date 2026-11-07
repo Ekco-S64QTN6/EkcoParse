@@ -1,0 +1,18 @@
+# Swamp of No Hope waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Swamp_of_No_Hope
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Swamp of No Hope"
+waypoints:
+  - {key: "1", name: "Ruined Tower (Ssessthrass)", y: 3801, x: 1595}
+  - {key: "2", name: "Cabilis Outpost Ruins", y: 2719, x: 2888}
+  - {key: "3", name: "Outcast Iksar Camp", y: 2632, x: -97}
+  - {key: "4", name: "Outcast Iksar Hideout", y: 1293, x: -4344}
+  - {key: "5", name: "Froglok Temple (Dugroz)", y: 423, x: -4105}
+  - {key: "6", name: "\"Frogtown\" (Krup)", y: -1250, x: -1500}
+  - {key: "7", name: "\"The Ramp\" into Frogtown", y: -1246, x: -2058}
+  - {key: "8", name: "Haunted Ruins", y: -2464, x: 637}
+  - {key: "Z", name: "to Trakanon`s Teeth", y: 1784, x: -4516}
+  - {key: "Z", name: "to Firiona Vie", y: -4169, x: -2407}
+  - {key: "Z", name: "to The Field of Bone", y: 5223, x: 1137}
+  - {key: "Z", name: "to Firiona Vie", y: -4301, x: 2651}
+  - {key: "Z", name: "to Cabilis East", y: 3031, x: 3135}

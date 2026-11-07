@@ -1,0 +1,14 @@
+# Lavastorm Mountains waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Lavastorm_Mountains
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Lavastorm Mountains"
+waypoints:
+  - {key: "1", name: "Druid Ring, druid spells", y: 489, x: 445}
+  - {key: "2", name: "Fire Goblin Camp", y: 1274, x: 830}
+  - {key: "3", name: "Gypsy Camp", y: 417, x: 811}
+  - {key: "5", name: "Goblin Camp (Hykallen)", y: 1271, x: 801}
+  - {key: "Z", name: "to Solusek`s Eye", y: 1316, x: 936}
+  - {key: "Z", name: "to Nagafen`s Lair", y: 2194, x: 439}
+  - {key: "Z", name: "to Nektulos Forrest", y: 178, x: -7}
+  - {key: "Z", name: "to The Temple of Solusek Ro", y: 1311, x: -1694}
+  - {key: "Z", name: "to Najena", y: 544, x: -1742}

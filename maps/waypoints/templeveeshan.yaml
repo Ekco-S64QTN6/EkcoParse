@@ -1,0 +1,12 @@
+# Temple of Veeshan waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Temple_of_Veeshan
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Temple of Veeshan"
+waypoints:
+  - {key: "1", name: "Vault of Worship", y: -611, x: -623}
+  - {key: "2", name: "Council Chambers", y: 589, x: -736}
+  - {key: "3", name: "Halls of Testing", y: -1078, x: -734}
+  - {key: "4", name: "Hall of Relics", y: -1080, x: -265}
+  - {key: "Z", name: "to The Western Wastes", y: -1189, x: 1415}
+  - {key: "Z", name: "to The Western Wastes", y: 1213, x: -1859}
+  - {key: "Z", name: "to The Western Wastes", y: -601, x: -1698}

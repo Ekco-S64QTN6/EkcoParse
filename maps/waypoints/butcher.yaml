@@ -1,0 +1,32 @@
+# Butcherblock Mountains waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Butcherblock_Mountains
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Butcherblock Mountains"
+waypoints:
+  - {key: "1", name: "Docks: boats to Freeport, Kunark", y: 1336, x: 2492}
+  - {key: "2", name: "Stone with Guard (Blyle Bundin)", y: 1322, x: 1907}
+  - {key: "3", name: "Ancient Stone Ring (dwarves)", y: 1990, x: 1387}
+  - {key: "4", name: "Huts: food, molds, brewing", y: 2617, x: -757}
+  - {key: "5", name: "Goblin Camp", y: 2199, x: -1836}
+  - {key: "6", name: "Ruined Stone Ring (Crazed Goblin)", y: 1225, x: -1407}
+  - {key: "7", name: "The Chessboard", y: 692, x: -2279}
+  - {key: "8", name: "Dwarf Hut", y: 946, x: -2642}
+  - {key: "9", name: "Tower: guards, HE merchant", y: 180, x: 2232}
+  - {key: "10", name: "Bandit Camp (Peg Leg)", y: 139, x: 1647}
+  - {key: "11", name: "Goblin Warrior Camp", y: 41, x: 503}
+  - {key: "12", name: "Bandit Camp", y: -585, x: -757}
+  - {key: "13", name: "Altar", y: -279, x: -1238}
+  - {key: "14", name: "Stone Pillar (orcs)", y: 222, x: -1407}
+  - {key: "15", name: "Goblin Camp", y: -335, x: -2161}
+  - {key: "16", name: "Dwarf Houses: leather, patterns", y: -1212, x: 2648}
+  - {key: "17", name: "Abandoned Guard House (Signus)", y: -725, x: 1686}
+  - {key: "18", name: "The Crossroads (Nyzil Bloodforge)", y: -940, x: 9}
+  - {key: "19", name: "Merchants: clay, chain, sewing", y: -1184, x: -2031}
+  - {key: "20", name: "Druid Ring, druid spells", y: -2159, x: 2063}
+  - {key: "21", name: "Haunted Tower", y: -1532, x: 867}
+  - {key: "22", name: "Goblin Camp (Corflunk PH)", y: -2083, x: -194}
+  - {key: "23", name: "Stone Tower", y: -2535, x: -1732}
+  - {key: "24", name: "Enraged Goblins", y: -377, x: 932}
+  - {key: "Z", name: "to The Greater Faydark", y: -1316, x: -3061}
+  - {key: "Z", name: "to Dagnor`s Cauldron", y: -2950, x: -331}
+  - {key: "Z", name: "to South Kaladim", y: 3117, x: -181}

@@ -1,0 +1,10 @@
+# Clan Runnyeye waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Clan_Runnyeye
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Clan Runnyeye"
+waypoints:
+  - {key: "1", name: "Bar (goblin merchants)", y: 74, x: 89}
+  - {key: "2", name: "Lord Pickclaw spawn", y: 86, x: -112}
+  - {key: "5", name: "Bank", y: 12, x: 86}
+  - {key: "Z", name: "to Beholder (Gorge of King Xorbb)", y: -113, x: -25}
+  - {key: "Z", name: "to Misty Thicket", y: 228, x: 152}

@@ -1,0 +1,17 @@
+# Oasis of Marr waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Oasis_of_Marr
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Oasis of Marr"
+waypoints:
+  - {key: "1", name: "Ogre Temple (orcs)", y: 1525, x: 1130}
+  - {key: "2", name: "Hut and Dock (boats to Kunark)", y: 911, x: -654}
+  - {key: "3", name: "Gypsy Camp (shaman spells)", y: 493, x: 0}
+  - {key: "4", name: "Temple (spectres)", y: -277, x: 379}
+  - {key: "5", name: "Fishing Village", y: -327, x: -279}
+  - {key: "6", name: "Cutthroat Dervish Camp", y: -921, x: 998}
+  - {key: "7", name: "Cutthroat Dervish Camp", y: -1317, x: 1252}
+  - {key: "8", name: "Inn (goods)", y: -1386, x: 238}
+  - {key: "9", name: "Orc Camp", y: -1663, x: -579}
+  - {key: "10", name: "Aqua Goblin Tower", y: -752, x: 78}
+  - {key: "Z", name: "to North Desert of Ro", y: 2528, x: -730}
+  - {key: "Z", name: "to South Desert of Ro", y: -1931, x: 165}

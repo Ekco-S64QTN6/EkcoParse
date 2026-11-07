@@ -1,0 +1,24 @@
+# Neriak Foreign Quarter waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Neriak_Foreign_Quarter
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Neriak Foreign Quarter"
+waypoints:
+  - {key: "1", name: "Guard Hall", y: 60, x: -43}
+  - {key: "2", name: "The Smugglers Inn", y: 152, x: -101}
+  - {key: "3", name: "Silk Underground (cloth, loom)", y: 132, x: -161}
+  - {key: "4", name: "Drana's Bread and Butcher", y: 131, x: -238}
+  - {key: "5", name: "Slug's Tavern", y: 185, x: -216}
+  - {key: "6", name: "Market View, Gambel's Greens", y: 249, x: -60}
+  - {key: "7", name: "Shoes, bags, kiln", y: 226, x: -69}
+  - {key: "8", name: "Various Weapons", y: -244, x: -240}
+  - {key: "9", name: "Ogres: smithing books, molds", y: -185, x: -253}
+  - {key: "10", name: "Armor Shop (forge outside)", y: -212, x: -345}
+  - {key: "11", name: "Pig Stickers (weapons)", y: -298, x: -441}
+  - {key: "12", name: "Secret entrance to Underground", y: -334, x: -476}
+  - {key: "13", name: "Food and Alcohol", y: -412, x: -499}
+  - {key: "14", name: "Weapons, SHM/SK spells, Shaman GMs", y: -598, x: -367}
+  - {key: "15", name: "PvP Area (Bull's Pit)", y: -346, x: -271}
+  - {key: "16", name: "Bites n Pieces (food, fishing)", y: -344, x: -124}
+  - {key: "17", name: "Shinie Tings (jewelry)", y: -291, x: -169}
+  - {key: "Z", name: "to Nektulos Forest", y: 21, x: 155}
+  - {key: "Z", name: "to Neriak - Commons", y: 85, x: -361}

@@ -1,0 +1,18 @@
+# Skyshrine waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Skyshrine
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Skyshrine"
+waypoints:
+  - {key: "1", name: "Entrance Room", y: 467, x: -326}
+  - {key: "2", name: "Bank (Treval)", y: 302, x: -281}
+  - {key: "3", name: "Spell merchants", y: 353, x: -755}
+  - {key: "4", name: "Pool Room", y: 442, x: 484}
+  - {key: "5", name: "Giant Spy Room", y: 649, x: -642}
+  - {key: "6", name: "Armor Quest Room", y: 1366, x: 1206}
+  - {key: "7", name: "Skyshrine Maze", y: 1288, x: -1106}
+  - {key: "8", name: "Yelinak's Waiting Room", y: 1738, x: 2320}
+  - {key: "9", name: "Lord Yelinak's Chamber", y: 2732, x: 1975}
+  - {key: "T", name: "Teleporter to Skyshrine top", y: 709, x: 794}
+  - {key: "T", name: "Teleporter to lower level", y: 787, x: -159}
+  - {key: "Z", name: "to The Wakening Land", y: -237, x: -781}
+  - {key: "Z", name: "to Cobalt Scar", y: 562, x: -327}

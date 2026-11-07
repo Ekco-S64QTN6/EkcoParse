@@ -1,0 +1,23 @@
+# East Commonlands waypoints, following the Map Location Key at
+# https://p99.funcamp.net/East_Commonlands
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "East Commonlands"
+waypoints:
+  - {key: "1", name: "Orc Camp (\"Orc 2\")", y: 954, x: 4453}
+  - {key: "2", name: "Inn 4: ale, cloth, mage books, gems", y: 207, x: 4705}
+  - {key: "3", name: "Hut: shields, food, herbs, compass", y: -92, x: 4600}
+  - {key: "4", name: "Inn 3: arrows, ale, cloth", y: 1034, x: 3653}
+  - {key: "5", name: "Obelisk (rangers)", y: 517, x: 3716}
+  - {key: "6", name: "Orc Camp (\"Orc 1\", Lord Shin Ree)", y: 977, x: 2653}
+  - {key: "7", name: "Juna's Inn (Inn 2)", y: -322, x: 3000}
+  - {key: "8", name: "Haunted Ruins", y: -782, x: 2874}
+  - {key: "9", name: "Empty Hut", y: -34, x: 1758}
+  - {key: "10", name: "Plagued Huts", y: 598, x: 1021}
+  - {key: "11", name: "Harold's Inn (Inn 1)", y: -138, x: 337}
+  - {key: "12", name: "Weapons, throwing weapons", y: 185, x: -853}
+  - {key: "13", name: "Spell Components", y: -115, x: -474}
+  - {key: "14", name: "Cleric Trainer", y: -184, x: -847}
+  - {key: "Z", name: "to West Freeport", y: 14, x: -1559}
+  - {key: "Z", name: "to Nektulos Forest", y: 1484, x: 616}
+  - {key: "Z", name: "to North Desert of Ro", y: -2427, x: -20}
+  - {key: "Z", name: "to West Commonlands", y: 9, x: 4952}

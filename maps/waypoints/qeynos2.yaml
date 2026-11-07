@@ -1,0 +1,23 @@
+# North Qeynos waypoints, following the Map Location Key at
+# https://p99.funcamp.net/North_Qeynos
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "North Qeynos"
+waypoints:
+  - {key: "1", name: "Silent Fist (Monk Guild)", y: 289, x: 291}
+  - {key: "2", name: "Kliknik Tunnel (to aqueducts)", y: 349, x: -181}
+  - {key: "3", name: "Reflecting Pond (to aqueducts)", y: 193, x: 296}
+  - {key: "4", name: "Crow's Pub & Casino", y: 134, x: 343}
+  - {key: "5", name: "Galliway's Trading Post", y: 77, x: 203}
+  - {key: "6", name: "Ironforge's (weapons, molds)", y: 12, x: 74}
+  - {key: "7", name: "Jewelbox (jewelry supplies)", y: 60, x: 34}
+  - {key: "8", name: "Ironforges' Estate", y: 106, x: -10}
+  - {key: "9", name: "Cloth armor, chain molds", y: -3, x: -8}
+  - {key: "10", name: "The Cobbler (boots)", y: -76, x: -8}
+  - {key: "11", name: "Blunt weapons, Clr/Pal spells", y: -146, x: -130}
+  - {key: "12", name: "Teleport to the Temple of Life", y: -169, x: -468}
+  - {key: "Z", name: "to South Qeynos", y: -156, x: -8}
+  - {key: "Z", name: "to Qeynos Hills", y: 1332, x: 60}
+  - {key: "Z", name: "to The Qeynos Aqueduct System", y: 191, x: 342}
+  - {key: "Z", name: "to The Qeynos Aqueduct System", y: 300, x: -162}
+  - {key: "Z", name: "to Qeynos Catacombs", y: 174, x: 105}
+  - {key: "Z", name: "to South Qeynos", y: -21, x: 398}

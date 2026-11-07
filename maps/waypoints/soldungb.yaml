@@ -1,0 +1,24 @@
+# Nagafen's Lair waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Nagafen's_Lair
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Nagafen's Lair"
+waypoints:
+  - {key: "1", name: "\"Pool Room\"", y: -151, x: -374}
+  - {key: "2", name: "\"Window Room\"", y: -325, x: -452}
+  - {key: "3", name: "\"Circle Room\"", y: -475, x: -319}
+  - {key: "4", name: "Efreeti Lord Djarn", y: -481, x: 334}
+  - {key: "5", name: "Kobold noble", y: -561, x: -122}
+  - {key: "6", name: "King Room (kobold king)", y: -543, x: -343}
+  - {key: "7", name: "Priest Room", y: -586, x: -324}
+  - {key: "8", name: "Champion Room", y: -648, x: -333}
+  - {key: "11", name: "Death Beetle Room", y: -707, x: -154}
+  - {key: "12", name: "\"Nox Corridor\" (noxious spider)", y: -752, x: -238}
+  - {key: "13", name: "Stone Spider Room", y: -968, x: -311}
+  - {key: "14", name: "Collector's Room (guano harvester)", y: -1048, x: -464}
+  - {key: "16", name: "Throne Room (King Tranix)", y: -1517, x: -379}
+  - {key: "17", name: "Warlord Skarlon", y: -1448, x: -341}
+  - {key: "18", name: "Drawbridge levers", y: -1239, x: -531}
+  - {key: "19", name: "Lord Nagafen, Magus Rokyl", y: -1376, x: -824}
+  - {key: "Z", name: "to Solusek`s Eye", y: -278, x: -508}
+  - {key: "Z", name: "to Solusek`s Eye", y: -1082, x: -525}
+  - {key: "Z", name: "to The Lavastorm Mountains", y: -414, x: -266}

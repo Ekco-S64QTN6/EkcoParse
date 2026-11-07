@@ -1,0 +1,18 @@
+# Sleeper's Tomb waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Sleeper's_Tomb
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Sleeper's Tomb"
+waypoints:
+  - {key: "1", name: "The Progenitor", y: -597, x: -80}
+  - {key: "2", name: "Master of the Guard", y: -886, x: 400}
+  - {key: "3", name: "Library", y: -1252, x: 1091}
+  - {key: "4", name: "Dragon Statue", y: -1350, x: -50}
+  - {key: "5", name: "Pit to the final area", y: -2384, x: 29}
+  - {key: "6", name: "Well down to the Arbiter", y: -2328, x: 568}
+  - {key: "7", name: "The Final Arbiter", y: -2350, x: -614}
+  - {key: "8", name: "Kerafyrm's Chamber", y: -2386, x: -1333}
+  - {key: "9", name: "Zeixshi-Kar the Ancient", y: -1971, x: -1071}
+  - {key: "10", name: "Tjudawos the Ancient", y: -2800, x: -1073}
+  - {key: "11", name: "Kildrukaun the Ancient", y: -1967, x: -1905}
+  - {key: "12", name: "Vyskudra the Ancient", y: -2801, x: -1908}
+  - {key: "Z", name: "to Eastern Wastes", y: -12, x: -62}

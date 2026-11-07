@@ -1,0 +1,20 @@
+# Southern Plains of Karana waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Southern_Plains_of_Karana
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Southern Plains of Karana"
+waypoints:
+  - {key: "1", name: "Undead Ruins (Lord Grimrot)", y: 1379, x: 1170}
+  - {key: "2", name: "Treants", y: 1662, x: -2523}
+  - {key: "3", name: "Vhalen Nostrolo's Well", y: -46, x: -215}
+  - {key: "4", name: "Centaur Stables (bowyer)", y: 300, x: -2400}
+  - {key: "5", name: "Obelisk (zombies, skeletons)", y: -2091, x: -1544}
+  - {key: "6", name: "Entrance to Splitpaw Lair", y: -3280, x: 800}
+  - {key: "7", name: "Hermit House", y: -5400, x: -2600}
+  - {key: "8", name: "Ruined Stone Ring", y: -6093, x: -3324}
+  - {key: "9", name: "Aviak Town (\"KFC\")", y: -6500, x: 1200}
+  - {key: "S", name: "High Shaman (monk headband)", y: -5600, x: 150}
+  - {key: "S", name: "Shadowed men encampment", y: -4500, x: 2900}
+  - {key: "R", name: "Raider camp", y: 2460, x: -1360}
+  - {key: "Z", name: "to The Lair of the Splitpaw", y: -3164, x: 919}
+  - {key: "Z", name: "to The Northern Plains of Karana", y: 2848, x: 908}
+  - {key: "Z", name: "to Lake Rathetear", y: -8557, x: 1148}

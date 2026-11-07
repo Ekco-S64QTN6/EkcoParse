@@ -24,7 +24,7 @@ The map uses the coordinates printed by `/loc` and compatible zone-map files. Ek
 | --- | --- |
 | **Spell and buff timers** | Separate DoT/CC and buff lists, countdowns, progress bars, fade/recast states, and configurable log triggers. Spell coverage and ready-to-use trigger presets are still evolving. |
 | **Combat and defense** | Live encounter damage/DPS with per-combatant contributions. The Defense tab exposes incoming damage, max hit taken, heals received, and avoidance statistics. More detailed combat reporting and broader multi-target validation remain in progress. |
-| **Standalone map and GPS** | Log-driven `/loc` coordinates, zone geometry, a player marker, breadcrumb trail, heading and speed display, nearby points of interest, distances, and bearings. The map follows whichever character's log is being written, keeps true zone proportions with north up and east right, and the first `/loc` in a zone opens a ~700-unit player-centred view; zoom can then be adjusted manually. |
+| **Standalone map and GPS** | Log-driven `/loc` coordinates, zone geometry, a player marker, breadcrumb trail, heading and speed display, nearby waypoints, distances, and bearings. Waypoints follow each zone's P99 wiki Map Location Key (numbered on the radar like the wiki map, plus zone lines); map-pack clutter such as ground spawns, legends and credits is left out. The map follows whichever character's log is being written, keeps true zone proportions with north up and east right, and the first `/loc` in a zone opens a ~700-unit player-centred view; zoom can then be adjusted manually. |
 | **Kills, experience, loot, and respawns** | The Ledger tab exposes the kill/XP summary, recent item drops, and respawn countdowns. Coin tracking, zone-specific respawn validation, and richer ledger workflows remain in progress. |
 | **Alerts** | A compact ticker shows recent trigger alerts and recent log activity. Custom triggers can define patterns, timers, messages, colors, and sound behavior. |
 
@@ -170,6 +170,7 @@ The projects and resources below are useful references for the problem space, im
 - **[Project 1999](https://project1999.com/)** — the server and community this project is built to support. Thanks to the team and players for maintaining it.
 - **[Project 1999 Wiki](https://wiki.project1999.com/)** — community-maintained reference material for zones, NPCs, spells, game mechanics, and technical topics. The wiki is community-run and is not an official staff-maintained source.
 - **[EQEmulator](https://eqemulator.org/)** and its **[documentation](https://docs.eqemu.dev/)** — resources from the broader EverQuest emulation community.
+- **[Project 1999 Wiki mirror at p99.funcamp.net](https://p99.funcamp.net/)** — the per-zone Map Location Keys that `maps/waypoints/*.yaml` follow (one file per zone, `/loc` y/x coordinates; edit a file to add or move a waypoint).
 - **[Brewall's EverQuest Maps](https://www.eqmaps.info/)** and the **[EverQuest Map Preserve](https://steveprutz.com/eq/index.html)** — community mapmaking and historical map references. Map files remain the work of their respective creators; follow their terms and attribution requirements wherever applicable.
 
 ### Interface and libraries

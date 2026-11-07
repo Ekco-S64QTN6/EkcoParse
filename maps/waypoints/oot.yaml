@@ -1,0 +1,15 @@
+# Ocean of Tears waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Ocean_of_Tears
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Ocean of Tears"
+waypoints:
+  - {key: "1", name: "Siren Rocks (sirens, Brawn)", y: 1093, x: 9172}
+  - {key: "2", name: "Zachariah Reigh Isle (Freeport boat)", y: -2095, x: 7528}
+  - {key: "3", name: "Aviak Isle", y: 1801, x: 3782}
+  - {key: "4", name: "Twin Tines (two spires)", y: -1174, x: 1655}
+  - {key: "5", name: "Allizewsaur Isle (goblin temple)", y: -3242, x: -1182}
+  - {key: "6", name: "Pirate Isle (cyclops)", y: 1518, x: -5863}
+  - {key: "7", name: "Grey Isle (haunted)", y: -749, x: -6998}
+  - {key: "8", name: "Mudtoe Isle (Elesseryl)", y: 1309, x: -7875}
+  - {key: "9", name: "Oracle of K'Arnon", y: -749, x: -8700}
+  - {key: "10", name: "Sisterhood Isle (Faydwer boat)", y: 272, x: -9193}

@@ -1,0 +1,35 @@
+# Cabilis East waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Cabilis_East
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Cabilis East"
+waypoints:
+  - {key: "1", name: "Temple of Terror (Shaman, SK)", y: 971, x: -189}
+  - {key: "2", name: "Tink n' Babble (bar)", y: 897, x: -63}
+  - {key: "3", name: "Alcohol & Brewing Supplies", y: 671, x: -25}
+  - {key: "4", name: "The Block (Bank)", y: 639, x: 52}
+  - {key: "5", name: "Gems, Metals, Jewelry Kit", y: 642, x: 151}
+  - {key: "6", name: "Smithing Molds", y: 587, x: 151}
+  - {key: "7", name: "Cooking Supplies, Oven", y: 532, x: 151}
+  - {key: "8", name: "Court of Pain (Monk Guild)", y: 429, x: -107}
+  - {key: "9", name: "Haggle Baron (Bristle Silk)", y: 381, x: -189}
+  - {key: "10", name: "Haggle Baron", y: 387, x: -328}
+  - {key: "11", name: "Food", y: 445, x: -454}
+  - {key: "12", name: "Pottery Supplies, Kiln", y: 245, x: -183}
+  - {key: "13", name: "Armor & Pottery Molds, Forge", y: 235, x: -268}
+  - {key: "14", name: "Ore, Clay, Smithy Hammers", y: 139, x: -299}
+  - {key: "15", name: "Sewing Patterns", y: 74, x: -306}
+  - {key: "16", name: "Cloth Armor, Sewing Kits", y: 123, x: -38}
+  - {key: "17", name: "Food", y: 132, x: -113}
+  - {key: "18", name: "Fishing & Fletching Supplies", y: 123, x: -189}
+  - {key: "19", name: "Bags & Boxes", y: 42, x: -13}
+  - {key: "20", name: "Rhino Hide Armor, Loom", y: 42, x: -123}
+  - {key: "21", name: "Wilderness Survival Gear", y: 58, x: -195}
+  - {key: "22", name: "Blunt Weapons, Forge", y: -410, x: 0}
+  - {key: "23", name: "Weapon Molds", y: -410, x: -243}
+  - {key: "24", name: "Weapons, Shields, Cabilis Forge", y: -539, x: 16}
+  - {key: "25", name: "Lupine Scale Armor", y: -652, x: 25}
+  - {key: "26", name: "Fortress Talishan (Warriors)", y: -668, x: -123}
+  - {key: "27", name: "Cooking & Lore Books", y: -619, x: -274}
+  - {key: "Z", name: "to The Field of Bone", y: 1165, x: -610}
+  - {key: "Z", name: "to The Swamp of No Hope", y: -74, x: -641}
+  - {key: "Z", name: "to Cabilis West", y: -69, x: 286}

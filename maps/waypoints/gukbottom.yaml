@@ -1,0 +1,20 @@
+# Lower Guk waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Lower_Guk
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Lower Guk"
+waypoints:
+  - {key: "A", name: "Zone line to Upper Guk", y: 1110, x: 635}
+  - {key: "1", name: "Shin Knight Room", y: 1061, x: 287}
+  - {key: "2", name: "Elder Room (minotaur elder, Raster)", y: 923, x: -303}
+  - {key: "3", name: "The Maze", y: 884, x: 52}
+  - {key: "4", name: "Live side setup area", y: 658, x: 369}
+  - {key: "5", name: "Three Mino Room", y: 653, x: 104}
+  - {key: "6", name: "Minotaur Patriarch", y: 653, x: 34}
+  - {key: "7", name: "Jail Room (Slaythe nearby)", y: 697, x: -125}
+  - {key: "8", name: "Evil Eye ledge", y: 621, x: -450}
+  - {key: "9", name: "Noble Room", y: 352, x: -78}
+  - {key: "10", name: "Live Keep (Yun Priest, crusader)", y: 211, x: -422}
+  - {key: "11", name: "Huge Water Elemental", y: 99, x: -87}
+  - {key: "12", name: "King Prep Room", y: -17, x: -151}
+  - {key: "13", name: "Herbalist Room", y: 19, x: -261}
+  - {key: "14", name: "King Room (one-way exit)", y: -107, x: 20}

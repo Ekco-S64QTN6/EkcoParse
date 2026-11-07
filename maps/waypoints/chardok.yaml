@@ -1,0 +1,14 @@
+# Chardok waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Chardok
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Chardok"
+waypoints:
+  - {key: "1", name: "Chardok Bank", y: -76, x: -106}
+  - {key: "2", name: "Haggle Baron Dry`dn (merchant)", y: -89, x: 353}
+  - {key: "3", name: "Nak`azar's Falls", y: -136, x: 8}
+  - {key: "4", name: "Swim up the waterfall", y: -365, x: 205}
+  - {key: "5", name: "Palace of Di`zok", y: -520, x: 807}
+  - {key: "6", name: "Bathezid's Archive (Overking)", y: -838, x: 959}
+  - {key: "7", name: "Queen Velazul", y: -1079, x: 993}
+  - {key: "8", name: "Prince Selrach", y: -562, x: 1356}
+  - {key: "Z", name: "to The Burning Woods", y: 150, x: 950}

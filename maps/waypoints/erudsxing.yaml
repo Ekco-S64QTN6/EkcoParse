@@ -1,0 +1,15 @@
+# Erud's Crossing waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Erud's_Crossing
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Erud's Crossing"
+waypoints:
+  - {key: "1", name: "Sunken Haunted Ship", y: -1312, x: 2128}
+  - {key: "2", name: "Ancient Statue", y: -923, x: 1615}
+  - {key: "2", name: "Ancient Statue", y: -936, x: 1263}
+  - {key: "2", name: "Ancient Statue", y: -1049, x: 1096}
+  - {key: "2", name: "Ancient Statue", y: -1507, x: 1591}
+  - {key: "3", name: "Volcanic Crater", y: -1208, x: 1313}
+  - {key: "4", name: "Fishing Supplies, Weapons", y: -1479, x: 857}
+  - {key: "5", name: "Dock (boat to Erudin)", y: -1775, x: 736}
+  - {key: "Z", name: "to Erudin", y: 2230, x: 1580}
+  - {key: "Z", name: "to South Qeynos", y: -3850, x: 2001}

@@ -1,0 +1,14 @@
+# Veeshan's Peak waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Veeshan's_Peak
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Veeshan's Peak"
+waypoints:
+  - {key: "1", name: "Phara Dar (kill the others first)", y: -1155, x: -1306}
+  - {key: "2", name: "Hoshkar", y: 1444, x: 559}
+  - {key: "3", name: "Xygoz", y: 1156, x: 1224}
+  - {key: "4", name: "Silverwing", y: 336, x: -208}
+  - {key: "5", name: "Nexona", y: 1188, x: -598}
+  - {key: "6", name: "Druushk", y: 1431, x: -142}
+  - {key: "Z", name: "to The Skyfire Mountains", y: -1109, x: -1294}
+  - {key: "Z", name: "to The Skyfire Mountains", y: 1278, x: 1344}
+  - {key: "Z", name: "to The Skyfire Mountains", y: 1310, x: -157}

@@ -1,0 +1,35 @@
+# Western Plains of Karana waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Western_Plains_of_Karana
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Western Plains of Karana"
+waypoints:
+  - {key: "1", name: "Shops: cloth, cooking, clay", y: 1053, x: -2133}
+  - {key: "2", name: "Throwing daggers, patterns, inn", y: 374, x: -4403}
+  - {key: "3", name: "Bandit Camp", y: 367, x: -6501}
+  - {key: "3N", name: "Bandit Camp (\"3 North\")", y: 890, x: -7050}
+  - {key: "4", name: "Guard Tower (\"Tower 1\")", y: -444, x: -2650}
+  - {key: "5", name: "Guard Tower (\"Tower 2\")", y: -954, x: -4403}
+  - {key: "6", name: "Farm taken by bandits", y: -336, x: -5687}
+  - {key: "7", name: "Cleet Miller Farm", y: -2111, x: -4434}
+  - {key: "8", name: "Empty farm", y: -2250, x: -5609}
+  - {key: "9", name: "Corrupt Guard Tower", y: -2759, x: -2289}
+  - {key: "10", name: "Scarecrow fields (undead)", y: -2837, x: -4560}
+  - {key: "11", name: "Henina Miller Farm (Furball)", y: -2856, x: -5843}
+  - {key: "12", name: "Empty farm", y: -2806, x: -6877}
+  - {key: "13", name: "Barbarian Village (molds, shaman)", y: -3803, x: -2096}
+  - {key: "14", name: "Tiny Miller's House", y: -3763, x: -5655}
+  - {key: "15", name: "Farm (ex-druid Linaya Sowlin)", y: -3577, x: -7894}
+  - {key: "16", name: "Bandit mountains", y: 880, x: -11583}
+  - {key: "17", name: "Caninel and gnolls", y: 1099, x: -13452}
+  - {key: "18", name: "Ogre Shrine (Chief Goonda)", y: -659, x: -9128}
+  - {key: "19", name: "Froon and Choon (hill)", y: -1267, x: -8719}
+  - {key: "20", name: "Barbarian shop: fletching, bows", y: -1833, x: -9022}
+  - {key: "21", name: "Smithing books, Innkeep Danin", y: -1602, x: -13092}
+  - {key: "22", name: "Farms", y: -1911, x: -14579}
+  - {key: "23", name: "Farms", y: -3531, x: -9178}
+  - {key: "24", name: "Bandit Camp", y: -3423, x: -11135}
+  - {key: "25", name: "Farms (poison merchant)", y: -2990, x: -13389}
+  - {key: "26", name: "Pyramid (wizard portal)", y: -3521, x: -14818}
+  - {key: "27", name: "Undead Ruins", y: -3531, x: -15331}
+  - {key: "Z", name: "to Qeynos Hills", y: 31, x: 52}
+  - {key: "Z", name: "to The Northern Plains of Karana", y: 615, x: -15962}

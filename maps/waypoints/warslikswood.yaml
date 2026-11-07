@@ -1,0 +1,25 @@
+# Warsliks Woods waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Warsliks_Woods
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Warsliks Woods"
+waypoints:
+  - {key: "1", name: "Goblin Fort (Pit Fighter Dob)", y: 2953, x: -224}
+  - {key: "2", name: "Goblin hut (Ssolet Dnaas NW isle)", y: 3086, x: -1950}
+  - {key: "3", name: "Outcast Iksar hut", y: 3727, x: -2775}
+  - {key: "4", name: "Outcast Iksar hut", y: 2850, x: -2890}
+  - {key: "5", name: "Goblin hut", y: 2244, x: -299}
+  - {key: "6", name: "Goblin hut", y: 1620, x: 2127}
+  - {key: "7", name: "Goblin hut", y: 1536, x: -580}
+  - {key: "8", name: "Forest Giant Hut", y: 1199, x: 1434}
+  - {key: "9", name: "Iksar Bandit Lord's hut", y: 564, x: 2451}
+  - {key: "10", name: "\"Bandit Lake\"", y: -1448, x: 3909}
+  - {key: "11", name: "Outcast Iksar hut", y: -656, x: 2424}
+  - {key: "12", name: "Forest Giant Fort", y: -950, x: 1250}
+  - {key: "13", name: "Cabilis Outpost Ruins (merchants)", y: -1651, x: -707}
+  - {key: "A", name: "Tunnels to Dalnir (brute caves)", y: 3530, x: 3953}
+  - {key: "B", name: "Iksar tunnels to Lake of Ill Omen", y: -2285, x: 1464}
+  - {key: "Z", name: "to The Overthere", y: -241, x: 4070}
+  - {key: "Z", name: "to Lake of Ill Omen", y: -3651, x: 1187}
+  - {key: "Z", name: "to The Crypt of Dalnir", y: 2567, x: 4548}
+  - {key: "Z", name: "to Cabilis West", y: -2322, x: -1015}
+  - {key: "Z", name: "to The Field of Bone", y: 1400, x: -3500}

@@ -1,0 +1,23 @@
+# Lesser Faydark waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Lesser_Faydark
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Lesser Faydark"
+waypoints:
+  - {key: "1", name: "Brownie Compound (enc spells)", y: 1788, x: 3059}
+  - {key: "2", name: "Faerie Village (Gearheart)", y: 1089, x: 3617}
+  - {key: "3", name: "\"Pixie Tower\"", y: 1338, x: 2855}
+  - {key: "4", name: "Bandit Camp", y: 1467, x: 2065}
+  - {key: "5", name: "Gnome Huts", y: 1078, x: -1706}
+  - {key: "6", name: "Orc Camp", y: 260, x: 347}
+  - {key: "7", name: "Orc Camp", y: -88, x: 3468}
+  - {key: "8", name: "Haunted Shrine", y: 63, x: 2347}
+  - {key: "9", name: "Orc Camp (Orc Chief)", y: -559, x: 1668}
+  - {key: "10", name: "Wood Elf Ranger Outpost", y: -278, x: 1253}
+  - {key: "11", name: "Orc Camp", y: -227, x: -636}
+  - {key: "12", name: "Wood Elf Temple (shadowed men)", y: -350, x: -1827}
+  - {key: "13", name: "Stone Ring (Fae Royal Court)", y: -783, x: 3144}
+  - {key: "14", name: "Bandit Camp (Bandit Sisters)", y: -804, x: 2689}
+  - {key: "15", name: "Teir'Dal camp (Legendary Wu)", y: -897, x: 1143}
+  - {key: "Z", name: "to The Castle of Mistmoore", y: -1117, x: 3360}
+  - {key: "Z", name: "to The Steamfont Mountains", y: 918, x: -2177}
+  - {key: "Z", name: "to The Greater Faydark", y: 2145, x: -1183}

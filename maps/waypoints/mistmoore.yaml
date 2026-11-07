@@ -1,0 +1,25 @@
+# Castle Mistmoore waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Castle_Mistmoore
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Castle Mistmoore"
+waypoints:
+  - {key: "1", name: "Graveyard (imp familiar, ghoul)", y: 89, x: 392}
+  - {key: "2", name: "Tomb (Ssynthi), way to the jail", y: -59, x: 359}
+  - {key: "4", name: "The Canyon (Black Dire, Enynti)", y: 79, x: -112}
+  - {key: "5", name: "Jail (deathly usher)", y: -74, x: 314}
+  - {key: "6", name: "Courtyard (Hemo Enologist)", y: -324, x: 413}
+  - {key: "7", name: "Fountain (cloaked dhampyre)", y: 10, x: 94}
+  - {key: "8", name: "Entry Hall", y: -5, x: 4}
+  - {key: "9", name: "\"Piano\"", y: -133, x: 82}
+  - {key: "10", name: "Ballroom (Mynthi Davissi)", y: -142, x: -3}
+  - {key: "13", name: "The Tower (Garton Viswin)", y: -222, x: 350}
+  - {key: "14", name: "Torture Chamber", y: -233, x: 183}
+  - {key: "15", name: "Mayong Mistmoore's Coffin Room", y: -357, x: 46}
+  - {key: "16", name: "Kitchen", y: -256, x: -116}
+  - {key: "17", name: "Servant Room (Maid Issis)", y: -338, x: -89}
+  - {key: "18", name: "Servant Room (Butler Syncall)", y: -316, x: -112}
+  - {key: "19", name: "Library", y: -73, x: 79}
+  - {key: "20", name: "Throne Room (Princess Cherista)", y: -133, x: 37}
+  - {key: "21", name: "The Bath (Lasna Cheroon, Xicotl)", y: -176, x: 90}
+  - {key: "22", name: "Bedroom", y: -196, x: 47}
+  - {key: "Z", name: "to The Lesser Faydark", y: -347, x: 126}

@@ -1,0 +1,22 @@
+# Kedge Keep waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Kedge_Keep
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Kedge Keep"
+waypoints:
+  - {key: "1", name: "First Floor (fierce impaler)", y: 77, x: 0}
+  - {key: "2", name: "Second Floor", y: -36, x: -1}
+  - {key: "4", name: "Golden Haired Mermaid", y: -177, x: -31}
+  - {key: "5", name: "Fallen Gate Room", y: 119, x: -148}
+  - {key: "6", name: "Safe Den", y: 185, x: -149}
+  - {key: "7", name: "The Balcony (Estrella pull spot)", y: 76, x: -289}
+  - {key: "8", name: "Estrella's Temple", y: 8, x: -218}
+  - {key: "9", name: "Temple of Prexus (Undertow)", y: 261, x: -280}
+  - {key: "10", name: "Coralyn Kelpmaiden", y: 128, x: -332}
+  - {key: "11", name: "Seahorse Caves (Matriarch)", y: 52, x: -501}
+  - {key: "12", name: "The Crossroads (bull shark)", y: -118, x: -97}
+  - {key: "13", name: "Boil's Lair (Cauldronboil)", y: -256, x: -104}
+  - {key: "14", name: "Frenzied Room", y: -118, x: -188}
+  - {key: "15", name: "Patriarch's Room", y: -162, x: -67}
+  - {key: "16", name: "Ferocious Room (hammerhead)", y: -71, x: -62}
+  - {key: "17", name: "Phinigel Autropos", y: -25, x: 137}
+  - {key: "Z", name: "to Dagnor`s Cauldron", y: 125, x: 30}

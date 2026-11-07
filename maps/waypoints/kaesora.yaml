@@ -1,0 +1,13 @@
+# Kaesora waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Kaesora
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Kaesora"
+waypoints:
+  - {key: "1", name: "Reaver of Xalgoz", y: 414, x: -12}
+  - {key: "2", name: "Runelord Room", y: 179, x: 72}
+  - {key: "3", name: "Frenzied Room", y: 127, x: -83}
+  - {key: "5", name: "Library (librarians, guardian)", y: 118, x: -413}
+  - {key: "6", name: "Hut (Hungered Ravener)", y: 159, x: -605}
+  - {key: "7", name: "Broken floor down to the church", y: -80, x: 640}
+  - {key: "1", name: "Lower: Church (Xalgoz)", y: -112, x: 560}
+  - {key: "Z", name: "to The Field of Bone", y: 370, x: 44}

@@ -1,0 +1,19 @@
+# Toxxulia Forest waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Toxxulia_Forest
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Toxxulia Forest"
+waypoints:
+  - {key: "1", name: "Wizard Hut (books, molds)", y: 2198, x: 1043}
+  - {key: "2", name: "Bags", y: 2121, x: 400}
+  - {key: "3", name: "Enchanter's Hut", y: 2154, x: -1207}
+  - {key: "4", name: "Magician's Hut", y: 1686, x: -731}
+  - {key: "5", name: "Druid Ring (Succor, Circle spells)", y: 1081, x: -359}
+  - {key: "6", name: "Necromancer's Hut", y: 1173, x: -875}
+  - {key: "7", name: "Western Dock", y: 193, x: 1032}
+  - {key: "8", name: "Kobold Camp", y: -930, x: -487}
+  - {key: "9", name: "Wizard Spires", y: -1483, x: -909}
+  - {key: "10", name: "Kobold Camp", y: -1856, x: -1152}
+  - {key: "11", name: "Rungupp", y: -2183, x: 1043}
+  - {key: "Z", name: "to Kerra Isle", y: -515, x: 2642}
+  - {key: "Z", name: "to Erudin", y: 2545, x: 291}
+  - {key: "Z", name: "to Paineel", y: -2601, x: -429}

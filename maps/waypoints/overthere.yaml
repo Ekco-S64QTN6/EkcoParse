@@ -1,0 +1,22 @@
+# The Overthere waypoints, following the Map Location Key at
+# https://p99.funcamp.net/The_Overthere
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "The Overthere"
+waypoints:
+  - {key: "1", name: "Dock: boat to Timorous Deep", y: 3449, x: 2732}
+  - {key: "2", name: "Merchants: fletching, food, bags", y: 2658, x: 2586}
+  - {key: "3", name: "Spell merchants, tradeskills", y: 2752, x: 2408}
+  - {key: "4", name: "The Bank", y: 2675, x: 2146}
+  - {key: "5", name: "Sarnak-infested Ruins", y: 2597, x: -2492}
+  - {key: "6", name: "Chasm (scorpiki)", y: -55, x: 667}
+  - {key: "7", name: "Entrance to Skyfire Mountains", y: -1071, x: 3342}
+  - {key: "8", name: "Sarnak-infested Ruins", y: -1683, x: 358}
+  - {key: "9", name: "Statue", y: -233, x: -2861}
+  - {key: "10", name: "Sarnak-infested Ruins", y: -2905, x: -2861}
+  - {key: "A", name: "Temple with Sphere (to Charasis)", y: 87, x: 1545}
+  - {key: "B", name: "Temple entrance", y: 536, x: -263}
+  - {key: "C", name: "Temple entrance", y: -23, x: 156}
+  - {key: "Z", name: "to Frontier Mountains", y: -6050, x: 1422}
+  - {key: "Z", name: "to The Skyfire Mountains", y: -1046, x: 4189}
+  - {key: "Z", name: "to The Warsliks Woods", y: -150, x: -4200}
+  - {key: "Z", name: "to Timorous Deep", y: 3449, x: 2732}

@@ -1,0 +1,22 @@
+# Kael Drakkel waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Kael_Drakkel
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Kael Drakkel"
+waypoints:
+  - {key: "1", name: "Temple of Rallos Zek (statue)", y: 2666, x: 1391}
+  - {key: "1a", name: "Derakor the Vindicator", y: 2166, x: 1383}
+  - {key: "2", name: "Protectors of Zek", y: 1700, x: 1320}
+  - {key: "3", name: "Arena (Avatar of War), tickets", y: 1045, x: 1320}
+  - {key: "4", name: "Noble Building: food, drink", y: 185, x: 1926}
+  - {key: "5", name: "Slaggak the Trainer", y: 236, x: 1345}
+  - {key: "6", name: "Othmir armor, Drakkel weapons", y: 164, x: 843}
+  - {key: "7", name: "Commoner Building", y: 44, x: 1249}
+  - {key: "8", name: "Ramp Area", y: -322, x: 2638}
+  - {key: "9", name: "Commoner Building", y: -322, x: 1790}
+  - {key: "10", name: "Bank (Drioc, Capt. Bvellos)", y: -404, x: 1442}
+  - {key: "11", name: "Iceshard Keep (Doldigun)", y: -872, x: 1092}
+  - {key: "12", name: "King Tormax's Throne Room", y: -1540, x: 1736}
+  - {key: "13", name: "Bank, spell components, bard quest", y: -1752, x: 1926}
+  - {key: "14", name: "Keldor Dek`Torek, armor quests", y: -1752, x: 1470}
+  - {key: "Z", name: "to Eastern Wastes", y: -13, x: -658}
+  - {key: "Z", name: "to The Wakening Land", y: -129, x: 3197}

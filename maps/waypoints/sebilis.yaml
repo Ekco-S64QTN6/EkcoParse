@@ -1,0 +1,32 @@
+# Old Sebilis waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Old_Sebilis
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Old Sebilis"
+waypoints:
+  - {key: "1", name: "Entry Room", y: 248, x: -1}
+  - {key: "3", name: "\"Prison\" (gangrenous scarab)", y: -460, x: 316}
+  - {key: "4", name: "\"NG\" (necrosis scarab)", y: -542, x: 267}
+  - {key: "5", name: "Armory (froglok armorer)", y: -687, x: 541}
+  - {key: "6", name: "Bar (froglok bartender)", y: -745, x: 660}
+  - {key: "7", name: "Froggy", y: -920, x: 872}
+  - {key: "8", name: "Froglok armsman", y: -947, x: 666}
+  - {key: "9", name: "\"Pyramid\" (sebilite guardians)", y: -2155, x: -471}
+  - {key: "10", name: "Frenzied pox scarab", y: -930, x: -258}
+  - {key: "11", name: "\"Disco One\" (ostiary, Gruplinort)", y: -960, x: -387}
+  - {key: "12", name: "Froglok chef", y: -1115, x: 769}
+  - {key: "13", name: "\"Library\" (secret door to 14)", y: -1088, x: -431}
+  - {key: "14", name: "Laboratory (Brogg)", y: -1106, x: -676}
+  - {key: "15", name: "\"Disco Two\" (froglok commander)", y: -1323, x: -332}
+  - {key: "16", name: "Froglok pickler", y: -1201, x: -463}
+  - {key: "17", name: "\"The Crypt\" (crypt caretaker)", y: -1365, x: 133}
+  - {key: "17a", name: "Arch Duke Iatol", y: -1312, x: 242}
+  - {key: "17b", name: "Harbinger Freglor", y: -1423, x: 243}
+  - {key: "17c", name: "Hierophant Prime Grekal", y: -1311, x: 27}
+  - {key: "17d", name: "Baron Yosig", y: -1424, x: 27}
+  - {key: "18", name: "Blood of Chottal", y: -1730, x: 226}
+  - {key: "19", name: "Emperor Chottal", y: -1703, x: 225}
+  - {key: "2", name: "Myconid spore king", y: -920, x: 110}
+  - {key: "3", name: "Entry Hall (locked door)", y: -1555, x: -154}
+  - {key: "4", name: "Trakanon's lair", y: -2122, x: -623}
+  - {key: "Z", name: "to Trakanon`s Teeth", y: -108, x: -72}
+  - {key: "Z", name: "to Trakanon`s Teeth", y: -674, x: 13}

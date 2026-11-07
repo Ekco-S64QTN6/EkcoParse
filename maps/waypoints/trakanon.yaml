@@ -1,0 +1,24 @@
+# Trakanon's Teeth waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Trakanon's_Teeth
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Trakanon's Teeth"
+waypoints:
+  - {key: "1", name: "Ruins (spectral keepers)", y: 3619, x: 1914}
+  - {key: "1", name: "Ruins (spectral keepers)", y: 3619, x: 897}
+  - {key: "1", name: "Ruins (spectral keepers)", y: 3513, x: 71}
+  - {key: "1", name: "Ruins (spectral keepers)", y: 2446, x: 600}
+  - {key: "1", name: "Ruins (spectral keepers)", y: 2552, x: 4519}
+  - {key: "2", name: "Ruin with Frogloks", y: 2083, x: 1850}
+  - {key: "3", name: "Empty Ruins", y: 909, x: 2401}
+  - {key: "3", name: "Empty Ruins", y: 312, x: 2443}
+  - {key: "4", name: "Mausoleums (spectral keepers)", y: -1758, x: 3608}
+  - {key: "4", name: "Mausoleums (spectral keepers)", y: -2675, x: 2486}
+  - {key: "5", name: "Mausoleum (Emperor Ganak)", y: -3330, x: 2650}
+  - {key: "6", name: "Iksar treasure hunter camp", y: -221, x: -4293}
+  - {key: "6", name: "Iksar treasure hunter camp", y: -2078, x: -5183}
+  - {key: "6", name: "Iksar treasure hunter camp", y: -2462, x: -4293}
+  - {key: "7", name: "Ruins of Sebilis", y: -1395, x: -3594}
+  - {key: "8", name: "Portal to Old Sebilis", y: -2055, x: -4450}
+  - {key: "Z", name: "to The Emerald Jungle", y: 3940, x: 1503}
+  - {key: "Z", name: "to The Swamp of No Hope", y: 1589, x: 4434}
+  - {key: "Z", name: "to The Ruins of Sebilis", y: -1597, x: -4763}

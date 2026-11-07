@@ -1,0 +1,21 @@
+# Frontier Mountains waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Frontier_Mountains
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Frontier Mountains"
+waypoints:
+  - {key: "1", name: "Iksar Ruins (sarnaks)", y: -285, x: 1386}
+  - {key: "1", name: "Sarnak Ruins", y: 2000, x: -1800}
+  - {key: "2", name: "Mountain Giant Fortress", y: -18, x: -1422}
+  - {key: "3", name: "Iksar Guardian Statues", y: -1810, x: -2043}
+  - {key: "4", name: "Ruins with Goblins", y: -2434, x: -1460}
+  - {key: "5", name: "Tower with Goblins", y: -2997, x: 46}
+  - {key: "6", name: "Empty Ruins, bind spot", y: -2127, x: 1386}
+  - {key: "A", name: "Burynai Mines entrance", y: 807, x: -2892}
+  - {key: "B", name: "Burynai Mines entrance", y: -1837, x: 2121}
+  - {key: "C", name: "Mountain Giant Mines entrance", y: -336, x: -468}
+  - {key: "Z", name: "to Lake of Ill Omen", y: -430, x: -4500}
+  - {key: "Z", name: "to The Overthere", y: 5835, x: 1426}
+  - {key: "Z", name: "to The Mines of Nurga", y: -2695, x: -538}
+  - {key: "Z", name: "to The Burning Woods", y: -2311, x: 4308}
+  - {key: "Z", name: "to The Dreadlands", y: -3816, x: -3243}
+  - {key: "Z", name: "to The Temple of Droga", y: 3288, x: 2965}

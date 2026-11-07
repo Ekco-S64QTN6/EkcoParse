@@ -1,0 +1,24 @@
+# Oggok waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Oggok
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Oggok"
+waypoints:
+  - {key: "1", name: "Shaman Guild", y: 731, x: 809}
+  - {key: "2", name: "Ambassador K`Ryn", y: 410, x: 1062}
+  - {key: "3", name: "Blunt weapons, ore, Oggok Forge", y: 84, x: 855}
+  - {key: "4", name: "Food, pottery wheel, kiln", y: 261, x: 737}
+  - {key: "5", name: "Large boots, sewing, loom", y: 680, x: 712}
+  - {key: "6", name: "Large Shields", y: 528, x: 441}
+  - {key: "7", name: "Various Weapons", y: 452, x: 432}
+  - {key: "8", name: "Boxes", y: 236, x: 400}
+  - {key: "10", name: "Arrows, fletching", y: -256, x: 409}
+  - {key: "11", name: "Food and Goods", y: -214, x: -15}
+  - {key: "12", name: "Food, oven", y: 528, x: -180}
+  - {key: "13", name: "Shadow Knight Guild", y: 358, x: -41}
+  - {key: "14", name: "Large leather & cloth armor", y: 407, x: -180}
+  - {key: "15", name: "Chain & plate armor, forge", y: 274, x: -180}
+  - {key: "16", name: "Alchemy, blunt weapons", y: 280, x: -378}
+  - {key: "17", name: "Food, alcohol, brewing (tavern)", y: 239, x: -269}
+  - {key: "18", name: "Warrior Guild", y: 14, x: -37}
+  - {key: "19", name: "Bank", y: -4, x: -263}
+  - {key: "Z", name: "to The Feerrott", y: -380, x: -96}

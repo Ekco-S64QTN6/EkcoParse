@@ -1,0 +1,9 @@
+# Siren's Grotto waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Siren's_Grotto
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Siren's Grotto"
+waypoints:
+  - {key: "1", name: "Temple", y: 14, x: -51}
+  - {key: "2", name: "Underwater entrance to the castle", y: -584, x: -169}
+  - {key: "Z", name: "to Cobalt Scar", y: -630, x: 71}
+  - {key: "Z", name: "to The Western Wastes", y: 225, x: -89}

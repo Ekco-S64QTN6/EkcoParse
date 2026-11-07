@@ -1,0 +1,27 @@
+# North Freeport waypoints, following the Map Location Key at
+# https://p99.funcamp.net/North_Freeport
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "North Freeport"
+waypoints:
+  - {key: "1", name: "Office of Landholders (food)", y: 206, x: 302}
+  - {key: "2", name: "Hall of Truth (Paladin guild)", y: 211, x: -33}
+  - {key: "3", name: "Temple of Erollisi Marr (Clr/Pal)", y: 52, x: 350}
+  - {key: "4", name: "Groflah's Forge (smithing)", y: -63, x: 465}
+  - {key: "5", name: "Marsheart's Chords (Bard guild)", y: -94, x: 521}
+  - {key: "6", name: "Freeport City Hall", y: -204, x: 540}
+  - {key: "7", name: "Coalition of Trade Folks (food)", y: -34, x: 188}
+  - {key: "8", name: "Guard House", y: -155, x: 339}
+  - {key: "9", name: "Empty Building", y: -155, x: 243}
+  - {key: "10", name: "Blue Building: metals, gems, books", y: -155, x: 187}
+  - {key: "11", name: "Jade Tiger Den (food)", y: 9, x: 20}
+  - {key: "12", name: "Tassel's Tavern", y: 29, x: -5}
+  - {key: "13", name: "Emporium: cloth, forge", y: 73, x: -107}
+  - {key: "14", name: "Empty Building", y: -30, x: 39}
+  - {key: "15", name: "Bank of Freeport", y: -28, x: -224}
+  - {key: "16", name: "Tavern: food, meat pies", y: -123, x: 69}
+  - {key: "17", name: "Empty building, oven", y: -79, x: -13}
+  - {key: "18", name: "Food & Goods", y: -79, x: -81}
+  - {key: "19", name: "Clothier: cloth, pottery", y: -79, x: -150}
+  - {key: "Z", name: "to West Freeport", y: -350, x: 9}
+  - {key: "Z", name: "to West Freeport", y: -393, x: 556}
+  - {key: "Z", name: "to West Freeport", y: 364, x: 725}

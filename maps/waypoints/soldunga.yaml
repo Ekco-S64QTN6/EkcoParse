@@ -1,0 +1,27 @@
+# Solusek's Eye waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Solusek's_Eye
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Solusek's Eye"
+waypoints:
+  - {key: "1", name: "Inferno Goblin Captain", y: 71, x: -682}
+  - {key: "2", name: "Kindle", y: -70, x: -552}
+  - {key: "3", name: "Efreeti Pits (reckless efreeti)", y: -54, x: -756}
+  - {key: "4", name: "Lava Elemental Room", y: -117, x: -964}
+  - {key: "5", name: "Gnome fort (Captain Bipnubble)", y: -301, x: -1102}
+  - {key: "6", name: "Singe", y: -289, x: -747}
+  - {key: "7", name: "Marfen (Bag of the Tinkerers)", y: -306, x: -1072}
+  - {key: "8", name: "Gabbie's Room", y: -305, x: -1129}
+  - {key: "9", name: "Courtyard (CWG Model EXG)", y: -319, x: -895}
+  - {key: "10", name: "Kobold predator hallway", y: -363, x: -510}
+  - {key: "11", name: "Foreman's Room", y: -356, x: -583}
+  - {key: "14", name: "Goblin Merchant", y: -754, x: -437}
+  - {key: "15", name: "Bar (fire goblin bartender)", y: -722, x: -727}
+  - {key: "16", name: "Drunkard Room", y: -793, x: -713}
+  - {key: "17", name: "Solusek Goblin King", y: -791, x: -312}
+  - {key: "18", name: "Jail hall (goblin torturer)", y: -848, x: -323}
+  - {key: "19", name: "Solusek Mage room", y: -863, x: -458}
+  - {key: "20", name: "Lynada the Exiled, high shaman", y: -1002, x: -658}
+  - {key: "Z", name: "to The Lavastorm Mountains", y: -442, x: -525}
+  - {key: "Z", name: "to Nagafen`s Lair", y: -365, x: -396}
+  - {key: "Z", name: "to Nagafen`s Lair", y: -1082, x: -559}
+  - {key: "Z", name: "to Nagafen`s Lair (5) One-Way", y: -893, x: -389}

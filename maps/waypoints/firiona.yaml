@@ -1,0 +1,44 @@
+# Firiona Vie waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Firiona_Vie
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Firiona Vie"
+waypoints:
+  - {key: "1", name: "Empty Ruins", y: 2539, x: 2126}
+  - {key: "2", name: "Empty Camp", y: 1716, x: 2315}
+  - {key: "3", name: "Ruins", y: 2347, x: 79}
+  - {key: "4", name: "Leech Field (ruins)", y: 1486, x: 401}
+  - {key: "5", name: "Drolvarg Camp", y: 1495, x: -1424}
+  - {key: "6", name: "Forest Giant Camp", y: 2194, x: -2763}
+  - {key: "7", name: "Empty Ruins", y: 472, x: 1500}
+  - {key: "8", name: "Empty Ruins", y: 204, x: 136}
+  - {key: "9", name: "Drolvarg Ruins and Camp", y: -45, x: -1095}
+  - {key: "10", name: "Tunnel to docks building 4", y: -1671, x: 3357}
+  - {key: "A", name: "Drolvarg Underground", y: 663, x: -2289}
+  - {key: "1", name: "FV: food, water, cookbooks", y: -2682, x: 2500}
+  - {key: "2", name: "FV: bags and boxes", y: -2750, x: 2604}
+  - {key: "3", name: "FV: weapons, plate, forge", y: -2828, x: 2678}
+  - {key: "4", name: "FV: tunnel to west of bay", y: -3089, x: 2827}
+  - {key: "5", name: "FV: bard songs, alcohol", y: -3000, x: 2926}
+  - {key: "6", name: "FV: monk weapons", y: -3167, x: 2886}
+  - {key: "7", name: "FV: bard instruments", y: -3182, x: 3173}
+  - {key: "8", name: "FV: Ranger trainer, fletching", y: -3333, x: 3163}
+  - {key: "9", name: "FV: Bank", y: -3316, x: 2683}
+  - {key: "10", name: "FV: leather armor", y: -3443, x: 2564}
+  - {key: "11", name: "FV: tunnel, Warrior trainer", y: -3833, x: 2554}
+  - {key: "12", name: "FV: Enc/Wiz/Mag trainers, spells", y: -4016, x: 2480}
+  - {key: "13", name: "FV: jewelry supplies", y: -3620, x: 2441}
+  - {key: "14", name: "FV: Rogue trainer, poison", y: -3609, x: 2248}
+  - {key: "15", name: "FV: sewing kits, patterns", y: -3651, x: 1995}
+  - {key: "16", name: "FV: stones, potions, druid spells", y: -3260, x: 2134}
+  - {key: "17", name: "FV: Paladin trainer, clr/pal spells", y: -3896, x: 2866}
+  - {key: "18", name: "FV: fishing, bows, shaman spells", y: -3885, x: 1639}
+  - {key: "19", name: "FV: tunnel to area 11", y: -3932, x: 1178}
+  - {key: "20", name: "FV: boat to Butcherblock", y: -4484, x: 1391}
+  - {key: "21", name: "FV: empty building (Tracker Azeal)", y: -2896, x: 2153}
+  - {key: "Z", name: "to Lake of Ill Omen", y: 1299, x: 3538}
+  - {key: "Z", name: "to The Swamp of No Hope", y: 4535, x: -2202}
+  - {key: "Z", name: "to The Swamp of No Hope", y: 4662, x: 2647}
+  - {key: "Z", name: "to The Dreadlands", y: 287, x: 6028}
+  - {key: "Z", name: "to Timorous Deep", y: -8805, x: -1641}
+  - {key: "Z", name: "to Timorous Deep", y: -4395, x: 1389}
+  - {key: "Z", name: "to Swamp of No Hope", y: 3643, x: 2462}

@@ -1,0 +1,13 @@
+# Dagnor's Cauldron waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Dagnor's_Cauldron
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Dagnor's Cauldron"
+waypoints:
+  - {key: "1", name: "Friendly camp, healing", y: 417, x: 189}
+  - {key: "2", name: "Thief selling poison", y: 0, x: -874}
+  - {key: "3", name: "Dwarven Stone Marker", y: -344, x: -1000}
+  - {key: "4", name: "Orc Scout Camp", y: -656, x: -2137}
+  - {key: "5", name: "Aqua Goblin Camp", y: -1323, x: 194}
+  - {key: "6", name: "Kedge Keep", y: -1179, x: -1013}
+  - {key: "Z", name: "to The Butcherblock Mountains", y: 2862, x: 267}
+  - {key: "Z", name: "to The Estate of Unrest", y: -2031, x: -625}

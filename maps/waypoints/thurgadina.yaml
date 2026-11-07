@@ -1,0 +1,35 @@
+# Thurgadin waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Thurgadin
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Thurgadin"
+waypoints:
+  - {key: "1", name: "Remembrance Park", y: -139, x: 16}
+  - {key: "2", name: "Mining Co. (Rogue trainer, poison)", y: 37, x: -149}
+  - {key: "3", name: "Velium Ice House", y: -45, x: -134}
+  - {key: "4", name: "The Velium Keg", y: 37, x: -420}
+  - {key: "5", name: "Wolf Training Cave", y: 37, x: -607}
+  - {key: "6", name: "Coldain Velium Weapons", y: -60, x: -495}
+  - {key: "7", name: "Agar's Adventuring Supplies (bags)", y: -80, x: -426}
+  - {key: "8", name: "Doogle's Drinks", y: -84, x: -294}
+  - {key: "9", name: "Argash's House of Carpentry", y: -192, x: -324}
+  - {key: "10", name: "Mordin's Meats", y: -192, x: -233}
+  - {key: "11", name: "Underbelly Arms (forge, armor)", y: -423, x: -155}
+  - {key: "12", name: "Gem Merchants", y: -344, x: -128}
+  - {key: "13", name: "The Broken Glacier (bar)", y: -309, x: -14}
+  - {key: "14", name: "Arena (PvP)", y: -546, x: 95}
+  - {key: "15", name: "Icebridge Gatehouse", y: -711, x: 32}
+  - {key: "16", name: "The Scars Edge (weapons, molds)", y: -423, x: 77}
+  - {key: "17", name: "Thurgadin Exchange (Bank)", y: -319, x: 168}
+  - {key: "18", name: "The Holy Harbinger (bar)", y: -409, x: 447}
+  - {key: "19", name: "Potions", y: -409, x: 504}
+  - {key: "20", name: "Garish's Boots", y: -409, x: 574}
+  - {key: "21", name: "Temple of Brell (Cleric, spells)", y: -309, x: 784}
+  - {key: "22", name: "Temple Library (Cleric spells)", y: -221, x: 784}
+  - {key: "23", name: "Paladin Training Hall", y: -197, x: 513}
+  - {key: "24", name: "Coldheart Residence", y: -115, x: 272}
+  - {key: "25", name: "Frostbeard's Furs & Leather", y: -155, x: 242}
+  - {key: "26", name: "Shadowfrost Residence", y: 37, x: 137}
+  - {key: "27", name: "The Icy Mug (bar)", y: -45, x: 86}
+  - {key: "Z", name: "to Icewell Keep", y: 241, x: 35}
+  - {key: "Z", name: "to Icewell Keep", y: -664, x: -87}
+  - {key: "Z", name: "to The Great Divide", y: -1229, x: -21}

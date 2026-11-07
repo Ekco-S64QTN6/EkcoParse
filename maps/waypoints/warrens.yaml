@@ -1,0 +1,21 @@
+# The Warrens waypoints, following the Map Location Key at
+# https://p99.funcamp.net/The_Warrens
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "The Warrens"
+waypoints:
+  - {key: "1", name: "Diseased Room (Muglwump)", y: 612, x: 307}
+  - {key: "2", name: "Kitchen (Foodmaster, Smithy)", y: 674, x: -830}
+  - {key: "3", name: "Batling Caves (Krode the Diviner)", y: 419, x: 233}
+  - {key: "4", name: "Lorekeeper Roggik", y: 326, x: 172}
+  - {key: "5", name: "Warlord Drrig", y: 339, x: 108}
+  - {key: "6", name: "Prince's Room (Prince Bragnar)", y: 335, x: -168}
+  - {key: "7", name: "Training Room (Trainer Daxgrr)", y: 305, x: -756}
+  - {key: "8", name: "Jailer Mkrarrg", y: 228, x: -720}
+  - {key: "9", name: "Rat Room (Packmaster Dledsh)", y: 309, x: -906}
+  - {key: "10", name: "Prison Area", y: 380, x: -1039}
+  - {key: "11", name: "Throne Room (High Shaman Drogik)", y: 187, x: 214}
+  - {key: "12", name: "Huntmaster Furgrl", y: 54, x: 988}
+  - {key: "13", name: "Bat Room (cave bat lord)", y: -82, x: 746}
+  - {key: "14", name: "The Mighty Bear Paw", y: -272, x: 955}
+  - {key: "Z", name: "to The Stonebrunt Mountains", y: -86, x: 1130}
+  - {key: "Z", name: "to Paineel", y: 748, x: -909}

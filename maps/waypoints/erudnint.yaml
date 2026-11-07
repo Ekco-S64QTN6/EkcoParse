@@ -1,0 +1,14 @@
+# Erudin Palace waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Erudin_Palace
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Erudin Palace"
+waypoints:
+  - {key: "1", name: "Teleporter to/from Erudin", y: 712, x: 807}
+  - {key: "2", name: "Bank of Erudin", y: 761, x: 779}
+  - {key: "3", name: "Erudin City Office (prison below)", y: 666, x: 781}
+  - {key: "4", name: "Sothure's Fine Gems", y: 764, x: 630}
+  - {key: "5", name: "Vials of Vitality (potions)", y: 666, x: 627}
+  - {key: "6", name: "Tower of the Crimson Hands (Wiz)", y: 823, x: 746}
+  - {key: "7", name: "Tower of the Gate Callers (Mag)", y: 710, x: 852}
+  - {key: "8", name: "Tower of the Craft Keepers (Enc)", y: 607, x: 747}
+  - {key: "9", name: "Common Spells", y: 703, x: 804}

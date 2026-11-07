@@ -1,0 +1,7 @@
+# Lair of the Splitpaw waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Lair_of_the_Splitpaw
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Lair of the Splitpaw"
+waypoints:
+  - {key: "S", name: "Safe room (north of #4)", y: 1150, x: -180}
+  - {key: "Z", name: "to The Southern Plains of Karana", y: -126, x: 72}

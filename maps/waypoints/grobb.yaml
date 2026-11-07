@@ -1,0 +1,19 @@
+# Grobb waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Grobb
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Grobb"
+waypoints:
+  - {key: "2", name: "Cave: Basher Nanrum (beetle eyes)", y: 50, x: -114}
+  - {key: "3", name: "General Supplies", y: 163, x: -30}
+  - {key: "4", name: "Dismembered Dwarf, oven", y: 220, x: 137}
+  - {key: "5", name: "Warrior Guild, weapons", y: 299, x: -137}
+  - {key: "6", name: "Gunthak's Belch (bar)", y: 172, x: -308}
+  - {key: "7", name: "Weapons, armor, food, bows", y: 396, x: -229}
+  - {key: "8", name: "Shadow Knight Guild entrance", y: 645, x: -263}
+  - {key: "9", name: "Shadow Knight Guild", y: 510, x: -957}
+  - {key: "10", name: "Shaman trainers, spells", y: 351, x: -469}
+  - {key: "11", name: "Bank", y: 440, x: -558}
+  - {key: "12", name: "Jewelry, Froglok Prisoner", y: 516, x: -457}
+  - {key: "13", name: "Fireplace (Froglok Prisoner)", y: 593, x: -473}
+  - {key: "14", name: "Shaman Guild", y: -79, x: -464}
+  - {key: "Z", name: "to Innothule Swamp", y: -130, x: 50}

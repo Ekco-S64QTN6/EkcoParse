@@ -1,0 +1,11 @@
+# Karnor's Castle waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Karnor's_Castle
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Karnor's Castle"
+waypoints:
+  - {key: "1", name: "Bridge", y: 27, x: -43}
+  - {key: "2", name: "Karnor Jail", y: -15, x: -507}
+  - {key: "3", name: "Drolvarg Warlord", y: 100, x: -627}
+  - {key: "4", name: "Venril Sathir's remains", y: -77, x: -555}
+  - {key: "5", name: "Venril Sathir (raid)", y: -69, x: -751}
+  - {key: "Z", name: "to The Dreadlands", y: 119, x: 345}

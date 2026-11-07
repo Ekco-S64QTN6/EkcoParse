@@ -1,0 +1,24 @@
+# Lake Rathetear waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Lake_Rathetear
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Lake Rathetear"
+waypoints:
+  - {key: "1", name: "Guards, Abandoned Tower", y: 3686, x: 2180}
+  - {key: "2", name: "Gnoll & Undead Camp", y: 3813, x: 1198}
+  - {key: "3", name: "Hut (Turgan, Jorna, Shmendrik)", y: 3640, x: 146}
+  - {key: "4", name: "Orc Camp, Barbarian Gathering", y: 3493, x: -647}
+  - {key: "5", name: "Bandit Camp", y: 3536, x: -1114}
+  - {key: "6", name: "Ogre Camp (ogre merchant)", y: 3065, x: -1805}
+  - {key: "7", name: "Bandit Camp", y: 2386, x: -1807}
+  - {key: "8", name: "Tower: stone skeletons (Kazen Fecae)", y: -28, x: -1243}
+  - {key: "9", name: "Gypsy Camp", y: -439, x: 620}
+  - {key: "10", name: "The \"Friendly\" Hermit", y: -892, x: 2517}
+  - {key: "11", name: "Aviak Lookout Tower", y: -323, x: 2492}
+  - {key: "12", name: "Barbarian Village, temple", y: 702, x: 2236}
+  - {key: "13", name: "Aviak Lookout Towers", y: 2456, x: 2392}
+  - {key: "14", name: "Aviak Ladder (Webclaw Murkwave)", y: 2389, x: 1244}
+  - {key: "15", name: "Tower: silent spellcasters", y: 2389, x: -378}
+  - {key: "16", name: "Aviak Lookout Tower", y: 775, x: 745}
+  - {key: "Z", name: "to The Arena", y: 2345, x: 2708}
+  - {key: "Z", name: "to The Southern Plains of Karana", y: 4250, x: 1180}
+  - {key: "Z", name: "to The Rathe Mountains", y: 2518, x: -2282}

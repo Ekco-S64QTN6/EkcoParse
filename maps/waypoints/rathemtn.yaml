@@ -1,0 +1,32 @@
+# Rathe Mountains waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Rathe_Mountains
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Rathe Mountains"
+waypoints:
+  - {key: "1", name: "Orc Camp", y: 6184, x: 2425}
+  - {key: "2", name: "Rune Stone (Tabien the Goodly)", y: 6324, x: 1567}
+  - {key: "3", name: "Stone Ring (unkempt druids)", y: 5174, x: 1771}
+  - {key: "4", name: "Gypsies (Cynthia)", y: 3961, x: 1424}
+  - {key: "5", name: "Inn, gem merchant Darfumpel", y: 4093, x: 896}
+  - {key: "6", name: "Hill of Stone Arms (bandit camp)", y: 3058, x: 1279}
+  - {key: "7", name: "Haunted Tower (Findlegrob)", y: 2007, x: 744}
+  - {key: "8", name: "Altar (beetles, Zaza)", y: 2809, x: 2383}
+  - {key: "9", name: "Lizard Man Camp", y: 2409, x: 2213}
+  - {key: "10", name: "Temple (troll shaman, SK)", y: 1433, x: 1787}
+  - {key: "11", name: "Troll & Ogre camp (merchants)", y: 1778, x: 1305}
+  - {key: "12", name: "Altar (beetles, Ankh)", y: 1505, x: 269}
+  - {key: "13", name: "Inn", y: 3984, x: -1324}
+  - {key: "14", name: "Orc Camp", y: 3266, x: -1464}
+  - {key: "15", name: "Paladin Camp", y: 2845, x: -777}
+  - {key: "16", name: "Gypsy Camp (food)", y: 1644, x: -875}
+  - {key: "17", name: "Ruined Town (Glaron the Wicked)", y: 2868, x: -1906}
+  - {key: "18", name: "Sphinx (Ankhefenmut)", y: 3472, x: -3322}
+  - {key: "19", name: "Hill giants, cyclops, skeletons", y: 213, x: 1716}
+  - {key: "20", name: "Sphinx (Zazamoukh)", y: -1682, x: 1362}
+  - {key: "21", name: "Lizard Man Camp", y: 84, x: -170}
+  - {key: "22", name: "Lizard Man Camp", y: -74, x: -837}
+  - {key: "23", name: "Orc Camp", y: -892, x: -624}
+  - {key: "24", name: "Haunted Stone Ring (Kazzel)", y: -792, x: -1660}
+  - {key: "25", name: "Haunted Tower (Bindlegrob)", y: -455, x: -2307}
+  - {key: "Z", name: "to The Feerrott", y: 426, x: -3087}
+  - {key: "Z", name: "to Lake Rathetear", y: 3406, x: 3034}

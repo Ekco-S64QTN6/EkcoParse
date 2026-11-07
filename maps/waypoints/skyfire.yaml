@@ -1,0 +1,12 @@
+# Skyfire Mountains waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Skyfire_Mountains
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Skyfire Mountains"
+waypoints:
+  - {key: "1", name: "Dragon Fire Temple", y: 3016, x: -3521}
+  - {key: "2", name: "Dragon Globe Temple, druid port-in", y: -3199, x: 2705}
+  - {key: "3", name: "Dragon Graveyard, wizard port-in", y: -2993, x: 865}
+  - {key: "4", name: "Dragon Ice Temple", y: -2133, x: -3718}
+  - {key: "Z", name: "to The Overthere", y: -1147, x: -4305}
+  - {key: "Z", name: "to The Burning Woods", y: -5722, x: 1774}
+  - {key: "Z", name: "to Veeshan`s Peak", y: 2801, x: 2986}

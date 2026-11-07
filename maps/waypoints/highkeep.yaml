@@ -1,0 +1,27 @@
+# High Keep waypoints, following the Map Location Key at
+# https://p99.funcamp.net/High_Keep
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "High Keep"
+waypoints:
+  - {key: "1", name: "Basement: Pickclaw goblins", y: 26, x: -141}
+  - {key: "2", name: "Basement: Torture Room", y: 66, x: -380}
+  - {key: "3", name: "Basement: Princess Lenia", y: 180, x: -486}
+  - {key: "4", name: "Basement: Prison Cells", y: 154, x: -459}
+  - {key: "5", name: "Basement: Pickclaw Warriors", y: -103, x: -262}
+  - {key: "6", name: "Basement: Pickclaw Raiders, Seers", y: -69, x: -321}
+  - {key: "7", name: "Bank", y: -50, x: -340}
+  - {key: "8", name: "Merchant (sells anything)", y: -18, x: -397}
+  - {key: "9", name: "Merchant (sells anything)", y: -84, x: -400}
+  - {key: "10", name: "Basement: Prison", y: -54, x: -600}
+  - {key: "11", name: "Bard (mail delivery)", y: -14, x: -48}
+  - {key: "12", name: "Captain Boshinko", y: -71, x: -63}
+  - {key: "13", name: "Bard songs, enchanter spells", y: 47, x: -238}
+  - {key: "14", name: "Locked Room", y: 44, x: -324}
+  - {key: "15", name: "Inn (brewing supplies)", y: -77, x: -187}
+  - {key: "16", name: "Gemstones", y: -97, x: -294}
+  - {key: "17", name: "Wizard Trainer", y: -42, x: -357}
+  - {key: "1", name: "Upstairs: Kitchen (Baker Jena)", y: 50, x: -244}
+  - {key: "2", name: "Upstairs: Gambling Room", y: -102, x: -329}
+  - {key: "3", name: "Upstairs: Tearon's skeleton", y: -18, x: -305}
+  - {key: "6", name: "Upstairs: Mistress Anna", y: -78, x: -96}
+  - {key: "Z", name: "to Highpass Hold", y: 62, x: 103}

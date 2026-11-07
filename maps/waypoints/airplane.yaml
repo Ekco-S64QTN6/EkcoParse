@@ -1,0 +1,24 @@
+# Plane of Sky waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Plane_of_Sky
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Plane of Sky"
+waypoints:
+  - {key: "1", name: "Island 1: Thunder Spirits", y: 1200, x: 1250}
+  - {key: "1b", name: "Island 1.5: Noble Dojorn", y: 307, x: 1176}
+  - {key: "2", name: "Island 2: Azarack", y: -350, x: -100}
+  - {key: "3", name: "Island 3: Gorgalosk", y: 0, x: 550}
+  - {key: "4", name: "Island 4: Pegasus", y: 1400, x: -800}
+  - {key: "5", name: "Island 5: Spiroc", y: -1100, x: 1100}
+  - {key: "6", name: "Island 6: Wasps", y: -1400, x: 400}
+  - {key: "7", name: "Island 7: Drakes", y: -1800, x: -600}
+  - {key: "8", name: "Island 8: Veeshan", y: 0, x: -1350}
+  - {key: "Q", name: "Quest Room (Efreeti's Key)", y: 1612, x: 533}
+  - {key: "T", name: "Teleporter: 1.5 (Key of Swords)", y: 1419, x: 839}
+  - {key: "T", name: "Teleporter: 2 (Key of the Misplaced)", y: 1360, x: 370}
+  - {key: "T", name: "Teleporter: 3 (Key of Misfortune)", y: -460, x: -580}
+  - {key: "T", name: "Teleporter: 4 (Key of Beasts)", y: 189, x: 231}
+  - {key: "T", name: "Teleporter: 5 (Avian Key)", y: 493, x: -344}
+  - {key: "T", name: "Teleporter: 6 (Key of the Swarm)", y: -1150, x: 1075}
+  - {key: "T", name: "Teleporter: 7 (Key of Scale)", y: -1208, x: 429}
+  - {key: "T", name: "Teleporter: 8 (Veeshan's Key)", y: -717, x: -1136}
+  - {key: "Z", name: "Zone In", y: 1415, x: 547}

@@ -1,0 +1,8 @@
+# The Arena waypoints, following the Map Location Key at
+# https://p99.funcamp.net/The_Arena
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "The Arena"
+waypoints:
+  - {key: "1", name: "The Arena (PvP)", y: 83, x: 2}
+  - {key: "Z", name: "to Lake Rathetear", y: -637, x: 15}
+  - {key: "Z", name: "to Lake Rathetear", y: -61, x: -844}

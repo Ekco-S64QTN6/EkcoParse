@@ -1,0 +1,20 @@
+# Eastern Wastes waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Eastern_Wastes
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Eastern Wastes"
+waypoints:
+  - {key: "1", name: "Coldain Camp (Capt. Berradin)", y: -66, x: 2366}
+  - {key: "2", name: "Ruins (Corbin Blackwell)", y: 215, x: 79}
+  - {key: "3", name: "Coldain Camp (Dobbin Crossaxe)", y: -576, x: -3190}
+  - {key: "4", name: "Frost Giant Fortress (Fjloaren)", y: -1741, x: 3407}
+  - {key: "5", name: "Coldain Camp (Garadain)", y: -2714, x: -390}
+  - {key: "6", name: "Ry`Gorr Keep, portal to Crystal", y: -3400, x: 500}
+  - {key: "9", name: "Coldain Camp (Icefang, Korrigain)", y: -8083, x: 3230}
+  - {key: "10", name: "Kerafyrm, portal to Sleeper's Tomb", y: -7253, x: 9}
+  - {key: "11", name: "Coldain Camp (Loremaster Derrin)", y: -7863, x: -2159}
+  - {key: "7", name: "Coldain Camp (orcs)", y: -3451, x: -4133}
+  - {key: "8", name: "Great Span", y: -4627, x: -3890}
+  - {key: "Z", name: "to The Iceclad Ocean", y: -4513, x: -5905}
+  - {key: "Z", name: "to Crystal Caverns", y: -4076, x: 478}
+  - {key: "Z", name: "to The Great Divide", y: -1769, x: 6675}
+  - {key: "Z", name: "to Kael Drakkel", y: -6249, x: 7003}

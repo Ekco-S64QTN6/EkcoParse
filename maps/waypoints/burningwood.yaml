@@ -1,0 +1,14 @@
+# The Burning Wood waypoints, following the Map Location Key at
+# https://p99.funcamp.net/The_Burning_Wood
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "The Burning Wood"
+waypoints:
+  - {key: "1", name: "Forest Giant Fortress", y: 1159, x: 1123}
+  - {key: "2", name: "The Burning Meteor", y: -858, x: -1105}
+  - {key: "3", name: "Scoriae Hornet Nest", y: -2529, x: 2633}
+  - {key: "4", name: "Skeletons and Gorillas", y: 1178, x: -399}
+  - {key: "Z", name: "to Frontier Mountains", y: -2804, x: -4625}
+  - {key: "Z", name: "to Skyfire Mountains", y: 5241, x: 1742}
+  - {key: "Z", name: "to Chardok", y: 7049, x: -4144}
+  - {key: "Z", name: "to The Dreadlands", y: -4937, x: -814}
+  - {key: "Z", name: "to Frontier Mountains", y: -2576, x: -4167}

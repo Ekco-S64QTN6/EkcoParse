@@ -1,0 +1,16 @@
+# Greater Faydark waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Greater_Faydark
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Greater Faydark"
+waypoints:
+  - {key: "1", name: "Orc Camps", y: 1849, x: 48}
+  - {key: "2", name: "Abandoned Druid Ring", y: 427, x: -394}
+  - {key: "3", name: "Bandit Camp", y: -1238, x: -717}
+  - {key: "4", name: "Wizard Spires", y: -2033, x: -474}
+  - {key: "5", name: "Kelethin lift (PoD)", y: 138, x: 257}
+  - {key: "6", name: "Kelethin lift (newbie)", y: 2, x: -129}
+  - {key: "7", name: "Kelethin lift (orc side)", y: 962, x: 220}
+  - {key: "Z", name: "to Butcherblock Mountains", y: -1641, x: 2657}
+  - {key: "Z", name: "to Clan Crushbone", y: 2597, x: -52}
+  - {key: "Z", name: "to The Lesser Faydark", y: -2621, x: -1111}
+  - {key: "Z", name: "to Felwithe", y: -1976, x: -2589}

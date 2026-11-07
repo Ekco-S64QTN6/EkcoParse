@@ -1,0 +1,19 @@
+# Great Divide waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Great_Divide
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Great Divide"
+waypoints:
+  - {key: "1", name: "Tizmak Caverns", y: -1745, x: 3179}
+  - {key: "2", name: "Inactive Wizard Spires", y: -1886, x: -2707}
+  - {key: "3", name: "Frost Giant Fort (Gralk, Fergul)", y: -2762, x: -2509}
+  - {key: "4", name: "Dragon Portal: druid/wiz port-in", y: -3819, x: 3653}
+  - {key: "5", name: "Shardwurm Caverns", y: -4235, x: -241}
+  - {key: "6", name: "Caverns (Coldain Smuggler)", y: -5614, x: 2994}
+  - {key: "7", name: "Kodiak Caves (Bloodmaw)", y: -5938, x: 3200}
+  - {key: "8", name: "Kodiak Caves (Icetooth)", y: -6772, x: 2697}
+  - {key: "9", name: "Captain's Camp", y: -5576, x: -2432}
+  - {key: "10", name: "Coldain Velium Mines (Relik, Korf)", y: -4905, x: -3498}
+  - {key: "11", name: "Camp of Vores the Hunter", y: -6915, x: 514}
+  - {key: "Z", name: "to Eastern Wastes", y: -1809, x: -4879}
+  - {key: "Z", name: "to The City of Thurgadin", y: 49, x: -122}
+  - {key: "Z", name: "to Velketor`s Labyrinth", y: -6761, x: 3330}

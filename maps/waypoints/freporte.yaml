@@ -1,0 +1,39 @@
+# East Freeport waypoints, following the Map Location Key at
+# https://p99.funcamp.net/East_Freeport
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "East Freeport"
+waypoints:
+  - {key: "1", name: "Armor by Ikthar", y: 50, x: -145}
+  - {key: "2", name: "Trader's Holiday (molds, ale)", y: 177, x: -312}
+  - {key: "3", name: "Tavern: racial alcohol", y: 67, x: -336}
+  - {key: "4", name: "Velithe & Bardo's Imported Goods", y: 119, x: -483}
+  - {key: "5", name: "Leather and Hide", y: 106, x: -546}
+  - {key: "7", name: "Grub n Grog Tavern", y: 18, x: -694}
+  - {key: "8", name: "Freeport Inn", y: -23, x: -635}
+  - {key: "9", name: "Port Authority (fishing)", y: 100, x: -918}
+  - {key: "10", name: "Dock: boat to Faydwer", y: 38, x: -980}
+  - {key: "11", name: "Seafarer's Roost", y: -174, x: -809}
+  - {key: "12", name: "Inn: secret way to guild tunnels", y: -38, x: -258}
+  - {key: "13", name: "Empty building, secret stairs", y: -86, x: -258}
+  - {key: "14", name: "Empty Building", y: -43, x: -384}
+  - {key: "15", name: "Gord's Smithy (weapons, bags)", y: -184, x: -137}
+  - {key: "16", name: "Chops and Hops (alcohol)", y: -238, x: -233}
+  - {key: "17", name: "Hallard's Resales (weapons)", y: -5, x: -493}
+  - {key: "1", name: "Tunnels: Cleric & Necro trainers", y: -44, x: -198}
+  - {key: "2", name: "Tunnels: War/SK/Enc/Mag/Wiz trainers", y: -40, x: -250}
+  - {key: "3", name: "Tunnels: Cleric & Necro trainers", y: -88, x: -193}
+  - {key: "4", name: "Tunnels: Cleric & SK trainers", y: -88, x: -241}
+  - {key: "5", name: "Tunnels: SK trainer, weapons, spells", y: -88, x: -283}
+  - {key: "6", name: "Tunnels: Cleric & Necro, spells", y: -188, x: -261}
+  - {key: "7", name: "Tunnels: Necro trainer, equipment", y: -228, x: -234}
+  - {key: "8", name: "Tunnels: SK trainer, weapons", y: -228, x: -301}
+  - {key: "A", name: "Tunnels: stairs up to building 13", y: -88, x: -324}
+  - {key: "9", name: "Tunnels: Rogue trainers", y: -200, x: -855}
+  - {key: "10", name: "Tunnels: Dark Elf rogue trainer", y: -200, x: -891}
+  - {key: "11", name: "Tunnels: Rogue trainers", y: -320, x: -855}
+  - {key: "12", name: "Tunnels: Rogue Guild Master", y: -320, x: -882}
+  - {key: "B", name: "Tunnels: door to Seafarer's Roost", y: -236, x: -928}
+  - {key: "Z", name: "to West Freeport", y: 447, x: -352}
+  - {key: "Z", name: "to West Freeport", y: 96, x: -63}
+  - {key: "Z", name: "to West Freeport", y: -154, x: 342}
+  - {key: "Z", name: "to North Desert of Ro", y: -1236, x: -690}

@@ -1,0 +1,14 @@
+# Blackburrow waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Blackburrow
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Blackburrow"
+waypoints:
+  - {key: "1", name: "Pit Trap", y: -60, x: 75}
+  - {key: "1", name: "Snake Pit", y: 199, x: 121}
+  - {key: "2", name: "Snake Ledge (3 snakes)", y: 350, x: -31}
+  - {key: "3", name: "Elite Room (5 gnolls)", y: 279, x: -126}
+  - {key: "4", name: "Commander Room (4 gnolls)", y: 49, x: -328}
+  - {key: "5", name: "Pit trap landing", y: -71, x: 86}
+  - {key: "1", name: "The Bridge (level 3)", y: -160, x: 220}
+  - {key: "Z", name: "to Everfrost Peaks", y: 90, x: -344}
+  - {key: "Z", name: "to Qeynos Hills", y: -163, x: 16}

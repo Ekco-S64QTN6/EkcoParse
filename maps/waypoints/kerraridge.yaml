@@ -1,0 +1,9 @@
+# Kerra Isle waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Kerra_Isle
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Kerra Isle"
+waypoints:
+  - {key: "1", name: "Raarrk (merchant)", y: 108, x: 129}
+  - {key: "2", name: "Roary (merchant)", y: 632, x: -682}
+  - {key: "3", name: "Melixis (alchemy)", y: 519, x: 177}
+  - {key: "Z", name: "to Toxxulia Forest", y: 415, x: -931}

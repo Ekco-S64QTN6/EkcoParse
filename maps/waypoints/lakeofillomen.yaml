@@ -1,0 +1,27 @@
+# Lake of Ill Omen waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Lake_of_Ill_Omen
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Lake of Ill Omen"
+waypoints:
+  - {key: "1", name: "Cabilis Outpost Ruins (merchants)", y: 6392, x: -6350}
+  - {key: "2", name: "Goblin Hunter Outpost", y: 5501, x: -5172}
+  - {key: "3", name: "Haunted Ruins", y: 4888, x: -4416}
+  - {key: "4", name: "Hut (outcast Iksar)", y: 3186, x: -1621}
+  - {key: "5", name: "Empty Hut", y: 2392, x: 1059}
+  - {key: "6", name: "Goblin Ruins", y: 1484, x: 1357}
+  - {key: "7", name: "Tower with Explorers", y: 1737, x: 267}
+  - {key: "8", name: "Sunken Temple of Veksar (closed)", y: -380, x: -49}
+  - {key: "9", name: "Goblin Ruins", y: -287, x: -1621}
+  - {key: "10", name: "Sarnak Fortress", y: -2710, x: 2728}
+  - {key: "11", name: "Goblin-Infested Tower", y: -3623, x: 555}
+  - {key: "12", name: "Haunted Ruins", y: -3192, x: -1736}
+  - {key: "13", name: "The Windmill (Prof. Akabao, poison)", y: -2708, x: -2994}
+  - {key: "A", name: "Tunnels to Goblin Mines", y: 3380, x: 3060}
+  - {key: "B", name: "Tunnels into Sarnak Fortress", y: -2443, x: 3579}
+  - {key: "C", name: "Astral Projection (monk epic)", y: -1913, x: -952}
+  - {key: "1", name: "Fortress: Weaponsmith Ko`Zirr", y: -2049, x: 4700}
+  - {key: "2", name: "Fortress: Chancellor of Di`Zok", y: -2514, x: 5006}
+  - {key: "Z", name: "to Firiona Vie", y: 1297, x: -4379}
+  - {key: "Z", name: "to Cabilis West", y: 6415, x: -6700}
+  - {key: "Z", name: "to Warsliks Woods", y: 4297, x: 1135}
+  - {key: "Z", name: "to Frontier Mountains", y: -410, x: 3345}

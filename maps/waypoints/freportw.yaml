@@ -1,0 +1,26 @@
+# West Freeport waypoints, following the Map Location Key at
+# https://p99.funcamp.net/West_Freeport
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "West Freeport"
+waypoints:
+  - {key: "1", name: "Brewing Supplies", y: 150, x: 53}
+  - {key: "2", name: "Ogre selling pickled items", y: 14, x: 1}
+  - {key: "3", name: "Freeport Militia (Warrior guild)", y: -37, x: -119}
+  - {key: "4", name: "Cloth Armor", y: 48, x: -288}
+  - {key: "5", name: "Academy of Arcane Science (Wiz/Mag/Enc)", y: -12, x: -574}
+  - {key: "6", name: "Warrior Guild (Steel Warriors)", y: -315, x: -43}
+  - {key: "7", name: "Arena (PvP)", y: -317, x: -224}
+  - {key: "8", name: "Smithy: pottery supplies", y: -231, x: -388}
+  - {key: "9", name: "Hogcaller's Inn (Lady Shae)", y: -189, x: -482}
+  - {key: "10", name: "The Stage", y: -151, x: -531}
+  - {key: "11", name: "Brownloe Bakery", y: -281, x: -610}
+  - {key: "12", name: "Theater of the Tranquil (Monks)", y: -272, x: -631}
+  - {key: "13", name: "Torlig's Herbs and Medicines", y: 117, x: -943}
+  - {key: "14", name: "Empty building (oven)", y: -151, x: -987}
+  - {key: "Z", name: "to East Commonlands", y: -28, x: 786}
+  - {key: "Z", name: "to North Freeport", y: 243, x: -115}
+  - {key: "Z", name: "to East Freeport", y: -386, x: -634}
+  - {key: "Z", name: "to East Freeport", y: -83, x: -944}
+  - {key: "Z", name: "to East Freeport", y: -741, x: -1631}
+  - {key: "Z", name: "to North Freeport", y: 235, x: -640}
+  - {key: "Z", name: "to North Freeport", y: 1581, x: -290}

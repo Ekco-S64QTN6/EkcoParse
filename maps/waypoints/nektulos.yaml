@@ -1,0 +1,9 @@
+# Nektulos Forest waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Nektulos_Forest
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Nektulos Forest"
+waypoints:
+  - {key: "3", name: "Broken Wizard Spire", y: -55, x: -713}
+  - {key: "Z", name: "To Neriak", y: 753, x: -653}
+  - {key: "Z", name: "To Lavastorm", y: 1620, x: 317}
+  - {key: "Z", name: "To East Commonlands", y: -1699, x: -108}

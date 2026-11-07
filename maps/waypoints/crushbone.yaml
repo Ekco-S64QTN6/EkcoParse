@@ -1,0 +1,12 @@
+# Crushbone waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Crushbone
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Crushbone"
+waypoints:
+  - {key: "1", name: "Legionnaire Tents", y: 180, x: 351}
+  - {key: "2", name: "Castle Crush (Emperor Crush)", y: 154, x: 106}
+  - {key: "3", name: "Slave Cabin (Screaming Mace)", y: 26, x: 671}
+  - {key: "4", name: "Slaver Caves", y: 74, x: 426}
+  - {key: "5", name: "Slaver Pit (Orc Taskmaster)", y: 135, x: -213}
+  - {key: "6", name: "Trainer Hill", y: -212, x: 119}
+  - {key: "Z", name: "to The Greater Faydark", y: -656, x: 155}

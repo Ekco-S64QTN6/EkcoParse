@@ -1,0 +1,5 @@
+# Plane of Hate waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Plane_of_Hate
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Plane of Hate"
+waypoints:

@@ -1,0 +1,11 @@
+# Dragon Necropolis waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Dragon_Necropolis
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Dragon Necropolis"
+waypoints:
+  - {key: "1", name: "Chetari Caves", y: 1449, x: -512}
+  - {key: "2", name: "Paebala Caves", y: 464, x: 280}
+  - {key: "3", name: "Tomb of Jaled-Dar", y: 1488, x: -122}
+  - {key: "4", name: "The Crematorium", y: -15, x: -2375}
+  - {key: "5", name: "Zlandicar", y: -243, x: -350}
+  - {key: "Z", name: "to The Western Wastes", y: -80, x: 1990}

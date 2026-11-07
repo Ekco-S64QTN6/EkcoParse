@@ -1,0 +1,17 @@
+# Innothule Swamp waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Innothule_Swamp
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Innothule Swamp"
+waypoints:
+  - {key: "1", name: "Tower (Jojongua, froglok ghouls)", y: 1909, x: -156}
+  - {key: "2", name: "High level frogloks, kobolds", y: 1865, x: 363}
+  - {key: "3", name: "Stone Hand (Stragak, shaman spells)", y: 1167, x: 666}
+  - {key: "4", name: "Stone Hand (shadowmen)", y: -430, x: 980}
+  - {key: "5", name: "Froglok Hunting Grounds", y: -577, x: -355}
+  - {key: "6", name: "Ruined Ferry", y: -1072, x: 881}
+  - {key: "7", name: "Submerged Hut", y: -1237, x: 1237}
+  - {key: "8", name: "Newbie Area", y: -1991, x: 251}
+  - {key: "Z", name: "to The Feerott", y: -1125, x: 1873}
+  - {key: "Z", name: "to South Desert of Ro", y: 2541, x: 1178}
+  - {key: "Z", name: "to The City of Guk", y: 144, x: -812}
+  - {key: "Z", name: "to Grobb", y: -2764, x: -616}

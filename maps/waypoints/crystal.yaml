@@ -1,0 +1,20 @@
+# Crystal Caverns waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Crystal_Caverns
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Crystal Caverns"
+waypoints:
+  - {key: "1", name: "Orc Bridge", y: 308, x: 568}
+  - {key: "2", name: "The Chasm", y: 46, x: 658}
+  - {key: "3", name: "Broken Bridge (stalag terrors)", y: -265, x: 758}
+  - {key: "4", name: "Rib Bridge", y: -300, x: 502}
+  - {key: "5", name: "Great Hall (stalag terrors)", y: -316, x: 328}
+  - {key: "6", name: "Room: terror carvers, hollow crystals", y: -200, x: -263}
+  - {key: "7", name: "Geonid Tunnels (gem collector)", y: -520, x: -61}
+  - {key: "8", name: "Queen Dracnia's room", y: -589, x: -947}
+  - {key: "1", name: "Froststone: alcohol (lower)", y: -164, x: 335}
+  - {key: "2", name: "Froststone: banker Kramble", y: -184, x: 298}
+  - {key: "3", name: "Froststone: alcohol", y: -236, x: 182}
+  - {key: "4", name: "Froststone: food (Capt. Dunstan)", y: -260, x: 231}
+  - {key: "5", name: "Froststone: food, bandages", y: -264, x: 169}
+  - {key: "Z", name: "to Eastern Wastes", y: 498, x: 290}
+  - {key: "Z", name: "to Eastern Wastes", y: -575, x: 73}

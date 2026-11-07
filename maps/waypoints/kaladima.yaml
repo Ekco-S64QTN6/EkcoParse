@@ -1,0 +1,19 @@
+# South Kaladim waypoints, following the Map Location Key at
+# https://p99.funcamp.net/South_Kaladim
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "South Kaladim"
+waypoints:
+  - {key: "1", name: "Tanned Assets (leather armor)", y: 176, x: 357}
+  - {key: "2", name: "Irontoe's Eats (Tumpy Irontoe)", y: 184, x: 339}
+  - {key: "3", name: "Staff and Spear (swords, fletching)", y: 129, x: 209}
+  - {key: "4", name: "Redfist's Metal (shields, forge)", y: 117, x: 367}
+  - {key: "5", name: "The Arena (not PvP)", y: 109, x: 303}
+  - {key: "6", name: "Pub Kal (bard outside)", y: 101, x: 213}
+  - {key: "7", name: "Warrior's Guild", y: -10, x: 466}
+  - {key: "9", name: "Potions and Crystals", y: 250, x: -192}
+  - {key: "10", name: "Bags, pottery", y: 179, x: -137}
+  - {key: "11", name: "Gurtha's Wares (boots, cloth)", y: 218, x: -209}
+  - {key: "12", name: "Castle (King Kazon Stormhammer)", y: -95, x: -363}
+  - {key: "Z", name: "to Butcherblock Mountains", y: -54, x: 31}
+  - {key: "Z", name: "to North Kaladim", y: 411, x: 323}
+  - {key: "Z", name: "to North Kaladim", y: 379, x: -254}

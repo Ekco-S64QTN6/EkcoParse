@@ -1,0 +1,11 @@
+# Kurn's Tower waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Kurn's_Tower
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Kurn's Tower"
+waypoints:
+  - {key: "3", name: "Dining Room (undead crusader)", y: 30, x: -113}
+  - {key: "4", name: "Entry Hall", y: 45, x: -288}
+  - {key: "1", name: "Basement: undead jester", y: 186, x: 151}
+  - {key: "3", name: "Basement: skeletal cook", y: 80, x: -48}
+  - {key: "4", name: "Basement: Bargynn", y: -114, x: 268}
+  - {key: "Z", name: "to The Field of Bone", y: 45, x: -288}

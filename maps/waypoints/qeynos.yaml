@@ -1,0 +1,34 @@
+# South Qeynos waypoints, following the Map Location Key at
+# https://p99.funcamp.net/South_Qeynos
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "South Qeynos"
+waypoints:
+  - {key: "1", name: "Tin Soldier (chain, molds, forge)", y: 514, x: -56}
+  - {key: "2", name: "Wind Spirit's Song (Bard Guild)", y: 540, x: -149}
+  - {key: "3", name: "Fharn's Leather & Thread", y: 410, x: -89}
+  - {key: "4", name: "Bag n Barrel", y: 509, x: -271}
+  - {key: "5", name: "Nesiff's Wooden Weapons", y: 431, x: -233}
+  - {key: "6", name: "Lion's Mane Inn", y: 218, x: -90}
+  - {key: "7", name: "Tax Hall", y: 269, x: -266}
+  - {key: "8", name: "Qeynos Hold (Bank)", y: 339, x: -438}
+  - {key: "9", name: "Underwater tunnel to aqueducts", y: 184, x: -398}
+  - {key: "10", name: "The Herb Jar (spells, potions)", y: 321, x: -563}
+  - {key: "11", name: "Hall of Sorcery (Wiz/Enc/Mag)", y: 340, x: -608}
+  - {key: "12", name: "Tents: leather, ringmail, cloth", y: 178, x: -165}
+  - {key: "13", name: "Fireprides (armor, shields, forge)", y: 171, x: -317}
+  - {key: "14", name: "Tent: large leather, shields", y: 98, x: -195}
+  - {key: "15", name: "Boat Dock (to Erud's Crossing)", y: 41, x: 223}
+  - {key: "16", name: "Mermaid's Lure (fishing)", y: 35, x: -90}
+  - {key: "17", name: "Tents: cloth, bags, weapons", y: -37, x: -271}
+  - {key: "18", name: "Grounds of Fate (Warriors, PvP)", y: 53, x: -513}
+  - {key: "19", name: "Underwater tunnel to aqueducts", y: -167, x: 140}
+  - {key: "20", name: "Port Authority", y: -162, x: -38}
+  - {key: "21", name: "Instrument parts, spells, fish", y: -297, x: -43}
+  - {key: "22", name: "Voleen's Fine Baked Goods", y: -171, x: -219}
+  - {key: "23", name: "Fish's Ale", y: -274, x: -220}
+  - {key: "24", name: "Temple of Thunder (Pal/Clr)", y: -240, x: -461}
+  - {key: "Z", name: "to The Qeynos Aqueduct System", y: 273, x: -552}
+  - {key: "Z", name: "to The Qeynos Aquaduct System", y: -191, x: 122}
+  - {key: "Z", name: "to North Qeynos", y: 465, x: -441}
+  - {key: "Z", name: "to The Qeynos Aqueduct System", y: -147, x: -605}
+  - {key: "Z", name: "to Erud`s Crossing", y: 6, x: 215}

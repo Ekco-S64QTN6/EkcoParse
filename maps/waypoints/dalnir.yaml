@@ -1,0 +1,30 @@
+# Crypt of Dalnir waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Crypt_of_Dalnir
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Crypt of Dalnir"
+waypoints:
+  - {key: "1", name: "Entry Room", y: -1, x: -1}
+  - {key: "2", name: "\"L Room\"", y: 106, x: -190}
+  - {key: "3", name: "\"The Temple\"", y: 92, x: -452}
+  - {key: "4", name: "Pit down to level 2", y: 100, x: -749}
+  - {key: "1", name: "Lvl 2: Teleporter to Warsliks", y: 316, x: -738}
+  - {key: "2", name: "Lvl 2: Shackle Room", y: 265, x: -925}
+  - {key: "3", name: "Lvl 2: Bedrooms", y: 198, x: -986}
+  - {key: "4", name: "Lvl 2: Pool Room", y: 98, x: -745}
+  - {key: "5", name: "Lvl 2: Thistle Lumpy", y: 95, x: -889}
+  - {key: "6", name: "Lvl 2: Carpet Lumpy", y: -7, x: -877}
+  - {key: "7", name: "Lvl 2: Pit trap to level 3", y: 9, x: -749}
+  - {key: "8", name: "Lvl 2: Checkerboard Room", y: -46, x: -750}
+  - {key: "1", name: "Lvl 3: BBQ Room", y: 393, x: -314}
+  - {key: "2", name: "Lvl 3: River", y: 298, x: -247}
+  - {key: "3", name: "Lvl 3: Church (Kly Imprecator)", y: 175, x: -608}
+  - {key: "4", name: "Lvl 3: Crusader Room", y: 138, x: -359}
+  - {key: "5", name: "Lvl 3: Laboratory", y: 25, x: -138}
+  - {key: "6", name: "Lvl 3: Broken Crypt", y: 0, x: -578}
+  - {key: "7", name: "Lvl 3: Crossroads", y: 0, x: -747}
+  - {key: "8", name: "Lvl 3: Dining Room (Kly)", y: -95, x: -77}
+  - {key: "9", name: "Lvl 3: Statue Room (blacksmith)", y: -50, x: -699}
+  - {key: "10", name: "Lvl 3: Forge Room", y: -205, x: 31}
+  - {key: "11", name: "Lvl 3: Overseer Room (The Kly)", y: -258, x: -78}
+  - {key: "12", name: "Lvl 3: Teleport to Warsliks", y: -320, x: -77}
+  - {key: "Z", name: "to The Warsliks Woods", y: -6, x: 95}

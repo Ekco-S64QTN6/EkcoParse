@@ -1,0 +1,17 @@
+# North Kaladim waypoints, following the Map Location Key at
+# https://p99.funcamp.net/North_Kaladim
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "North Kaladim"
+waypoints:
+  - {key: "1", name: "Gems", y: 696, x: 421}
+  - {key: "2", name: "Brellium, ore, smithy hammers", y: 729, x: 193}
+  - {key: "3", name: "Cleric Guild, blunt weapons", y: 725, x: 131}
+  - {key: "4", name: "Ratsbone Assay Office (Bank)", y: 611, x: 194}
+  - {key: "5", name: "Pottery Wheel and Kiln", y: 556, x: 319}
+  - {key: "6", name: "Empty Hut", y: 475, x: -170}
+  - {key: "7", name: "Empty Hut", y: 430, x: -81}
+  - {key: "8", name: "Everhot Forge (weapons, armor)", y: 412, x: -170}
+  - {key: "9", name: "Greybloom Farms (grapes)", y: 652, x: -186}
+  - {key: "10", name: "Paladin Guild (Temple of Brell)", y: 1215, x: 132}
+  - {key: "Z", name: "to South Kaladim", y: 364, x: -229}
+  - {key: "Z", name: "to South Kaladim", y: 418, x: 339}

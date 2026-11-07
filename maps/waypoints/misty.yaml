@@ -1,0 +1,23 @@
+# Misty Thicket waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Misty_Thicket
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Misty Thicket"
+waypoints:
+  - {key: "1", name: "Orc Camp", y: 1020, x: 1092}
+  - {key: "2", name: "Goblin Camp", y: -1100, x: 415}
+  - {key: "2", name: "Goblin Camp", y: -969, x: 1133}
+  - {key: "2", name: "Goblin Camp", y: -324, x: 1089}
+  - {key: "3", name: "Haunted Obelisk", y: 308, x: 564}
+  - {key: "4", name: "Gate through the wall", y: -73, x: -62}
+  - {key: "5", name: "Baking Supplies", y: 897, x: -2345}
+  - {key: "6", name: "Empty Huts", y: 835, x: -1953}
+  - {key: "7", name: "Empty Hut (Blixkin Entopop)", y: -342, x: -1187}
+  - {key: "8", name: "Leather Armor, Patterns", y: 581, x: -2208}
+  - {key: "9", name: "Sewing Supplies", y: 663, x: -2213}
+  - {key: "10", name: "Pottery Supplies", y: 586, x: -2348}
+  - {key: "11", name: "Abandoned Tower", y: 557, x: -1831}
+  - {key: "12", name: "Small Armor Molds", y: 339, x: -2273}
+  - {key: "13", name: "Druid Stone Ring", y: -531, x: -1835}
+  - {key: "14", name: "Lil Honeybugger's Hut", y: -863, x: -2263}
+  - {key: "Z", name: "to Rivervale", y: 408, x: -2551}
+  - {key: "Z", name: "to Runnyeye Citadel", y: -804, x: 1390}

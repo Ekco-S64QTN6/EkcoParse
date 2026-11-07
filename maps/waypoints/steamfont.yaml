@@ -1,0 +1,19 @@
+# Steamfont Mountains waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Steamfont_Mountains
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Steamfont Mountains"
+waypoints:
+  - {key: "1", name: "Kobold Camp", y: 1655, x: 1176}
+  - {key: "2", name: "The Observers", y: 1814, x: -255}
+  - {key: "3", name: "Haunted clockwork ruins", y: 1608, x: -1475}
+  - {key: "4", name: "Windmills (ore, tinkering)", y: -32, x: -493}
+  - {key: "5", name: "Kobold Camp", y: -688, x: 1719}
+  - {key: "6", name: "Druid Stone Ring (Crisyn, spells)", y: -1779, x: 1668}
+  - {key: "7", name: "Sewing Supplies", y: -1696, x: 829}
+  - {key: "8", name: "Small Armor Molds", y: -1787, x: 666}
+  - {key: "9", name: "Cookie Molds", y: -1623, x: 429}
+  - {key: "10", name: "Food and Goods", y: -1786, x: 337}
+  - {key: "11", name: "Cooking Supplies, gems", y: -1515, x: -1844}
+  - {key: "12", name: "Dragon Bones (skeletons)", y: -1157, x: -636}
+  - {key: "Z", name: "to The Lesser Faydark", y: 580, x: 2204}
+  - {key: "Z", name: "to Ak`Anon", y: -2058, x: 527}

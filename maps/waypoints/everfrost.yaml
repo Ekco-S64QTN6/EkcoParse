@@ -1,0 +1,27 @@
+# Everfrost Peaks waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Everfrost_Peaks
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Everfrost Peaks"
+waypoints:
+  - {key: "1", name: "Merchants: sewing kits, goods", y: 3638, x: 697}
+  - {key: "2", name: "Ice Goblin Igloos (low level)", y: 2401, x: 1101}
+  - {key: "2", name: "Ice Goblin Igloos (low level)", y: 98, x: 1092}
+  - {key: "3", name: "Ice Goblin Igloos", y: 1578, x: -171}
+  - {key: "3", name: "Ice Goblin Igloos", y: -702, x: 728}
+  - {key: "4", name: "Barbarian Guards", y: 1713, x: -1119}
+  - {key: "5", name: "Bandl McMarrin (guard)", y: 732, x: -1479}
+  - {key: "6", name: "Ice Goblin Igloos (mid level)", y: 1157, x: -1048}
+  - {key: "6", name: "Ice Goblin Igloos (mid level)", y: -871, x: -1397}
+  - {key: "7", name: "Temple: shaman poison spells", y: 2871, x: -3431}
+  - {key: "8", name: "North Tower (Megan's Tower)", y: 2055, x: -3878}
+  - {key: "9", name: "Temple: Icy Orcs, Redwind", y: 1003, x: -5274}
+  - {key: "10", name: "Stone Giant Statue", y: 557, x: -5392}
+  - {key: "11", name: "South Tower", y: -882, x: -3963}
+  - {key: "1", name: "Miragul: Sulon McMoor", y: 5330, x: -3163}
+  - {key: "2", name: "Miragul: skeletons, broken teleporter", y: 4812, x: -4089}
+  - {key: "3", name: "Miragul: wizard rod piece", y: 5012, x: -5015}
+  - {key: "4", name: "Miragul: entry (ice goblins)", y: 3577, x: -3904}
+  - {key: "5", name: "Miragul: glacier bear", y: 4538, x: -3615}
+  - {key: "Z", name: "to Permafrost Keep", y: 2018, x: -7077}
+  - {key: "Z", name: "to Halas", y: 3681, x: 383}
+  - {key: "Z", name: "to Blackburrow", y: -3055, x: -530}

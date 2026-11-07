@@ -1,0 +1,21 @@
+# Southern Desert of Ro waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Southern_Desert_of_Ro
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Southern Desert of Ro"
+waypoints:
+  - {key: "1", name: "Home of Ortallius, Rathmana", y: 1210, x: 1402}
+  - {key: "2", name: "Gypsy merchants: pottery, weapons", y: 115, x: 441}
+  - {key: "3", name: "Dervish Camp", y: -74, x: 1337}
+  - {key: "4", name: "Ruined Temple", y: -328, x: -321}
+  - {key: "5", name: "Dervish Camp", y: -307, x: -684}
+  - {key: "6", name: "Orc Town", y: -1111, x: 1233}
+  - {key: "7", name: "Orc Camp", y: -1345, x: 663}
+  - {key: "8", name: "Wizard Portal", y: -1040, x: 125}
+  - {key: "9", name: "Orc Camp", y: -1172, x: -653}
+  - {key: "10", name: "Orc Camp", y: -1700, x: 1337}
+  - {key: "11", name: "Orc Camp", y: -2311, x: 1181}
+  - {key: "12", name: "Orc Camp", y: -2056, x: 736}
+  - {key: "13", name: "Druid Circle", y: -2064, x: 307}
+  - {key: "14", name: "Orc Camp", y: -2056, x: -736}
+  - {key: "Z", name: "to Innothule Swamp", y: -3200, x: 1101}
+  - {key: "Z", name: "to Oasis of Marr", y: 1450, x: 90}

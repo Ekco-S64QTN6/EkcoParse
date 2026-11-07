@@ -103,27 +103,27 @@ class PoiRadarWidget(Static):
             return
 
         lines = [
-            f"[bold {COLOR_CYAN}]WAYPOINT[/]                     [bold {COLOR_AMBER}]BEARING[/]   [bold {COLOR_GREEN}]DISTANCE[/]\n"
-            f"────────────────────────────────────────────────────"
+            f"[bold {COLOR_CYAN}]WAYPOINT[/]                        [bold {COLOR_AMBER}]BEARING[/]   [bold {COLOR_GREEN}]DISTANCE[/]\n"
+            f"───────────────────────────────────────────────────────"
         ]
 
         for pt, dist, bearing in pois:
-            name = escape(pt.name)
-            if len(name) > 24:
-                name = name[:21] + "..."
-            name_padded = f"{name:<24}"
+            name = pt.name if len(pt.name) <= 26 else pt.name[:25] + "…"
+            name_padded = escape(f"{name:<26}")
 
             # Bearing tag
             b_tag = f"[bold {COLOR_AMBER}]{bearing:>4}[/]"
             d_tag = f"[bold {COLOR_GREEN}]{int(dist):>5}m[/]"
 
-            cat_icon = "●"
-            if pt.category == "zoneline":
-                cat_icon = f"[bold {COLOR_CYAN}]Z[/]"
+            cat_icon = " ●"
+            if pt.key and pt.category != "zoneline":
+                cat_icon = f"[bold {COLOR_MAGENTA}]{escape(pt.key[:2]):>2}[/]"
+            elif pt.category == "zoneline":
+                cat_icon = f"[bold {COLOR_CYAN}] Z[/]"
             elif pt.category == "merchant":
-                cat_icon = f"[bold {COLOR_AMBER}]M[/]"
+                cat_icon = f"[bold {COLOR_AMBER}] M[/]"
             elif pt.category == "bank":
-                cat_icon = f"[bold {COLOR_GREEN}]B[/]"
+                cat_icon = f"[bold {COLOR_GREEN}] B[/]"
 
             lines.append(f" {cat_icon} {name_padded}  {b_tag}    {d_tag}")
 

@@ -1,0 +1,14 @@
+# Mines of Nurga waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Mines_of_Nurga
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Mines of Nurga"
+waypoints:
+  - {key: "1", name: "Spider Caves", y: -1406, x: 11}
+  - {key: "2", name: "Slave Pits", y: -1234, x: -946}
+  - {key: "2", name: "Slave Pits", y: -1905, x: -709}
+  - {key: "2", name: "Slave Pits", y: -2200, x: -957}
+  - {key: "3", name: "Overseer Dlubish's room", y: -1537, x: -567}
+  - {key: "4", name: "Waterfall Entrance", y: -2124, x: -1684}
+  - {key: "Z", name: "to Frontier Mountains", y: -2238, x: -1799}
+  - {key: "Z", name: "to The Temple of Droga", y: -836, x: -920}
+  - {key: "Z", name: "to The Temple of Droga", y: -1034, x: 98}

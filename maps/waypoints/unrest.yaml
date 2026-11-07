@@ -1,0 +1,16 @@
+# Estate of Unrest waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Estate_of_Unrest
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Estate of Unrest"
+waypoints:
+  - {key: "1", name: "Cave (gnomish spelunker)", y: 692, x: -291}
+  - {key: "2", name: "The Gazebo", y: 500, x: -272}
+  - {key: "A", name: "Back Room (lesser blade fiend)", y: 674, x: 55}
+  - {key: "1", name: "Reclusive ghoul magus", y: 702, x: 34}
+  - {key: "2", name: "Barroom (undead barkeep)", y: 701, x: -61}
+  - {key: "3", name: "Reanimated hand", y: 578, x: -8}
+  - {key: "6", name: "\"Tower\" (undead knight)", y: 695, x: -72}
+  - {key: "7", name: "Main Basement Room", y: 450, x: -100}
+  - {key: "8", name: "Blood trap (walk through it)", y: 681, x: 92}
+  - {key: "9", name: "\"Dwarf Room\" (Garanel Rucksif)", y: 493, x: 136}
+  - {key: "Z", name: "to Dagnor`s Cauldron", y: 71, x: 329}

@@ -1,0 +1,9 @@
+# Gorge of King Xorbb waypoints, following the Map Location Key at
+# https://p99.funcamp.net/Gorge_of_King_Xorbb
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "Gorge of King Xorbb"
+waypoints:
+  - {key: "1", name: "Temple of the evil eyes (Lords)", y: 512, x: -587}
+  - {key: "2", name: "Rune Stone", y: 216, x: -1136}
+  - {key: "Z", name: "to The Eastern Plains of Karana", y: -1210, x: -475}
+  - {key: "Z", name: "to Runnyeye Citadel", y: 903, x: -1837}

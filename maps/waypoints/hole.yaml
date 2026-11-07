@@ -1,0 +1,25 @@
+# The Hole waypoints, following the Map Location Key at
+# https://p99.funcamp.net/The_Hole
+# Coordinates are /loc (y, x). key "Z" is a zone line.
+zone: "The Hole"
+waypoints:
+  - {key: "2", name: "East Tower (Ghost of Kindle)", y: 953, x: 426}
+  - {key: "3", name: "High Scale Kirn", y: -18, x: 267}
+  - {key: "4", name: "Keeper of the Tombs (crypt)", y: -176, x: 264}
+  - {key: "7", name: "Master Yael", y: 720, x: 260}
+  - {key: "8", name: "Pool (Jaeil the Wretched)", y: 238, x: 870}
+  - {key: "9", name: "Kejar the Mighty, Schnozz", y: -40, x: 221}
+  - {key: "11", name: "Secret Vault (mimics)", y: -16, x: 262}
+  - {key: "12", name: "Mushroom Cellar (Polzin Mrid)", y: 221, x: -57}
+  - {key: "14", name: "Jail Cell (Caradon)", y: 423, x: -189}
+  - {key: "C", name: "Camp: Entrance", y: 620, x: -1040}
+  - {key: "C", name: "Camp: Castle Entrance", y: 200, x: -400}
+  - {key: "C", name: "Camp: Rat Jail", y: 350, x: -200}
+  - {key: "C", name: "Camp: Observatory", y: 0, x: -240}
+  - {key: "C", name: "Camp: Slabs", y: 115, x: -40}
+  - {key: "C", name: "Camp: Docks", y: 400, x: 80}
+  - {key: "C", name: "Camp: Golem Tower", y: 0, x: 200}
+  - {key: "C", name: "Camp: Broken Gate", y: 0, x: 540}
+  - {key: "C", name: "Camp: Undead Tower", y: 680, x: 460}
+  - {key: "C", name: "Camp: Yael Pit", y: 760, x: 240}
+  - {key: "Z", name: "to Paineel", y: 611, x: -940}
