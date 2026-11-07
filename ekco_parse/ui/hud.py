@@ -8,6 +8,14 @@ always swallowed clicks.
 
 Wayland does not let clients position or raise themselves; placement and
 always-on-top come from a KWin window rule matching the app id ``ekco-hud``.
+
+Window decoration / interaction is configurable via the ``hud`` section of
+``config.yaml``:
+
+    hud:
+      frameless: true        # false -> show title bar + borders
+      always_on_top: true
+      click_through: true    # false -> HUD (and its title bar) accept mouse input
 """
 
 import os
@@ -64,6 +72,13 @@ class HudWindow(QWidget):
         self.dps_rows = int(hud.get("dps_rows", 4))  # top combatants, like the old panel
         # Hide over the desktop when the game is closed; reappear when it runs.
         self.follow_game = bool(hud.get("hide_when_game_closed", True))
+
+        # ── window decoration / interaction toggles ──────────────────────
+        # Defaults preserve the original hardcoded behaviour.
+        self.frameless = bool(hud.get("frameless", True))
+        self.always_on_top = bool(hud.get("always_on_top", True))
+        self.click_through = bool(hud.get("click_through", True))
+
         self._last_game_check = 0.0
         self.font = QFont(hud.get("font_family", "Maple Mono NF"), int(hud.get("font_size", 10)))
         self.font.setStyleStrategy(QFont.PreferAntialias)
@@ -71,15 +86,14 @@ class HudWindow(QWidget):
         self.small.setPointSize(max(7, self.font.pointSize() - 2))
 
         self.setWindowTitle("Ekco HUD")
-        self.setWindowFlags(
-            Qt.FramelessWindowHint
-            | Qt.WindowStaysOnTopHint
-            | Qt.WindowDoesNotAcceptFocus
-            | Qt.WindowTransparentForInput
-        )
+        self._apply_window_flags()
+
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setAttribute(Qt.WA_ShowWithoutActivating)
-        self.setAttribute(Qt.WA_TransparentForMouseEvents)
+        # Mouse transparency is only needed for the click-through HUD. When the
+        # user turns click_through off (so they can drag the title bar), the
+        # window must receive normal mouse events.
+        self.setAttribute(Qt.WA_TransparentForMouseEvents, self.click_through)
         self.setFocusPolicy(Qt.NoFocus)
         self.resize(self.width_px, self.row_h * 4)
 
@@ -89,6 +103,22 @@ class HudWindow(QWidget):
         self._timer = QTimer(self)
         self._timer.timeout.connect(self._tick)
         self._timer.start(int(1000 * config.tick_interval_sec))
+
+    # ── window flags ─────────────────────────────────────────────────────
+    def _apply_window_flags(self) -> None:
+        """Build window flags from the config toggles.
+
+        Must be called before show(); changing flags on a visible window
+        requires re-showing it, which we avoid by only doing this at init.
+        """
+        flags = Qt.Window
+        if self.frameless:
+            flags |= Qt.FramelessWindowHint
+        if self.always_on_top:
+            flags |= Qt.WindowStaysOnTopHint
+        if self.click_through:
+            flags |= Qt.WindowDoesNotAcceptFocus | Qt.WindowTransparentForInput
+        self.setWindowFlags(flags)
 
     # ── data ─────────────────────────────────────────────────────────────
     def _tick(self) -> None:
