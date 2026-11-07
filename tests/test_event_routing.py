@@ -56,7 +56,6 @@ class TestMainAppEventRouting(unittest.TestCase):
 
         self.app._last_tick_time = 10.0
         with (
-            patch.object(self.app, "_set_always_on_top"),
             patch.object(self.app, "catchup_from_log") as catchup,
             patch("ekco_parse.ui.main_app.LogTailer"),
             patch.object(self.app, "set_interval"),

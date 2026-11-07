@@ -73,6 +73,17 @@ class TestTextualUI(unittest.IsolatedAsyncioTestCase):
             await pilot.press("1")
             self.assertEqual(app.query_one("#dashboard-tabs", TabbedContent).active, "tab-live")
 
+    async def test_dashboard_never_touches_other_windows(self):
+        """Mounting must not spawn xdotool: it would pin whatever window is
+        active (EverQuest under XWayland) above the whole desktop."""
+        from unittest.mock import patch
+        with patch("subprocess.Popen") as popen:
+            app = EkcoParseApp(config=load_config())
+            async with app.run_test() as pilot:
+                await pilot.pause()
+        for call in popen.call_args_list:
+            self.assertNotIn("xdotool", " ".join(map(str, call.args[0] if call.args else [])))
+
     async def test_map_app_mounts(self):
         config = load_config()
         app = EkcoMapApp(config=config, zone="East Commonlands")

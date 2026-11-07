@@ -187,9 +187,9 @@ class EkcoParseApp(App):
                     yield RespawnWidget(id="respawn-panel", classes="panel")
 
     def on_mount(self) -> None:
-        # Request always-on-top via xdotool (non-blocking, best-effort)
-        self._set_always_on_top()
-
+        # Window placement/always-on-top comes from KWin rules (title "Ekco Parse").
+        # Never script it from here: xdotool's "active window" under Wayland is
+        # whatever XWayland client has focus — usually EverQuest itself.
         self.session.start(catchup=self.catchup_from_log)
 
         # Startup replay can take longer than a normal tick. Begin wall-clock
@@ -198,22 +198,6 @@ class EkcoParseApp(App):
         self._last_tick_time = time.time()
         self.set_interval(self.config.tick_interval_sec, self._tick)
         self._update_ui()
-
-    def _set_always_on_top(self) -> None:
-        """Use xdotool to set the terminal window as always-on-top."""
-        try:
-            import subprocess as _sp
-            _sp.Popen(
-                ["xdotool", "getactivewindow", "set_window", "--overrideredirect", "0"],
-                stdout=_sp.DEVNULL, stderr=_sp.DEVNULL,
-            )
-            # Small delay then set above
-            _sp.Popen(
-                ["bash", "-c", "sleep 0.3 && xdotool getactivewindow windowactivate --sync set_window --urgency 0 && xdotool getactivewindow windowstate --add ABOVE"],
-                stdout=_sp.DEVNULL, stderr=_sp.DEVNULL,
-            )
-        except Exception:
-            pass
 
     def catchup_from_log(self, target_log: Path) -> None:
         """Scan recent log history on startup to recover active buffs and correct timers."""
