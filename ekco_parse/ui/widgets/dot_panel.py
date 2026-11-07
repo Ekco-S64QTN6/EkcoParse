@@ -54,6 +54,12 @@ class DotClockWidget(Static):
                 status_text, status_color = "ACTIVE", COLOR_GREEN
                 clock_str = f"[bold white]{clock_plain}[/]"
 
+            # Keep each timer on one line: shorten the label with an ellipsis
+            # when the panel is too narrow, instead of letting the status wrap.
+            label_room = max(1, content_width - (1 + len(clock_plain) + 1 + status_width))
+            if len(label) > label_room:
+                label = label[: max(0, label_room - 1)] + "…"
+
             # With the progress bar removed, use the freed space to keep the
             # status column at the right edge of the panel.
             gap_width = max(

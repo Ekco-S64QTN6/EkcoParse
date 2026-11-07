@@ -57,6 +57,12 @@ class BuffClockWidget(Static):
                 status_text, status_color = "ACTIVE", COLOR_GREEN
                 time_styled = f"[bold white]{time_str:>{time_width}}[/]"
 
+            # Keep each buff on one line: shorten the name with an ellipsis when
+            # the panel is too narrow, instead of letting the status wrap.
+            name_room = max(1, content_width - (1 + time_width + 1 + status_width))
+            if len(name) > name_room:
+                name = name[: max(0, name_room - 1)] + "…"
+
             # Use whitespace instead of a colored progress bar, keeping the
             # status label aligned to the panel's right edge.
             gap_width = max(
