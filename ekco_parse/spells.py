@@ -1121,7 +1121,10 @@ class SpellDatabase:
             c for c in candidates.values()
             if c.category in self.HOSTILE_CATEGORIES and c.duration_seconds > 0
         ]
-        if not hostile:
+        # Shared text can also belong to buffs ("You are now a wolf." is seven
+        # wolf-form buffs and one odd hostile entry): only call it a debuff when
+        # hostile spells clearly own the line.
+        if not hostile or len(hostile) <= len(candidates) - len(hostile):
             return None
         msg_low = message.casefold()
         named = [c for c in hostile if c.name.casefold() in msg_low]

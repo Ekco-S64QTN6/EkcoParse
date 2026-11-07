@@ -1,5 +1,12 @@
 """Headless UI tests verifying Textual app composition and widget mounting."""
 
+import os
+import tempfile
+
+# Keep session state (learned levels / debuff durations) out of the real
+# ~/.local/state while replaying logs. Must run before ekco_parse.session loads.
+os.environ.setdefault("EKCO_PARSE_STATE_DIR", tempfile.mkdtemp(prefix="ekco-test-state-"))
+
 import unittest
 from pathlib import Path
 from textual.widgets import TabbedContent

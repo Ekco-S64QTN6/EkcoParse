@@ -6,6 +6,7 @@ behave identically in each.
 """
 
 import json
+import os
 import re
 import time
 from datetime import datetime
@@ -20,7 +21,10 @@ from ekco_parse.parser import LogParser
 from ekco_parse.tailer import LogTailer
 from ekco_parse.timer_engine import TimerEngine
 
-LEVEL_STATE = Path.home() / ".local" / "state" / "ekco-parse" / "levels.json"
+# EKCO_PARSE_STATE_DIR lets the test suite keep its replays out of the real state.
+STATE_DIR = Path(os.environ.get("EKCO_PARSE_STATE_DIR") or Path.home() / ".local" / "state" / "ekco-parse")
+LEVEL_STATE = STATE_DIR / "levels.json"
+DEBUFF_STATE = STATE_DIR / "debuff_durations.json"
 # A gap this long before "Welcome to EverQuest!" is treated as time spent camped.
 MIN_OFFLINE_GAP_SEC = 20.0
 FOLLOW_CHECK_SEC = 5.0
@@ -52,6 +56,12 @@ class LogSession:
         self.offline = False
         if config.character_level:
             self.timer_engine.set_caster_level(config.character_level)
+        # Real durations of mob debuffs on you, learned from land->fade pairs.
+        try:
+            self.timer_engine.learned_debuff_seconds.update(json.loads(DEBUFF_STATE.read_text()))
+        except (OSError, ValueError):
+            pass
+        self.timer_engine.on_learned_debuff = self._save_debuff_durations
 
     # ── character ────────────────────────────────────────────────────────
     @property
@@ -70,6 +80,14 @@ class LogSession:
             return json.loads(LEVEL_STATE.read_text())
         except (OSError, ValueError):
             return {}
+
+    @staticmethod
+    def _save_debuff_durations(learned: dict) -> None:
+        try:
+            DEBUFF_STATE.parent.mkdir(parents=True, exist_ok=True)
+            DEBUFF_STATE.write_text(json.dumps(learned, indent=1, sort_keys=True))
+        except OSError:
+            pass
 
     def _remember_level(self, name: str, level: int) -> None:
         if self.config.character_level:

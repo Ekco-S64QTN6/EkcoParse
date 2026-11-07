@@ -62,6 +62,14 @@ class TimerEngine:
         self.caster_level: int = 60
         self.last_cast_spell: Optional[str] = None
         self.last_cast_time: Optional[datetime] = None
+        # Debuffs a mob lands on you scale with the MOB's level, which the log
+        # never states (Tashania from a level-51 mob lasts 113 ticks, not 130).
+        # Learn real durations from land->fade pairs, keyed "zone|landing" with
+        # a zone-less "|landing" fallback. Optionally persisted by the session.
+        self.current_zone: str = ""
+        self.learned_debuff_seconds: Dict[str, float] = {}
+        self.on_learned_debuff: Optional[Callable[[Dict[str, float]], None]] = None
+        self._self_debuff_meta: Dict[str, Tuple[str, str, float]] = {}
 
         if triggers_config:
             self.load_triggers(triggers_config)
@@ -164,6 +172,7 @@ class TimerEngine:
         self.current_target = "Unknown Target"
         self.handle_spell_interrupt()
         if new_zone:
+            self.current_zone = new_zone.strip()
             self.drop_other_zone_respawns(new_zone)
 
     def drop_other_zone_respawns(self, zone: str) -> None:
@@ -357,6 +366,8 @@ class TimerEngine:
             to_remove.extend([tid for tid, t in self.active_timers.items() if t.buff_slot == "regen"])
 
         for t_id in set(to_remove):
+            if t_id.startswith("selfdebuff:"):
+                self._learn_self_debuff(t_id, timestamp)
             self.cancel_timer(t_id, reason="wore_off")
 
         # 2. Universal Spell Landing Detection (Self buffs, Raid buffs, DoTs)
@@ -586,11 +597,43 @@ class TimerEngine:
     # Maroon bar for harmful effects on you; good buffs keep their green.
     SELF_DEBUFF_COLOR = "#B0263A"
 
+    def _debuff_keys(self, landing_key: str) -> Tuple[str, str]:
+        landing = landing_key.strip().casefold()
+        return f"{self.current_zone.casefold()}|{landing}", f"|{landing}"
+
+    def learned_debuff_duration(self, landing_key: str) -> Optional[float]:
+        zone_key, any_key = self._debuff_keys(landing_key)
+        return self.learned_debuff_seconds.get(zone_key) or self.learned_debuff_seconds.get(any_key)
+
+    def _learn_self_debuff(self, timer_id: str, faded_at: datetime) -> None:
+        """Record how long a debuff on you really lasted, for the next landing."""
+        timer = self.active_timers.get(timer_id)
+        meta = self._self_debuff_meta.pop(timer_id, None)
+        if not timer or not meta or not timer.created_at:
+            return
+        landing_key, zone, upper = meta
+        lasted = (faded_at - timer.created_at).total_seconds()
+        # Ignore impossible values (missed re-land, clock jumps, cures that
+        # end it early are still real fades but are shorter than a tick).
+        if not (6.0 <= lasted <= upper + 12.0):
+            return
+        landing = landing_key.strip().casefold()
+        changed = False
+        for key in (f"{zone.casefold()}|{landing}", f"|{landing}"):
+            if self.learned_debuff_seconds.get(key) != lasted:
+                self.learned_debuff_seconds[key] = lasted
+                changed = True
+        if changed and self.on_learned_debuff:
+            self.on_learned_debuff(self.learned_debuff_seconds)
+
     def _add_self_debuff_timer(
         self, landing_key: str, name: str, duration: float, fades: List[str], timestamp: datetime
     ) -> Timer:
         """Timer for a debuff a mob landed on you; a re-land refreshes it."""
         timer_id = f"selfdebuff:{landing_key.strip().casefold()}"
+        upper = duration
+        duration = min(upper, self.learned_debuff_duration(landing_key) or upper)
+        self._self_debuff_meta[timer_id] = (landing_key, self.current_zone, upper)
         # Fade texts in spells_us.txt vary in trailing punctuation ("returns..").
         alts = [re.escape(f) + r"[.!?]*" for f in sorted({f.rstrip(" .!?") for f in fades})]
         timer = Timer(

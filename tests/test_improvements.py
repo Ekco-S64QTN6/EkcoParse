@@ -1,5 +1,12 @@
 """Tests for log-session improvements: cooldowns, zoning, camping, levels, logs."""
 
+import os
+import tempfile
+
+# Keep session state (learned levels / debuff durations) out of the real
+# ~/.local/state while replaying logs. Must run before ekco_parse.session loads.
+os.environ.setdefault("EKCO_PARSE_STATE_DIR", tempfile.mkdtemp(prefix="ekco-test-state-"))
+
 import tempfile
 import time
 import unittest

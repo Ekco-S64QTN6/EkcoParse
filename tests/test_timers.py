@@ -772,6 +772,36 @@ class TestDebuffsOnYou(unittest.TestCase):
         self.te.tick(181)
         self.assertNotIn("self_debuff", [t.category for t in self.te.active_timers.values()])
 
+    def test_learns_real_duration_from_land_and_fade(self):
+        """Tashania from a ~level-51 mob lasts 113 ticks, not the level-60 130."""
+        from datetime import timedelta
+        self.te.on_zone_change("Plane of Mischief")
+        self.te.process_line("You hear the barking of Tashania.", self.t0)
+        self.te.process_line("The barking fades.", self.t0 + timedelta(seconds=675))
+        self.te.process_line("You hear the barking of Tashania.", self.t0 + timedelta(seconds=900))
+        self.assertEqual(self.te.get_sorted_buffs()[0].total_seconds, 675.0)
+
+        # Same spell in a zone with no data uses the last value seen anywhere.
+        self.te.on_zone_change("Kedge Keep")
+        self.te.process_line("You hear the barking of Tashania.", self.t0 + timedelta(seconds=1000))
+        self.assertEqual(self.te.get_sorted_buffs()[0].total_seconds, 675.0)
+
+    def test_ignores_impossible_learned_durations(self):
+        from datetime import timedelta
+        self.te.process_line("You hear the barking of Tashania.", self.t0)
+        # A fade 15 minutes later (missed re-land) is longer than the spell can last.
+        self.te.process_line("The barking fades.", self.t0 + timedelta(seconds=929))
+        self.assertEqual(self.te.learned_debuff_seconds, {})
+
+    def test_wolf_form_is_not_a_debuff(self):
+        """'You are now a wolf.' is mostly wolf-form buffs: never a maroon row."""
+        self.te.process_line("You are now a wolf.", self.t0)
+        self.assertNotIn("self_debuff", [t.category for t in self.te.active_timers.values()])
+
+    def test_charm_on_you_is_a_debuff(self):
+        self.te.process_line("You have been charmed.", self.t0)
+        self.assertEqual([t.category for t in self.te.get_sorted_buffs()], ["self_debuff"])
+
     def test_our_own_tash_on_a_mob_is_still_a_dot(self):
         self.te.set_current_target("a gnoll")
         self.te.handle_spell_cast_start("You", "Tashania", self.t0)
