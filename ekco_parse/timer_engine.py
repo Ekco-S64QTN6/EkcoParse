@@ -186,7 +186,7 @@ class TimerEngine:
         if offline_seconds <= 0:
             return
         for t in self.active_timers.values():
-            if t.category in ("buff", "cooldown", "util", "pet_buff"):
+            if t.category in ("buff", "cooldown", "util", "pet_buff", "self_debuff"):
                 t.created_at = t.created_at + timedelta(seconds=offline_seconds)
                 if adjust_remaining:
                     t.remaining_seconds += offline_seconds
@@ -220,7 +220,7 @@ class TimerEngine:
         """
         to_delete = [
             tid for tid, t in self.active_timers.items()
-            if t.category in ("buff", "cooldown", "util")
+            if t.category in ("buff", "cooldown", "util", "self_debuff")
         ]
         for tid in to_delete:
             self.active_timers.pop(tid, None)
@@ -383,14 +383,22 @@ class TimerEngine:
             self.pending_cast_time = None
 
         # Check if spell landed on YOU (e.g. self-buff or buffed by another player)
+        landed_on_me = False
         if not matched_spell:
             sdef_you = SPELL_DB.lookup_by_cast_on_you(message)
-            if sdef_you:
+            if sdef_you and sdef_you.category not in offensive_categories:
                 matched_spell = sdef_you
                 target_name = "Self"
+            else:
+                # A mob's debuff on you (Tashania, slows, roots...): time it so you
+                # can see when it fades.
+                debuff = SPELL_DB.lookup_debuff_on_you(message)
+                if debuff:
+                    new_timers.append(self._add_self_debuff_timer(*debuff, timestamp))
+                    landed_on_me = True
 
         # Check if spell landed on an enemy (DoT / snare / root / debuff)
-        if not matched_spell and self.pending_cast_spell:
+        if not matched_spell and not landed_on_me and self.pending_cast_spell:
             sdef_pend = pending_sdef or SPELL_DB.lookup_by_name(self.pending_cast_spell)
             if (
                 sdef_pend
@@ -404,7 +412,7 @@ class TimerEngine:
                 self.pending_cast_spell = None
                 self.pending_cast_time = None
 
-        if not matched_spell:
+        if not matched_spell and not landed_on_me:
             res_other = SPELL_DB.lookup_by_cast_on_other(message)
             # Pet-buff landing text can come from any player's pet during startup
             # log replay. Only count it through the pending-cast path above, which
@@ -446,7 +454,7 @@ class TimerEngine:
         # Shared landing text (e.g. three Darkness snares print the same line):
         # the generic lookup refuses to guess, but if we are mid-cast of a hostile
         # spell of the same category inside its landing window, it is our spell.
-        if not matched_spell and pending_sdef and self.pending_cast_time and (
+        if not matched_spell and not landed_on_me and pending_sdef and self.pending_cast_time and (
             pending_sdef.category in offensive_categories
         ):
             shared = [
@@ -467,7 +475,7 @@ class TimerEngine:
                 self.pending_cast_time = None
 
         # If a pending spell was casting and finishes without interrupt/resist
-        if not matched_spell and self.pending_cast_spell:
+        if not matched_spell and not landed_on_me and self.pending_cast_spell:
             sdef = pending_sdef or SPELL_DB.lookup_by_name(self.pending_cast_spell)
             if sdef and self.pending_cast_time:
                 elapsed = (timestamp - self.pending_cast_time).total_seconds()
@@ -575,6 +583,41 @@ class TimerEngine:
 
         return new_timers
 
+    # Maroon bar for harmful effects on you; good buffs keep their green.
+    SELF_DEBUFF_COLOR = "#B0263A"
+
+    def _add_self_debuff_timer(
+        self, landing_key: str, name: str, duration: float, fades: List[str], timestamp: datetime
+    ) -> Timer:
+        """Timer for a debuff a mob landed on you; a re-land refreshes it."""
+        timer_id = f"selfdebuff:{landing_key.strip().casefold()}"
+        # Fade texts in spells_us.txt vary in trailing punctuation ("returns..").
+        alts = [re.escape(f) + r"[.!?]*" for f in sorted({f.rstrip(" .!?") for f in fades})]
+        timer = Timer(
+            id=timer_id,
+            name=name,
+            alert_text=f"{name} on you",
+            total_seconds=duration,
+            remaining_seconds=duration,
+            category="self_debuff",
+            color=self.SELF_DEBUFF_COLOR,
+            sound=False,
+            target="Self",
+            wear_off_pattern=(r"^\s*(?:" + "|".join(alts) + r")\s*$") if alts else None,
+            created_at=timestamp,
+        )
+        self.active_timers[timer_id] = timer
+        self.recent_alerts.appendleft({
+            "timestamp": timestamp,
+            "name": name,
+            "text": timer.alert_text,
+            "category": "self_debuff",
+            "color": self.SELF_DEBUFF_COLOR,
+        })
+        if self.alert_callback:
+            self.alert_callback(timer)
+        return timer
+
     def _add_spell_timer(self, sdef: SpellDef, target: str, timestamp: datetime) -> Optional[Timer]:
         """Create or refresh a spell timer from a P99 SpellDef."""
         # Instant-effect spells (e.g. Defoliation) should not leave a countdown behind.
@@ -679,7 +722,8 @@ class TimerEngine:
             if timer.remaining_seconds <= 0:
                 expired.append(timer)
                 # Keep expired timer on screen for 5 seconds to highlight "RECAST NOW!"
-                if timer.remaining_seconds <= -5.0:
+                # (a debuff on you has nothing to recast: drop it at zero).
+                if timer.remaining_seconds <= -5.0 or timer.category == "self_debuff":
                     to_delete.append(timer_id)
 
         for t_id in to_delete:
@@ -706,14 +750,15 @@ class TimerEngine:
         buffs = [
             t for t in self.active_timers.values()
             if (
-                t.category == "pet_buff"
+                t.category in ("pet_buff", "self_debuff")
                 or (
                     t.category in ("buff", "cooldown", "util")
                     and (t.target or "Self").strip().casefold() == "self"
                 )
             )
         ]
-        return sorted(buffs, key=lambda t: t.remaining_seconds)
+        # Debuffs on you lead the list so they are seen first.
+        return sorted(buffs, key=lambda t: (t.category != "self_debuff", t.remaining_seconds))
 
     def cancel_timer(self, timer_id: str, reason: str = "cancelled") -> Optional[Timer]:
         """Cancel and remove an active timer."""
@@ -729,7 +774,7 @@ class TimerEngine:
 
     def clear_buffs(self) -> None:
         """Clear only buff timers (used on death/zoning)."""
-        to_delete = [tid for tid, t in self.active_timers.items() if t.category in ("buff", "cooldown", "util")]
+        to_delete = [tid for tid, t in self.active_timers.items() if t.category in ("buff", "cooldown", "util", "self_debuff")]
         for tid in to_delete:
             self.active_timers.pop(tid, None)
 

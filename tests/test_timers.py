@@ -730,5 +730,56 @@ class TestTimerEngine(unittest.TestCase):
         self.assertIsNone(self.engine.pending_cast_time)
 
 
+class TestDebuffsOnYou(unittest.TestCase):
+    """Mob debuffs landing on the player get their own maroon timers."""
+
+    def setUp(self):
+        from ekco_parse.timer_engine import TimerEngine
+        self.te = TimerEngine()
+        self.t0 = datetime(2026, 11, 7, 11, 45, 28)
+
+    def test_tashania_on_you_is_timed_and_fades(self):
+        from datetime import timedelta
+        self.te.process_line("You hear the barking of Tashania.", self.t0)
+        buffs = self.te.get_sorted_buffs()
+        self.assertEqual([t.name for t in buffs], ["Tashania"])
+        tash = buffs[0]
+        self.assertEqual(tash.category, "self_debuff")
+        self.assertEqual(tash.total_seconds, 780.0)
+        self.assertEqual(tash.color, self.te.SELF_DEBUFF_COLOR)
+        self.assertEqual(self.te.get_sorted_dots(), [])
+
+        self.te.process_line("The barking fades.", self.t0 + timedelta(seconds=90))
+        self.assertEqual(self.te.get_sorted_buffs(), [])
+
+    def test_reland_refreshes_instead_of_duplicating(self):
+        from datetime import timedelta
+        self.te.process_line("You hear the barking of Tashania.", self.t0)
+        self.te.tick(300)
+        self.te.process_line("You hear the barking of Tashania.", self.t0 + timedelta(seconds=300))
+        buffs = self.te.get_sorted_buffs()
+        self.assertEqual(len(buffs), 1)
+        self.assertEqual(buffs[0].remaining_seconds, 780.0)
+
+    def test_debuffs_lead_the_buff_list_and_drop_at_zero(self):
+        from ekco_parse.models import Timer
+        self.te.active_timers["b"] = Timer(
+            id="b", name="Natureskin", alert_text="", total_seconds=60, remaining_seconds=5,
+            category="buff", target="Self",
+        )
+        self.te.process_line("You slow down.", self.t0)
+        self.assertEqual(self.te.get_sorted_buffs()[0].category, "self_debuff")
+        self.te.tick(181)
+        self.assertNotIn("self_debuff", [t.category for t in self.te.active_timers.values()])
+
+    def test_our_own_tash_on_a_mob_is_still_a_dot(self):
+        self.te.set_current_target("a gnoll")
+        self.te.handle_spell_cast_start("You", "Tashania", self.t0)
+        from datetime import timedelta
+        self.te.process_line("a gnoll glances nervously about.", self.t0 + timedelta(seconds=1))
+        self.assertEqual([t.name for t in self.te.get_sorted_dots()], ["Tashania"])
+        self.assertEqual(self.te.get_sorted_buffs(), [])
+
+
 if __name__ == "__main__":
     unittest.main()

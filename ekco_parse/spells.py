@@ -1099,6 +1099,42 @@ class SpellDatabase:
         )
         return match[1] if match else None
 
+    HOSTILE_CATEGORIES = ("dot", "snare", "root", "mez", "debuff")
+
+    def lookup_debuff_on_you(
+        self, message: str
+    ) -> Optional[Tuple[str, str, float, List[str]]]:
+        """A hostile spell (Tashania, slows, roots...) landing on the player.
+
+        Returns (landing_key, display_name, duration_seconds, fade_messages), or None.
+        Mobs share landing text across spell families (Tashania/Tashanian/Howl of
+        Tashan all print "You hear the barking of Tashania."), so: a candidate
+        named in the message wins; otherwise the longest candidate duration is
+        used as an upper bound. The timer is removed by any candidate's fade text,
+        so it never outlives the real debuff.
+        """
+        found = self._landing_candidates(message, self.spells_by_on_you, "cast_on_you")
+        if not found:
+            return None
+        best, candidates = found
+        hostile = [
+            c for c in candidates.values()
+            if c.category in self.HOSTILE_CATEGORIES and c.duration_seconds > 0
+        ]
+        if not hostile:
+            return None
+        msg_low = message.casefold()
+        named = [c for c in hostile if c.name.casefold() in msg_low]
+        owner = best[0][1] if best[0][1] in hostile else hostile[0]
+        if named:
+            chosen = max(named, key=lambda c: len(c.name))
+            name, duration = chosen.name, chosen.duration_seconds
+        else:
+            name = owner.name
+            duration = max(c.duration_seconds for c in hostile)
+        fades = sorted({c.wear_off.strip() for c in hostile if c.wear_off and c.wear_off.strip()})
+        return best[0][0], name, duration, fades
+
     def lookup_by_cast_on_other(self, message: str) -> Optional[Tuple[SpellDef, str]]:
         match = self._lookup_landing_pattern(
             message,
