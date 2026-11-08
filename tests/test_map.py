@@ -178,5 +178,45 @@ class TestMapCleanup(unittest.TestCase):
             self.assertIn(key, plain)
 
 
+class TestMapMarkings(unittest.TestCase):
+    """Hand-placed spot dots and outlines (South Karana's Quillmane hunting aids)."""
+
+    def setUp(self):
+        self.engine = MapEngine(default_zone="South Karana")
+        self.zone = self.engine._active_zone_data()
+
+    def test_south_karana_loads_spots_and_shapes(self):
+        from ekco_parse.map_engine import MARK_COLORS
+        self.assertEqual(len(self.zone.spots), 9)
+        self.assertEqual({s.kind for s in self.zone.shapes}, {"circle", "rect"})
+        reds = [s for s in self.zone.spots if s.color == MARK_COLORS["red"]]
+        self.assertEqual(len(reds), 4)
+        # Spots are not waypoints: they stay out of the nearby list.
+        self.assertFalse([p for p in self.zone.points if "Quillmane" in p.name])
+
+    def test_spots_and_outlines_render_in_their_own_colors(self):
+        from ekco_parse.map_engine import MARK_COLORS
+        rows = "".join(self.engine.render_vector_wireframe(cols=56, rows=30))
+        self.assertIn(f"[{MARK_COLORS['red']}]•[/]", rows)
+        self.assertIn(f"[bold {MARK_COLORS['green']}]", rows)
+        self.assertIn(f"[bold {MARK_COLORS['blue']}]", rows)
+        # The numbered waypoints are still drawn on top.
+        self.assertIn("1", rows)
+
+    def test_bad_marking_entries_are_skipped(self):
+        import tempfile
+        from pathlib import Path
+        from ekco_parse.map_engine import load_markings
+        with tempfile.TemporaryDirectory() as d:
+            Path(d, "zz.yaml").write_text(
+                "spots:\n  - {name: ok, y: 1, x: 2}\n  - {name: bad, y: north}\n"
+                "shapes:\n  - {kind: circle, y: 0, x: 0, radius: 10}\n"
+                "  - {kind: rect, north: 1}\n  - {kind: hexagon}\n"
+            )
+            spots, shapes = load_markings("zz", Path(d))
+        self.assertEqual([s.name for s in spots], ["ok"])
+        self.assertEqual([s.kind for s in shapes], ["circle"])
+
+
 if __name__ == "__main__":
     unittest.main()

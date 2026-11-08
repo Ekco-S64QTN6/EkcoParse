@@ -18,3 +18,21 @@ waypoints:
   - {key: "Z", name: "to The Lair of the Splitpaw", y: -3164, x: 919}
   - {key: "Z", name: "to The Northern Plains of Karana", y: 2848, x: 908}
   - {key: "Z", name: "to Lake Rathetear", y: -8557, x: 1148}
+
+# Quillmane (rare pegasus) hunting aids, from the P99 wiki Quillmane page and a
+# tracking-path screenshot. Spots are small dots: amber = placeholder spawns,
+# red = known Quillmane spawns (some approximate). Drawn in order; later wins.
+spots:
+  - {name: "Quillmane PH spawn (approx.)", y: -3690, x: 350, color: amber}
+  - {name: "Quillmane PH spawn", y: -4910, x: 1160, color: amber}
+  - {name: "Quillmane PH spawn", y: -4477, x: 1697, color: amber}
+  - {name: "Quillmane PH spawn", y: -4477, x: 1530, color: amber}
+  - {name: "Quillmane PH spawn", y: -4920, x: 1370, color: amber}
+  - {name: "Quillmane spawn", y: -4899, x: 1452, color: red}
+  - {name: "Quillmane spawn (approx.)", y: -4918, x: 351, color: red}
+  - {name: "Quillmane spawn (approx.)", y: -5775, x: 1420, color: red}
+  - {name: "Quillmane spawn (approx.)", y: -5470, x: 1570, color: red}
+# Tracking path: 1 = the circle, 2 = the box north-east of its centre.
+shapes:
+  - {kind: circle, name: "Quillmane path 1", y: -4950, x: 725, radius: 2400, color: green}
+  - {kind: rect, name: "Quillmane path 2", north: -1050, south: -4950, west: 900, east: -2200, color: blue}

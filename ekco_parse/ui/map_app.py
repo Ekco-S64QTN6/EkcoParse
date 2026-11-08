@@ -133,9 +133,6 @@ class PoiRadarWidget(Static):
 class EkcoMapApp(App):
     """Standalone EverQuest Map Companion Window."""
 
-    # The first /loc fix in a zone opens a player-centred view about this many
-    # world units across (or the whole zone, if it is smaller than that).
-    AUTO_VIEW_UNITS = 700.0
     # Each zoom step multiplies/divides the scale, so deep zoom is a few presses.
     ZOOM_STEP = 1.5
     # Fallback radar size before the first layout pass reports the real one.
@@ -212,7 +209,6 @@ class EkcoMapApp(App):
         self.log_path: Optional[Path] = None
         self.zoom: float = 1.0
         self.is_tailing: bool = False
-        self._auto_zoom_pending = True
         self._dirty = True
         self._last_follow_check = 0.0
         self._last_canvas: Optional[tuple] = None
@@ -294,7 +290,8 @@ class EkcoMapApp(App):
             pass
 
     def _process_map_log_line(self, line: str) -> None:
-        """Apply one parsed log event and auto-zoom on the first usable /loc fix."""
+        """Apply one parsed log event. A /loc never changes the zoom: the view
+        stays wherever the player left it (whole zone by default)."""
         parsed = self.parser.parse_line(line)
         if not parsed:
             return
@@ -302,9 +299,6 @@ class EkcoMapApp(App):
         _, event = parsed
         if isinstance(event, Location):
             self.map_engine.update_location(event)
-            if self._auto_zoom_pending:
-                self.zoom = self.auto_zoom_level()
-                self._auto_zoom_pending = False
             self._dirty = True
         elif isinstance(event, dict):
             if event.get("type") == "zone_change":
@@ -330,11 +324,6 @@ class EkcoMapApp(App):
         cols, rows = self._canvas_size()
         return self.map_engine.max_zoom(cols, rows)
 
-    def auto_zoom_level(self) -> float:
-        cols, rows = self._canvas_size()
-        fit_width = self.map_engine.view_width_units(cols, rows, 1.0)
-        return min(self.max_zoom, max(1.0, fit_width / self.AUTO_VIEW_UNITS))
-
     def _switch_zone(self, zone_name: str) -> None:
         """Switch zones without carrying stale coordinates into the new zone."""
         self.map_engine.set_zone(zone_name)
@@ -342,7 +331,6 @@ class EkcoMapApp(App):
         self.map_engine.last_loc_time = None
         self.map_engine.current_speed = 0.0
         self.zoom = 1.0
-        self._auto_zoom_pending = True
         self._dirty = True
 
     def _tick(self) -> None:
@@ -392,17 +380,14 @@ class EkcoMapApp(App):
 
     def action_zoom_in(self) -> None:
         self.zoom = min(self.max_zoom, self.zoom * self.ZOOM_STEP)
-        self._auto_zoom_pending = False
         self._refresh_ui()
 
     def action_zoom_out(self) -> None:
         self.zoom = max(1.0, self.zoom / self.ZOOM_STEP)
-        self._auto_zoom_pending = False
         self._refresh_ui()
 
     def action_zoom_fit(self) -> None:
         self.zoom = 1.0
-        self._auto_zoom_pending = False
         self._refresh_ui()
 
     def on_mouse_scroll_up(self, event: events.MouseScrollUp) -> None:

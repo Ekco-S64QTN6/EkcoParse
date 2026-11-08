@@ -52,7 +52,7 @@ These are product goals, not a claim that every feature of GINA or GamParse is a
 - Vector map geometry and zone aliases, a player marker, breadcrumb trail, landmarks, manual zoom controls (1×–4×), zone cycling, breadcrumb clearing, and manual location input for testing.
 - The map engine centers the view on the player while zoomed in.
 
-**Gaps:** automatic first-fix zooming, manual zoom preservation, and clearing stale coordinates on zone changes are implemented. These behaviors still need broader real-log validation across zones and map-file variants.
+**Gaps:** zoom staying put on `/loc` (no automatic zoom-in), manual zoom preservation, and clearing stale coordinates on zone changes are implemented. These behaviors still need broader real-log validation across zones and map-file variants.
 
 ### Kill, experience, loot and respawns — Partial / not wired
 
@@ -73,7 +73,7 @@ These are product goals, not a claim that every feature of GINA or GamParse is a
 
 ### P0 — Make the current feature set dependable
 
-- [ ] Run the test suite and validate the merged transparency and auto-zoom behavior on a real P99 session, including startup with an existing log and a zone change.
+- [ ] Run the test suite and validate the merged transparency and zoom behavior on a real P99 session, including startup with an existing log and a zone change.
 - [ ] Add captured, anonymized real P99 log fixtures for location, zoning, spell fades, player death, coin loot, group combat, mob death, and item loot.
 - [ ] Test the full startup sequence when the log file is missing, empty, already contains old data, or rotates while the app is running.
 - [ ] Verify map coordinate orientation, zone aliases, and player centering against known in-game locations.

@@ -49,6 +49,63 @@ class MapLine:
     color_rgb: Tuple[int, int, int] = (100, 100, 100)
 
 
+# Named colors a waypoint file may use for spots and shapes.
+MARK_COLORS: Dict[str, str] = {
+    "red": COLOR_RED,
+    "amber": COLOR_AMBER,
+    "green": COLOR_GREEN,
+    "cyan": COLOR_CYAN,
+    "magenta": COLOR_MAGENTA,
+    "purple": COLOR_PURPLE,
+    "blue": "#4D7CFF",
+    "white": "#FFFFFF",
+    "muted": COLOR_MUTED,
+}
+
+
+def _mark_color(name: object, default: str) -> str:
+    return MARK_COLORS.get(str(name or "").strip().lower(), MARK_COLORS[default])
+
+
+@dataclass
+class MapSpot:
+    """A small hand-placed dot (e.g. a known rare spawn spot), smaller than a waypoint."""
+    name: str
+    y: float
+    x: float
+    color: str = COLOR_RED
+
+
+@dataclass
+class MapShape:
+    """An outline drawn over the map: a circle or an axis-aligned box, in /loc units."""
+    kind: str                 # "circle" or "rect"
+    color: str
+    name: str = ""
+    y: float = 0.0            # circle centre
+    x: float = 0.0
+    radius: float = 0.0
+    north: float = 0.0        # rect edges: north/south are /loc Y, west/east are /loc X
+    south: float = 0.0
+    west: float = 0.0
+    east: float = 0.0
+
+    def polyline(self, units_per_dot: float) -> List[Tuple[float, float]]:
+        """Closed outline as (x, y) world points; circles get enough sides to look round."""
+        if self.kind == "rect":
+            return [
+                (self.west, self.north), (self.east, self.north),
+                (self.east, self.south), (self.west, self.south), (self.west, self.north),
+            ]
+        r_dots = self.radius / max(units_per_dot, 1e-6)
+        n = int(min(720, max(24, 2 * math.pi * r_dots / 3)))
+        return [
+            (self.x + self.radius * math.cos(2 * math.pi * i / n),
+             self.y + self.radius * math.sin(2 * math.pi * i / n))
+            for i in range(n + 1)
+        ]
+
+
 @dataclass
 class ZoneData:
     """Cached vector map geometry and POIs for an EverQuest zone."""
@@ -60,6 +117,8 @@ class ZoneData:
     max_x: float
     points: List[MapPoint] = field(default_factory=list)
     lines: List[MapLine] = field(default_factory=list)
+    spots: List[MapSpot] = field(default_factory=list)
+    shapes: List[MapShape] = field(default_factory=list)
 
     @property
     def width_x(self) -> float:
@@ -348,6 +407,7 @@ class MapEngine:
         curated = load_waypoints(short_name)
         if curated is not None:
             points = curated
+        spots, shapes = load_markings(short_name)
 
         if not (found_any and (lines or points)):
             return None
@@ -371,6 +431,8 @@ class MapEngine:
             max_x=max_x if min_x < max_x else 1000,
             points=points,
             lines=lines,
+            spots=spots,
+            shapes=shapes,
         )
 
     def update_location(self, loc: Location) -> None:
@@ -514,6 +576,22 @@ class MapEngine:
                 a, b, c, d = clipped
                 canvas.draw_line(int(round(a)), int(round(b)), int(round(c)), int(round(d)))
 
+        # Outlines (circles, boxes) go on their own canvases so they keep
+        # their color instead of blending into the cyan walls.
+        shape_layers: List[Tuple[str, BrailleCanvas]] = []
+        layer_by_color: Dict[str, BrailleCanvas] = {}
+        for sh in zone.shapes:
+            layer = layer_by_color.get(sh.color)
+            if layer is None:
+                layer = layer_by_color[sh.color] = BrailleCanvas(cols=cols, rows=rows)
+                shape_layers.append((sh.color, layer))
+            pts = [to_sub(x, y) for x, y in sh.polyline(upd)]
+            for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+                clipped = _clip_segment(x0, y0, x1, y1, max_x, max_y)
+                if clipped:
+                    a, b, c, d = clipped
+                    layer.draw_line(int(round(a)), int(round(b)), int(round(c)), int(round(d)))
+
         # 2. Draw breadcrumb subpixels
         for by, bx, _ in self.breadcrumbs:
             fx, fy = to_sub(bx, by)
@@ -521,6 +599,12 @@ class MapEngine:
 
         # 3. Locate character-cell overlays for POIs and Player
         overlays: Dict[Tuple[int, int], str] = {}
+
+        # Spots first, so waypoints and the player marker win a shared cell.
+        for sp in zone.spots:
+            coords = to_char_cell(sp.x, sp.y)
+            if coords:
+                overlays[coords] = f"[{sp.color}]•[/]"
 
         for pt in zone.points:
             coords = to_char_cell(pt.x, pt.y)
@@ -548,24 +632,36 @@ class MapEngine:
                 overlays[coords] = f"[bold {COLOR_GREEN} on #05070D]@[/]"
 
         # 4. Convert the Braille grid to Rich markup, one tag per run of
-        #    wireframe glyphs rather than one per character.
+        #    same-colored glyphs rather than one per character. A cell an
+        #    outline passes through takes the outline's color.
         rendered_rows = []
         for r in range(rows):
             parts: List[str] = []
             run: List[str] = []
+            run_color: Optional[str] = None
             grid_row = canvas.grid[r]
             for c in range(cols):
                 ov = overlays.get((r, c))
                 bits = grid_row[c]
+                color = COLOR_CYAN
+                for shape_color, layer in shape_layers:
+                    if layer.grid[r][c]:
+                        bits |= layer.grid[r][c]
+                        color = shape_color
+                        break
                 if ov is None and bits:
+                    if run and color != run_color:
+                        parts.append(f"[bold {run_color}]{''.join(run)}[/]")
+                        run = []
+                    run_color = color
                     run.append(chr(0x2800 + bits))
                     continue
                 if run:
-                    parts.append(f"[bold {COLOR_CYAN}]{''.join(run)}[/]")
+                    parts.append(f"[bold {run_color}]{''.join(run)}[/]")
                     run = []
                 parts.append(ov if ov is not None else " ")
             if run:
-                parts.append(f"[bold {COLOR_CYAN}]{''.join(run)}[/]")
+                parts.append(f"[bold {run_color}]{''.join(run)}[/]")
             rendered_rows.append("".join(parts))
 
         return rendered_rows
@@ -667,6 +763,56 @@ def load_waypoints(short_name: str, directory: Optional[Path] = None) -> Optiona
         except (KeyError, TypeError, ValueError):
             continue
     return points
+
+
+def load_markings(
+    short_name: str, directory: Optional[Path] = None
+) -> Tuple[List[MapSpot], List[MapShape]]:
+    """Read a zone's optional `spots:` and `shapes:` from its waypoint YAML.
+
+    spots:  [{name, y, x, color?}]  small dots, drawn in file order (later wins a cell)
+    shapes: [{kind: circle, y, x, radius, color?}]
+            [{kind: rect, north, south, west, east, color?}]  north/south are /loc Y,
+            west/east are /loc X
+    """
+    path = (directory or WAYPOINTS_DIR) / f"{short_name}.yaml"
+    if not path.exists():
+        return [], []
+    try:
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except (OSError, yaml.YAMLError):
+        return [], []
+    spots: List[MapSpot] = []
+    for sp in data.get("spots") or []:
+        try:
+            spots.append(MapSpot(
+                name=str(sp.get("name", "")),
+                y=float(sp["y"]),
+                x=float(sp["x"]),
+                color=_mark_color(sp.get("color"), "red"),
+            ))
+        except (KeyError, TypeError, ValueError, AttributeError):
+            continue
+    shapes: List[MapShape] = []
+    for sh in data.get("shapes") or []:
+        try:
+            kind = str(sh.get("kind", "")).strip().lower()
+            color = _mark_color(sh.get("color"), "amber")
+            name = str(sh.get("name", ""))
+            if kind == "circle":
+                shapes.append(MapShape(
+                    kind=kind, color=color, name=name,
+                    y=float(sh["y"]), x=float(sh["x"]), radius=abs(float(sh["radius"])),
+                ))
+            elif kind == "rect":
+                shapes.append(MapShape(
+                    kind=kind, color=color, name=name,
+                    north=float(sh["north"]), south=float(sh["south"]),
+                    west=float(sh["west"]), east=float(sh["east"]),
+                ))
+        except (KeyError, TypeError, ValueError, AttributeError):
+            continue
+    return spots, shapes
 
 
 def _clip_segment(
