@@ -734,6 +734,10 @@ class TestDebuffsOnYou(unittest.TestCase):
     """Mob debuffs landing on the player get their own maroon timers."""
 
     def setUp(self):
+        # Hostile landing texts ("You hear the barking of Tashania.") come from
+        # the EverQuest install's spells_us.txt, which CI does not have.
+        if not SPELL_DB.lookup_debuff_on_you("You hear the barking of Tashania."):
+            self.skipTest("spells_us.txt not available")
         from ekco_parse.timer_engine import TimerEngine
         self.te = TimerEngine()
         self.t0 = datetime(2026, 11, 7, 11, 45, 28)
